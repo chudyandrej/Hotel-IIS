@@ -12,13 +12,15 @@ export default class SideBar extends React.Component {
             rooms: "default",
             search: "default",
             services: "default",
-            analytics: "default"
+            analytics: "default",
+            employees: "default"
         };
         this.handlerDashboardBtn = this.handlerDashboardBtn.bind(this);
         this.handlerRoomsBtn = this.handlerRoomsBtn.bind(this);
         this.handlerSearchBtn = this.handlerSearchBtn.bind(this);
         this.handlerServicesBtn = this.handlerServicesBtn.bind(this);
         this.handlerAnalyticsBtn = this.handlerAnalyticsBtn.bind(this);
+        this.handlerEmployeesBtn = this.handlerEmployeesBtn.bind(this);
     }
 
     handlerDashboardBtn() {
@@ -27,7 +29,8 @@ export default class SideBar extends React.Component {
             rooms: "default",
             search: "default",
             services: "default",
-            analytics: "default"
+            analytics: "default",
+            employees: "default"
         });
     }
 
@@ -37,7 +40,8 @@ export default class SideBar extends React.Component {
             rooms: "active",
             search: "default",
             services: "default",
-            analytics: "default"
+            analytics: "default",
+            employees: "default"
         });
     }
 
@@ -47,7 +51,8 @@ export default class SideBar extends React.Component {
             rooms: "default",
             search: "active",
             services: "default",
-            analytics: "default"
+            analytics: "default",
+            employees: "default"
         });
     }
 
@@ -57,7 +62,8 @@ export default class SideBar extends React.Component {
             rooms: "default",
             search: "default",
             services: "active",
-            analytics: "default"
+            analytics: "default",
+            employees: "default"
         });
     }
 
@@ -67,7 +73,19 @@ export default class SideBar extends React.Component {
             rooms: "default",
             search: "default",
             services: "default",
-            analytics: "active"
+            analytics: "active",
+            employees: "default"
+        });
+    }
+
+    handlerEmployeesBtn() {
+        this.setState ({
+            dashboard: "default",
+            rooms: "default",
+            search: "default",
+            services: "default",
+            analytics: "default",
+            employees: "active"
         });
     }
 
@@ -89,8 +107,11 @@ export default class SideBar extends React.Component {
                     </li>
                 </ul>
                 <ul className="nav nav-sidebar">
-                    <li>
-                        <Link to="/analytics">Analytics</Link>
+                    <li className={this.state.analytics}>
+                        <Link to="/analytics" onClick={this.handlerAnalyticsBtn}>Analytics</Link>
+                    </li>
+                    <li className={this.state.employees}>
+                        <Link to="/employees" onClick={this.handlerEmployeesBtn}>Employees</Link>
                     </li>
                 </ul>
             </div>

@@ -11,6 +11,8 @@ import Search from './Pages/Search.jsx';
 import Rooms from './Pages/Rooms.jsx';
 import Services from './Pages/Services.jsx';
 import Analytics from './Pages/Analytics.jsx';
+import Employees from './Pages/Employees.jsx';
+import NotFound from './Pages/NotFound.jsx';
 
 
 ReactDOM.render(
@@ -21,6 +23,8 @@ ReactDOM.render(
             <Route path="/rooms" component={Rooms} />
             <Route path="/services" component={Services} />
             <Route path="/analytics" component={Analytics} />
+            <Route path="/employees" component={Employees} />
+            <Route path="*" component={NotFound} />
         </Route>
     </Router>,
     document.getElementById('app')
