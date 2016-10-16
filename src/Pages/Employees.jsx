@@ -1,22 +1,41 @@
 import React from 'react';
 
 import Table from '../Components/Table.jsx';
+import Form from '../Components/Form.jsx';
+
 
 
 export default class Employees extends React.Component {
 
     constructor(props, context) {
         super(props, context);
+
+        this.state = {
+            showTable:true,
+            showAddForm: false
+        };
+
         this.handlerAddBtn = this.handlerAddBtn.bind(this);
         this.handlerEditBtn = this.handlerEditBtn.bind(this);
+        this.handlerCancelBtn = this.handlerCancelBtn.bind(this);
     }
 
     handlerAddBtn() {
-
+        this.setState({
+            showTable: false,
+            showAddForm: true
+        })
     }
 
     handlerEditBtn() {
 
+    }
+
+    handlerCancelBtn() {
+        this.setState({
+            showTable:true,
+            showAddForm: false
+        })
     }
 
     render() {
@@ -28,7 +47,6 @@ export default class Employees extends React.Component {
             {name: "service2", desc: "desc", price: 400},
             {name: "service3", desc: "desc", price: 400}
         ];
-
 
         return (
             <div>
@@ -47,8 +65,8 @@ export default class Employees extends React.Component {
                         Edit
                     </button>
                 </div>
-
-                <Table TableData={FAKEservicesDATA}/>
+                {this.state.showTable ?
+                    <Table TableData={FAKEservicesDATA}/> : <Form CancelBtn={this.handlerCancelBtn}/> }
             </div>
         );
     }

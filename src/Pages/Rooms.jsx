@@ -84,12 +84,12 @@ export default class Rooms extends React.Component {
                         Available
                     </button>
                     <button type="button"
-                            className={clsBtn + this.state.available}
+                            className={clsBtn + this.state.unavailable}
                             onClick={this.handlerUnAvailableBtn}>
                         Unavailable
                     </button>
                     <button type="button"
-                            className={clsBtn + this.state.available}
+                            className={clsBtn + this.state.all}
                             onClick={this.handlerAllBtn}>
                         All
                     </button>

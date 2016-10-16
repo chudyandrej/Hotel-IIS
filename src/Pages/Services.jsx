@@ -12,7 +12,6 @@ export default class Services extends React.Component {
             available: "active",
             unavailable: "default",
             all: "default",
-            history: "default",
             subHeader: "Available services"
         };
         this.handlerAvailableBtn = this.handlerAvailableBtn.bind(this);
@@ -27,7 +26,6 @@ export default class Services extends React.Component {
             available: "active",
             unavailable: "default",
             all: "default",
-            history: "default",
             subHeader: "Available services"
         });
     }
@@ -37,7 +35,6 @@ export default class Services extends React.Component {
             available: "default",
             unavailable: "active",
             all: "default",
-            history: "default",
             subHeader: "Unavailable services"
         });
     }
@@ -47,7 +44,6 @@ export default class Services extends React.Component {
             available: "default",
             unavailable: "default",
             all: "active",
-            history: "default",
             subHeader: "All services"
         });
     }

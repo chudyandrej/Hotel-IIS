@@ -12,6 +12,7 @@ import Rooms from './Pages/Rooms.jsx';
 import Services from './Pages/Services.jsx';
 import Analytics from './Pages/Analytics.jsx';
 import Employees from './Pages/Employees.jsx';
+import Guests from './Pages/Guests.jsx';
 import NotFound from './Pages/NotFound.jsx';
 
 
@@ -24,6 +25,7 @@ ReactDOM.render(
             <Route path="/services" component={Services} />
             <Route path="/analytics" component={Analytics} />
             <Route path="/employees" component={Employees} />
+            <Route path="/guests" component={Guests} />
             <Route path="*" component={NotFound} />
         </Route>
     </Router>,
