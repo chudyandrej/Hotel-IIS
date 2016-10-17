@@ -1,7 +1,9 @@
 import React from 'react';
 
 import Table from '../Components/Table.jsx';
-
+import ServiceForm from '../Components/ServiceForm.jsx';
+import FormButtons from '../Components/FormButtons.jsx';
+import RightBtnToolbar from '../Components/RightBtnToolbar.jsx';
 
 export default class Services extends React.Component {
 
@@ -12,100 +14,115 @@ export default class Services extends React.Component {
             available: "active",
             unavailable: "default",
             all: "default",
-            subHeader: "Available services"
+            subHeader: "Services",
+            showTable: true,
+            showAddForm: false
         };
         this.handlerAvailableBtn = this.handlerAvailableBtn.bind(this);
         this.handlerUnAvailableBtn = this.handlerUnAvailableBtn.bind(this);
         this.handlerAllBtn = this.handlerAllBtn.bind(this);
         this.handlerAddBtn = this.handlerAddBtn.bind(this);
         this.handlerEditBtn = this.handlerEditBtn.bind(this);
+        this.handlerSubmitBtn = this.handlerSubmitBtn.bind(this);
+        this.handlerCancelBtn = this.handlerCancelBtn.bind(this);
     }
 
     handlerAvailableBtn() {
-        this.setState ({
+        this.setState({
             available: "active",
             unavailable: "default",
-            all: "default",
-            subHeader: "Available services"
+            all: "default"
         });
     }
 
     handlerUnAvailableBtn() {
-        this.setState ({
+        this.setState({
             available: "default",
             unavailable: "active",
-            all: "default",
-            subHeader: "Unavailable services"
+            all: "default"
         });
     }
 
     handlerAllBtn() {
-        this.setState ({
+        this.setState({
             available: "default",
             unavailable: "default",
-            all: "active",
-            subHeader: "All services"
+            all: "active"
         });
     }
 
     handlerAddBtn() {
-
+        this.setState({
+            showTable: false,
+            showAddForm: true,
+            subHeader: "Add new service"
+        })
     }
 
     handlerEditBtn() {
 
     }
 
+    handlerCancelBtn() {
+        this.setState({
+            showTable: true,
+            showAddForm: false,
+            subHeader: "Services"
+        })
+    }
+
+    handlerSubmitBtn() {
+        //TODO send form to backend
+    }
+
     render() {
         var clsBtn = "btn btn-info ";
 
-        var FAKEservicesDATA =[
+        var FAKEservicesDATA = [
             {name: "Name", desc: "Description", price: "Price"},
             {name: "service1", desc: "desc", price: 400},
             {name: "service2", desc: "desc", price: 400},
             {name: "service3", desc: "desc", price: 400}
-            ];
+        ];
 
+        var Form = (
+            <div>
+                <ServiceForm />
+                <FormButtons Submit={this.handlerSubmitBtn} Cancel={this.handlerCancelBtn}/>
+            </div>
+        );
+
+        var LeftBtnToolbar = (
+            <div className='btn-toolbar pull-left'>
+                <button type="button"
+                        className={clsBtn + this.state.available}
+                        onClick={this.handlerAvailableBtn}>
+                    Available
+                </button>
+                <button type="button"
+                        className={clsBtn + this.state.unavailable}
+                        onClick={this.handlerUnAvailableBtn}>
+                    Unavailable
+                </button>
+                <button type="button"
+                        className={clsBtn + this.state.all}
+                        onClick={this.handlerAllBtn}>
+                    All
+                </button>
+            </div>
+        );
 
         return (
             <div>
-                <h1 className="page-header">Services</h1>
+                <h1 className="page-header">{this.state.subHeader}</h1>
 
-                <h2 className="sub-header">{this.state.subHeader}</h2>
+                {this.state.showTable ? LeftBtnToolbar : null}
 
-                <div className='btn-toolbar pull-left'>
-                    <button type="button"
-                            className={clsBtn + this.state.available}
-                            onClick={this.handlerAvailableBtn}>
-                        Available
-                    </button>
-                    <button type="button"
-                            className={clsBtn + this.state.unavailable}
-                            onClick={this.handlerUnAvailableBtn}>
-                        Unavailable
-                    </button>
-                    <button type="button"
-                            className={clsBtn + this.state.all}
-                            onClick={this.handlerAllBtn}>
-                        All
-                    </button>
-                </div>
+                <RightBtnToolbar Add={this.handlerAddBtn} Edit={this.handlerEditBtn}/>
 
-                <div className='btn-toolbar pull-right'>
-                    <button type="button"
-                            className={clsBtn}
-                            onClick={this.handlerAddBtn}>
-                        Add
-                    </button>
+                {this.state.showTable ?
+                    <Table TableData={FAKEservicesDATA}/> : Form}
 
-                    <button type="button"
-                            className={clsBtn}
-                            onClick={this.handlerEditBtn}>
-                        Edit
-                    </button>
-                </div>
-
-                <Table TableData={FAKEservicesDATA}/>
             </div>
         );
     }

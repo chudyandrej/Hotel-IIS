@@ -1,8 +1,8 @@
 import React from 'react';
 
 import Table from '../Components/Table.jsx';
-import Form from '../Components/Form.jsx';
-
+import EmployeeForm from '../Components/EmployeeForm.jsx';
+import FormButtons from '../Components/FormButtons.jsx';
 
 
 export default class Employees extends React.Component {
@@ -11,19 +11,22 @@ export default class Employees extends React.Component {
         super(props, context);
 
         this.state = {
-            showTable:true,
-            showAddForm: false
+            showTable: true,
+            showAddForm: false,
+            subHeader: "Employees"
         };
 
         this.handlerAddBtn = this.handlerAddBtn.bind(this);
         this.handlerEditBtn = this.handlerEditBtn.bind(this);
         this.handlerCancelBtn = this.handlerCancelBtn.bind(this);
+        this.handlerSubmitBtn = this.handlerSubmitBtn.bind(this);
     }
 
     handlerAddBtn() {
         this.setState({
             showTable: false,
-            showAddForm: true
+            showAddForm: true,
+            subHeader: "Create new employee"
         })
     }
 
@@ -33,15 +36,26 @@ export default class Employees extends React.Component {
 
     handlerCancelBtn() {
         this.setState({
-            showTable:true,
-            showAddForm: false
+            showTable: true,
+            showAddForm: false,
+            subHeader: "Employees"
         })
     }
 
-    render() {
-        var clsBtn = "btn btn-info";
+    handlerSubmitBtn() {
+        //TODO send form to backend
+    }
 
-        var FAKEservicesDATA =[
+    render() {
+
+        var Form = (
+            <div>
+                <EmployeeForm />
+                <FormButtons Submit={this.handlerSubmitBtn} Cancel={this.handlerCancelBtn}/>
+            </div>
+        );
+
+        var FAKEservicesDATA = [
             {name: "Name", desc: "Description", price: "Price"},
             {name: "service1", desc: "desc", price: 400},
             {name: "service2", desc: "desc", price: 400},
@@ -50,23 +64,12 @@ export default class Employees extends React.Component {
 
         return (
             <div>
-                <h1 className="page-header">Employees</h1>
+                <h2 className="page-header">{this.state.subHeader}</h2>
 
-                <div className='btn-toolbar pull-right'>
-                    <button type="button"
-                            className={clsBtn}
-                            onClick={this.handlerAddBtn}>
-                        Add
-                    </button>
+                <RightBtnToolbar Add={this.handlerAddBtn} Edit={this.handlerEditBtn}/>
 
-                    <button type="button"
-                            className={clsBtn}
-                            onClick={this.handlerEditBtn}>
-                        Edit
-                    </button>
-                </div>
                 {this.state.showTable ?
-                    <Table TableData={FAKEservicesDATA}/> : <Form CancelBtn={this.handlerCancelBtn}/> }
+                    <Table TableData={FAKEservicesDATA}/> : Form}
             </div>
         );
     }
