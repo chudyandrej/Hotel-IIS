@@ -1,3 +1,5 @@
+var bcrypt = require('bcrypt');
+
 module.exports = function(sequelize, DataTypes) {
     return sequelize.define('employees', {
         name: {
@@ -22,13 +24,21 @@ module.exports = function(sequelize, DataTypes) {
                 isEmail: true
             }
         },
-        password: {
-            //TODO virtual hash password
+        password_hash: {
             type: DataTypes.STRING,
-            allowNull: false,
+        },
+        password: {
+            type: DataTypes.VIRTUAL,
+            allowNull: true,
             validate: {
-                len: [7, 100]
+                len: [7, 50]
             },
+            set: function(value) {
+                var salt = bcrypt.genSaltSync(10);
+                var hashedPassword = bcrypt.hashSync(value, salt);
+                this.setDataValue('password', value);
+                this.setDataValue('password_hash', hashedPassword);
+            }
         },
         addres: {
             type: DataTypes.STRING,
@@ -54,5 +64,15 @@ module.exports = function(sequelize, DataTypes) {
                 len: [15, 32]
             }
         }
+    }, {
+
+
+
+
+
+
+
+
+
     });
 };
