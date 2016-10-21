@@ -1,0 +1,24 @@
+{
+  "name": "hotel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chudyandrej/Hotel-IIS.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chudyandrej/Hotel-IIS/issues"
+  },
+  "homepage": "https://github.com/chudyandrej/Hotel-IIS#readme",
+  "dependencies": {
+    "bcrypt": "^0.8.7",
+    "express": "^4.14.0",
+    "sequelize": "^3.24.5"
+  }
+}
