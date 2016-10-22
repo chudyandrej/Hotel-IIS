@@ -8,9 +8,9 @@ export default class ServiceForm extends React.Component {
         super(props, context);
 
         this.state = {
-            name: null,
-            description: null,
-            price: null
+            name: this.props.editData.name,
+            description: this.props.editData.description,
+            price: this.props.editData.price,
         };
     }
 
@@ -46,16 +46,24 @@ export default class ServiceForm extends React.Component {
         var tableStyle = {
             clear: "both"
         };
+
         return (
             <div>
                 <form style={tableStyle}>
+                    <InputLabelForm label="Name"
+                                    placeholder={this.state.name}
+                                    type="text"
+                                    onChange={this.handlerOnChange.bind(this, "name")}/>
 
-                    <InputLabelForm label="Name" type="text" onChange={this.handlerOnChange.bind(this, "name")}/>
+                    <InputLabelForm label="Description"
+                                    placeholder={this.state.description}
+                                    type="text"
+                                    onChange={this.handlerOnChange.bind(this, "desc")}/>
 
-                    <InputLabelForm label="Description" type="text" onChange={this.handlerOnChange.bind(this, "desc")}/>
-
-                    <InputLabelForm label="Price" type="text" onChange={this.handlerOnChange.bind(this, "price")}/>
-
+                    <InputLabelForm label="Price"
+                                    placeholder={this.state.price}
+                                    type="text"
+                                    onChange={this.handlerOnChange.bind(this, "price")}/>
                 </form>
 
                 <FormButtons Submit={this.handlerSubmitBtn.bind(this)} Cancel={this.props.Cancel}/>

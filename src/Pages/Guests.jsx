@@ -14,10 +14,13 @@ export default class Guests extends React.Component {
             current: "active",
             all: "default",
             subHeader: "Active guests",
+
             showTable: true,
             showAddForm: false,
             removeAction: false,
-            addBtnClicked: false
+            addBtnClicked: false,
+
+            editData: null
         };
     }
 
@@ -38,6 +41,19 @@ export default class Guests extends React.Component {
         });
     }
 
+    handlerEditBtn(data) {
+        // data = data which sends the row, which a user wants to edit
+        this.setState({
+            showTable: false,
+            showAddForm: false,
+            subHeader: "Edit the guest",
+            addBtnClicked: true,
+            removeAction: false,
+
+            editData: data
+        });
+    }
+
     handlerAddBtn() {
         this.setState({
             showTable: false,
@@ -45,7 +61,7 @@ export default class Guests extends React.Component {
             subHeader: "Add a new guest",
             addBtnClicked: true,
             removeAction: false
-        })
+        });
     }
 
     handlerRemoveBtn() {
@@ -79,7 +95,8 @@ export default class Guests extends React.Component {
         var Form = (
             <div>
                 <GuestForm Submit={this.handlerSubmitBtn.bind(this)}
-                           Cancel={this.handlerCancelBtn.bind(this)}/>
+                           Cancel={this.handlerCancelBtn.bind(this)}
+                           editData={this.state.editData}/>
             </div>
         );
 
@@ -109,9 +126,10 @@ export default class Guests extends React.Component {
                                  Remove={this.handlerRemoveBtn.bind(this)}/>
 
                 {this.state.showTable ?
-                    <Table onRemove={this.handlerRemoveBtn}
-                           TableData={FAKEservicesDATA}
-                           RemoveAction={this.state.removeAction} /> : Form}
+                    <Table TableData={FAKEservicesDATA}
+                           onEdit={this.handlerEditBtn.bind(this)}
+                           onRemove={this.handlerRemoveBtn}
+                           RemoveAction={this.state.removeAction}/> : Form}
             </div>
         );
     }

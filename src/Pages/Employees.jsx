@@ -11,23 +11,39 @@ export default class Employees extends React.Component {
         super(props, context);
 
         this.state = {
+            subHeader: "Employees",
+
             showTable: true,
             showAddForm: false,
-            subHeader: "Employees",
             addBtnClicked: false,
-            removeAction: false
+            removeAction: false,
+
+            editData: null
         };
-       // this.stateSetter = this.stateSetter.bind(this);
+        // this.stateSetter = this.stateSetter.bind(this);
+    }
+
+    handlerEditBtn(data) {
+        // data = data which sends the row, which a user wants to edit
+        this.setState({
+            subHeader: "Edit the employee",
+            showTable: false,
+            showAddForm: false,
+            addBtnClicked: false,
+            removeAction: false,
+
+            editData: data
+        });
     }
 
     handlerAddBtn() {
         this.setState({
+            subHeader: "Add a new employee",
             showTable: false,
             showAddForm: true,
-            subHeader: "Add a new employee",
             addBtnClicked: true,
             removeAction: false
-        })
+        });
     }
 
     handlerRemoveBtn() {
@@ -36,11 +52,11 @@ export default class Employees extends React.Component {
 
     handlerCancelBtn() {
         this.setState({
+            subHeader: "Employees",
             showTable: true,
             showAddForm: false,
-            subHeader: "Employees",
             addBtnClicked: false
-        })
+        });
     }
 
     handlerSubmitBtn(data) {
@@ -52,7 +68,8 @@ export default class Employees extends React.Component {
         var Form = (
             <div>
                 <EmployeeForm Submit={this.handlerSubmitBtn.bind(this)}
-                              Cancel={this.handlerCancelBtn.bind(this)}/>
+                              Cancel={this.handlerCancelBtn.bind(this)}
+                              editData={this.state.editData}/>
 
             </div>
         );
@@ -74,6 +91,7 @@ export default class Employees extends React.Component {
 
                 {this.state.showTable ?
                     <Table TableData={FAKEservicesDATA}
+                           onEdit={this.handlerEditBtn.bind(this)}
                            onRemove={this.handlerRemoveBtn}
                            RemoveAction={this.state.removeAction}/> : Form}
             </div>

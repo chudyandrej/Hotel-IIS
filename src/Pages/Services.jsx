@@ -14,14 +14,14 @@ export default class Services extends React.Component {
             unavailable: "default",
             all: "default",
             subHeader: "Available Services",
+
             showTable: true,
             showAddForm: false,
-            items: null,
             removeAction: false,
             addBtnClicked: false,
+
+            editData: null
         };
-        //this.handlerAddBtn = this.handlerAddBtn.bind(this);
-        //this.handlerRemoveBtn = this.handlerRemoveBtn.bind(this);
     }
 
     handlerAvailableBtn() {
@@ -51,14 +51,27 @@ export default class Services extends React.Component {
         });
     }
 
+    handlerEditBtn(data) {
+        // data = data which sends the row, which a user wants to edit
+        this.setState({
+            subHeader: "Edit the service",
+            showTable: false,
+            showAddForm: false,
+            addBtnClicked: false,
+            removeAction: false,
+
+            editData: data
+        });
+    }
+
     handlerAddBtn() {
         this.setState({
+            subHeader: "Add a new service",
             showTable: false,
             showAddForm: true,
-            subHeader: "Add a new service",
             addBtnClicked: true,
             removeAction: false
-        })
+        });
     }
 
     handlerRemoveBtn() {
@@ -68,11 +81,11 @@ export default class Services extends React.Component {
 
     handlerCancelBtn() {
         this.setState({
+            subHeader: "Services",
             showTable: true,
             showAddForm: false,
-            subHeader: "Services",
             addBtnClicked: false
-        })
+        });
     }
 
     handlerSubmitBtn() {
@@ -92,7 +105,8 @@ export default class Services extends React.Component {
         var Form = (
             <div>
                 <ServiceForm Submit={this.handlerSubmitBtn.bind(this)}
-                             Cancel={this.handlerCancelBtn.bind(this)}/>
+                             Cancel={this.handlerCancelBtn.bind(this)}
+                             editData={this.state.editData}/>
             </div>
         );
 
@@ -127,10 +141,10 @@ export default class Services extends React.Component {
                                  Remove={this.handlerRemoveBtn.bind(this)}/>
 
                 {this.state.showTable ?
-                    <Table onRemove={this.handlerRemoveBtn}
-                           TableData={FAKEservicesDATA}
-                           RemoveAction={this.state.removeAction} /> : Form}
-
+                    <Table TableData={FAKEservicesDATA}
+                           onEdit={this.handlerEditBtn.bind(this)}
+                           onRemove={this.handlerRemoveBtn}
+                           RemoveAction={this.state.removeAction}/> : Form}
             </div>
         );
     }
