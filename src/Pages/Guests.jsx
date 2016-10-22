@@ -1,8 +1,7 @@
 import React from 'react';
 
 import Table from '../Components/Table.jsx';
-import GuestForm from '../Components/GuestForm.jsx'
-import FormButtons from '../Components/FormButtons.jsx';
+import GuestForm from '../Components/Forms/GuestForm.jsx'
 import RightBtnToolbar from '../Components/RightBtnToolbar.jsx';
 
 
@@ -44,7 +43,8 @@ export default class Guests extends React.Component {
             showTable: false,
             showAddForm: true,
             subHeader: "Add a new guest",
-            addBtnClicked: true
+            addBtnClicked: true,
+            removeAction: false
         })
     }
 
@@ -61,7 +61,7 @@ export default class Guests extends React.Component {
         })
     }
 
-    handlerSubmitBtn() {
+    handlerSubmitBtn(data) {
         //TODO send form to backend
     }
 
@@ -78,8 +78,8 @@ export default class Guests extends React.Component {
 
         var Form = (
             <div>
-                <GuestForm />
-                <FormButtons Submit={this.handlerSubmitBtn.bind(this)} Cancel={this.handlerCancelBtn.bind(this)}/>
+                <GuestForm Submit={this.handlerSubmitBtn.bind(this)}
+                           Cancel={this.handlerCancelBtn.bind(this)}/>
             </div>
         );
 

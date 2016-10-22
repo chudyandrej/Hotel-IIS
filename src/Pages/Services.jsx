@@ -1,8 +1,7 @@
 import React from 'react';
 
 import Table from '../Components/Table.jsx';
-import ServiceForm from '../Components/ServiceForm.jsx';
-import FormButtons from '../Components/FormButtons.jsx';
+import ServiceForm from '../Components/Forms/ServiceForm.jsx';
 import RightBtnToolbar from '../Components/RightBtnToolbar.jsx';
 
 export default class Services extends React.Component {
@@ -20,16 +19,9 @@ export default class Services extends React.Component {
             items: null,
             removeAction: false,
             addBtnClicked: false,
-
-            name: null,
-            description: null,
-            price: null
         };
-        this.handlerAvailableBtn = this.handlerAvailableBtn.bind(this);
-        this.handlerUnAvailableBtn = this.handlerUnAvailableBtn.bind(this);
-        this.handlerAllBtn = this.handlerAllBtn.bind(this);
-        this.handlerAddBtn = this.handlerAddBtn.bind(this);
-        this.handlerRemoveBtn = this.handlerRemoveBtn.bind(this);
+        //this.handlerAddBtn = this.handlerAddBtn.bind(this);
+        //this.handlerRemoveBtn = this.handlerRemoveBtn.bind(this);
     }
 
     handlerAvailableBtn() {
@@ -64,31 +56,14 @@ export default class Services extends React.Component {
             showTable: false,
             showAddForm: true,
             subHeader: "Add a new service",
-            addBtnClicked: true
+            addBtnClicked: true,
+            removeAction: false
         })
     }
 
     handlerRemoveBtn() {
-        //ev.preventDefault();
-        console.log("here in Services");
-        //console.log(item.name);
+        console.log("here in Services"); //DEBUG
         this.setState({removeAction: !this.state.removeAction});
-        //var items =  this.state.items.filter(function(itm){
-        //    return item.id !== itm.id;
-        //});
-        //this.setState({items: items});
-    }
-
-    handlerOnChange(name, evt){
-        console.log(name);
-        switch (name){
-            case "name":
-                this.setState({name: evt.target.value}); break;
-            case "desc":
-                this.setState({description: evt.target.value}); break;
-            case "price":
-                this.setState({price: evt.target.value}); break;
-        }
     }
 
     handlerCancelBtn() {
@@ -116,10 +91,8 @@ export default class Services extends React.Component {
 
         var Form = (
             <div>
-                <ServiceForm onChange={this.handlerOnChange}/>
-                <FormButtons Submit={this.handlerSubmitBtn.bind(this)}
-                             Cancel={this.handlerCancelBtn.bind(this)}
-                             onChange={this.handlerOnChange}/>
+                <ServiceForm Submit={this.handlerSubmitBtn.bind(this)}
+                             Cancel={this.handlerCancelBtn.bind(this)}/>
             </div>
         );
 
@@ -127,17 +100,17 @@ export default class Services extends React.Component {
             <div className='btn-toolbar pull-left'>
                 <button type="button"
                         className={clsBtn + this.state.available}
-                        onClick={this.handlerAvailableBtn}>
+                        onClick={this.handlerAvailableBtn.bind(this)}>
                     Available
                 </button>
                 <button type="button"
                         className={clsBtn + this.state.unavailable}
-                        onClick={this.handlerUnAvailableBtn}>
+                        onClick={this.handlerUnAvailableBtn.bind(this)}>
                     Unavailable
                 </button>
                 <button type="button"
                         className={clsBtn + this.state.all}
-                        onClick={this.handlerAllBtn}>
+                        onClick={this.handlerAllBtn.bind(this)}>
                     All
                 </button>
             </div>
@@ -149,9 +122,9 @@ export default class Services extends React.Component {
 
                 {this.state.showTable ? LeftBtnToolbar : null}
 
-                <RightBtnToolbar Add={this.handlerAddBtn}
+                <RightBtnToolbar Add={this.handlerAddBtn.bind(this)}
                                  AddState={this.state.addBtnClicked}
-                                 Remove={this.handlerRemoveBtn}/>
+                                 Remove={this.handlerRemoveBtn.bind(this)}/>
 
                 {this.state.showTable ?
                     <Table onRemove={this.handlerRemoveBtn}
