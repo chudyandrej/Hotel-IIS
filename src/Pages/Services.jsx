@@ -14,24 +14,30 @@ export default class Services extends React.Component {
             available: "active",
             unavailable: "default",
             all: "default",
-            subHeader: "Services",
+            subHeader: "Available Services",
             showTable: true,
-            showAddForm: false
+            showAddForm: false,
+            items: null,
+            removeAction: false,
+            addBtnClicked: false,
+
+            name: null,
+            description: null,
+            price: null
         };
         this.handlerAvailableBtn = this.handlerAvailableBtn.bind(this);
         this.handlerUnAvailableBtn = this.handlerUnAvailableBtn.bind(this);
         this.handlerAllBtn = this.handlerAllBtn.bind(this);
         this.handlerAddBtn = this.handlerAddBtn.bind(this);
-        this.handlerEditBtn = this.handlerEditBtn.bind(this);
-        this.handlerSubmitBtn = this.handlerSubmitBtn.bind(this);
-        this.handlerCancelBtn = this.handlerCancelBtn.bind(this);
+        this.handlerRemoveBtn = this.handlerRemoveBtn.bind(this);
     }
 
     handlerAvailableBtn() {
         this.setState({
             available: "active",
             unavailable: "default",
-            all: "default"
+            all: "default",
+            subHeader: "Available Services"
         });
     }
 
@@ -39,7 +45,8 @@ export default class Services extends React.Component {
         this.setState({
             available: "default",
             unavailable: "active",
-            all: "default"
+            all: "default",
+            subHeader: "Unavailable Services"
         });
     }
 
@@ -47,7 +54,8 @@ export default class Services extends React.Component {
         this.setState({
             available: "default",
             unavailable: "default",
-            all: "active"
+            all: "active",
+            subHeader: "All Services"
         });
     }
 
@@ -55,19 +63,40 @@ export default class Services extends React.Component {
         this.setState({
             showTable: false,
             showAddForm: true,
-            subHeader: "Add new service"
+            subHeader: "Add a new service",
+            addBtnClicked: true
         })
     }
 
-    handlerEditBtn() {
+    handlerRemoveBtn() {
+        //ev.preventDefault();
+        console.log("here in Services");
+        //console.log(item.name);
+        this.setState({removeAction: !this.state.removeAction});
+        //var items =  this.state.items.filter(function(itm){
+        //    return item.id !== itm.id;
+        //});
+        //this.setState({items: items});
+    }
 
+    handlerOnChange(name, evt){
+        console.log(name);
+        switch (name){
+            case "name":
+                this.setState({name: evt.target.value}); break;
+            case "desc":
+                this.setState({description: evt.target.value}); break;
+            case "price":
+                this.setState({price: evt.target.value}); break;
+        }
     }
 
     handlerCancelBtn() {
         this.setState({
             showTable: true,
             showAddForm: false,
-            subHeader: "Services"
+            subHeader: "Services",
+            addBtnClicked: false
         })
     }
 
@@ -87,8 +116,10 @@ export default class Services extends React.Component {
 
         var Form = (
             <div>
-                <ServiceForm />
-                <FormButtons Submit={this.handlerSubmitBtn} Cancel={this.handlerCancelBtn}/>
+                <ServiceForm onChange={this.handlerOnChange}/>
+                <FormButtons Submit={this.handlerSubmitBtn.bind(this)}
+                             Cancel={this.handlerCancelBtn.bind(this)}
+                             onChange={this.handlerOnChange}/>
             </div>
         );
 
@@ -118,10 +149,14 @@ export default class Services extends React.Component {
 
                 {this.state.showTable ? LeftBtnToolbar : null}
 
-                <RightBtnToolbar Add={this.handlerAddBtn} Edit={this.handlerEditBtn}/>
+                <RightBtnToolbar Add={this.handlerAddBtn}
+                                 AddState={this.state.addBtnClicked}
+                                 Remove={this.handlerRemoveBtn}/>
 
                 {this.state.showTable ?
-                    <Table TableData={FAKEservicesDATA}/> : Form}
+                    <Table onRemove={this.handlerRemoveBtn}
+                           TableData={FAKEservicesDATA}
+                           RemoveAction={this.state.removeAction} /> : Form}
 
             </div>
         );

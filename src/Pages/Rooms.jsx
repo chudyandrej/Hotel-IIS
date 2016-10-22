@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Table from '../Components/Table.jsx';
+import RightBtnToolbar from '../Components/RightBtnToolbar.jsx';
 
 
 export default class Rooms extends React.Component {
@@ -15,15 +16,10 @@ export default class Rooms extends React.Component {
             history: "default",
             subHeader: "Available Rooms"
         };
-        this.handlerAvailableBtn = this.handlerAvailableBtn.bind(this);
-        this.handlerUnAvailableBtn = this.handlerUnAvailableBtn.bind(this);
-        this.handlerAllBtn = this.handlerAllBtn.bind(this);
-        this.handlerAddBtn = this.handlerAddBtn.bind(this);
-        this.handlerEditBtn = this.handlerEditBtn.bind(this);
     }
 
     handlerAvailableBtn() {
-        this.setState ({
+        this.setState({
             available: "active",
             unavailable: "default",
             all: "default",
@@ -33,7 +29,7 @@ export default class Rooms extends React.Component {
     }
 
     handlerUnAvailableBtn() {
-        this.setState ({
+        this.setState({
             available: "default",
             unavailable: "active",
             all: "default",
@@ -43,7 +39,7 @@ export default class Rooms extends React.Component {
     }
 
     handlerAllBtn() {
-        this.setState ({
+        this.setState({
             available: "default",
             unavailable: "default",
             all: "active",
@@ -56,14 +52,14 @@ export default class Rooms extends React.Component {
 
     }
 
-    handlerEditBtn() {
+    handlerRemoveBtn() {
 
     }
 
     render() {
         var clsBtn = "btn btn-info ";
 
-        var FAKEservicesDATA =[
+        var FAKEservicesDATA = [
             {name: "Name", desc: "Description", price: "Price"},
             {name: "service1", desc: "desc", price: 400},
             {name: "service2", desc: "desc", price: 400},
@@ -73,41 +69,29 @@ export default class Rooms extends React.Component {
 
         return (
             <div>
-                <h1 className="page-header">Rooms</h1>
-
-                <h2 className="sub-header">{this.state.subHeader}</h2>
+                <h1 className="page-header">{this.state.subHeader}</h1>
 
                 <div className='btn-toolbar pull-left'>
                     <button type="button"
                             className={clsBtn + this.state.available}
-                            onClick={this.handlerAvailableBtn}>
+                            onClick={this.handlerAvailableBtn.bind(this)}>
                         Available
                     </button>
                     <button type="button"
                             className={clsBtn + this.state.unavailable}
-                            onClick={this.handlerUnAvailableBtn}>
+                            onClick={this.handlerUnAvailableBtn.bind(this)}>
                         Unavailable
                     </button>
                     <button type="button"
                             className={clsBtn + this.state.all}
-                            onClick={this.handlerAllBtn}>
+                            onClick={this.handlerAllBtn.bind(this)}>
                         All
                     </button>
                 </div>
 
-                <div className='btn-toolbar pull-right'>
-                    <button type="button"
-                            className={clsBtn}
-                            onClick={this.handlerAddBtn}>
-                        Add
-                    </button>
-
-                    <button type="button"
-                            className={clsBtn}
-                            onClick={this.handlerEditBtn}>
-                        Edit
-                    </button>
-                </div>
+                <RightBtnToolbar Add={this.handlerAddBtn.bind(this)}
+                                 AddState={false}
+                                 Remove={this.handlerRemoveBtn.bind(this)}/>
 
                 <Table TableData={FAKEservicesDATA}/>
             </div>
