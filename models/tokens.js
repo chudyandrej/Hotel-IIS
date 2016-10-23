@@ -1,6 +1,7 @@
 var cryptojs = require('crypto-js');
 var moment = require('moment');
 var jwt = require('jsonwebtoken');
+var _ = require('underscore');
 
 module.exports = function(sequelize, DataTypes) {
     var tokens = sequelize.define('tokens', {
@@ -25,6 +26,9 @@ module.exports = function(sequelize, DataTypes) {
         classMethods: {
             findToken(hashToken) {
                 return new Promise(function(resolve, reject) {
+                    if (!_.isString(hashToken) || hashToken === '') {
+                        reject('Token is not string or token is empty');
+                    }
                     tokens.findOne({
                         where: {
                             tokenHash: cryptojs.MD5(hashToken).toString()

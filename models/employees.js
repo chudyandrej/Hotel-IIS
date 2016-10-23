@@ -77,6 +77,10 @@ module.exports = function(sequelize, DataTypes) {
             validate: {
                 len: [15, 32]
             }
+        },
+        currently_employed: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false
         }
     }, {
 
@@ -103,6 +107,9 @@ module.exports = function(sequelize, DataTypes) {
                         reject(e);
                     }
                 });
+            },
+            toPublicJSON() {
+                return _.pick(this.toJSON(), 'id', 'first_name', 'middle_name', 'last_name', 'email', 'permissions', 'address', 'city', 'state', 'phone_number', 'iban');
             }
         },
         classMethods: {
@@ -138,7 +145,36 @@ module.exports = function(sequelize, DataTypes) {
                         reject(error);
                     });
                 });
+            },
+            findByWhere(where) {
+                return new Promise(function(resolve, reject) {
+                    employees.findOne({
+                        where
+                    }).then((employee) => {
+
+                        if (!employee) {
+                            reject('Employee whit this identifier not exist');
+                        }
+                        resolve(employee);
+                    }, (e) => {
+                        reject(e);
+                    });
+                });
+            },
+            findByEmployeeId(id) {
+                return new Promise(function(resolve, reject) {
+                    employees.findById(id).then((employee) => {
+                        if (!employee) {
+                            reject('Employee whit this identifier not exist');
+                        }
+                        resolve(employee);
+                    }, (e) => {
+                        reject(e);
+                    });
+                });
             }
+
+
 
         }
     });
