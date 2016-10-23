@@ -11,6 +11,8 @@ export default class Employees extends React.Component {
         super(props, context);
 
         this.state = {
+            employed: "active",
+            all: "default",
             subHeader: "Employees",
 
             showTable: true,
@@ -33,6 +35,22 @@ export default class Employees extends React.Component {
             removeAction: false,
 
             editData: data
+        });
+    }
+
+    handlerEmployedBtn() {
+        this.setState({
+            employed: "active",
+            all: "default",
+            subHeader: "Employees"
+        });
+    }
+
+    handlerAllBtn() {
+        this.setState({
+            employed: "default",
+            all: "active",
+            subHeader: "Former Employees"
         });
     }
 
@@ -64,13 +82,26 @@ export default class Employees extends React.Component {
     }
 
     render() {
+        var clsBtn = "btn btn-info ";
 
         var Form = (
-            <div>
-                <EmployeeForm Submit={this.handlerSubmitBtn.bind(this)}
-                              Cancel={this.handlerCancelBtn.bind(this)}
-                              editData={this.state.editData}/>
+            <EmployeeForm Submit={this.handlerSubmitBtn.bind(this)}
+                          Cancel={this.handlerCancelBtn.bind(this)}
+                          editData={this.state.editData}/>
+        );
 
+        var LeftBtnToolbar = (
+            <div className='btn-toolbar pull-left'>
+                <button type="button"
+                        className={clsBtn + this.state.employed}
+                        onClick={this.handlerEmployedBtn.bind(this)}>
+                    Employed
+                </button>
+                <button type="button"
+                        className={clsBtn + this.state.all}
+                        onClick={this.handlerAllBtn.bind(this)}>
+                    Former
+                </button>
             </div>
         );
 
@@ -84,6 +115,8 @@ export default class Employees extends React.Component {
         return (
             <div>
                 <h2 className="page-header">{this.state.subHeader}</h2>
+
+                {this.state.showTable ? LeftBtnToolbar : null}
 
                 <RightBtnToolbar Add={this.handlerAddBtn.bind(this)}
                                  AddState={this.state.addBtnClicked}

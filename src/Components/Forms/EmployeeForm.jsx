@@ -10,24 +10,28 @@ export default class EmployeeFormForm extends React.Component {
 
         if (this.props.editData == null) {
             this.state = {
-                name: null,
-                surname: null,
-                email: null,
-                password: null,
-                passwordCheck: null,
-                address: null,
-                city: null,
-                state: null,
-                phoneNumber: null,
-                iban: null,
+                firstName: "",
+                middleName: "",
+                lastName: "",
+                email: "",
+                password: "",
+                passwordCheck: "",
+                address: "",
+                city: "",
+                state: "",
+                phoneNumber: "",
+                iban: "",
+                permissions: "none",
 
-                passwordMatch: ""
+                passwordMatch: "",
+                firstNameRequired: null
             };
         }
-        else {
+        else {  //if editing, restore data
             this.state = {
-                name: this.props.editData.name,
-                surname: this.props.editData.surname,
+                firstName: this.props.editData.firstName,
+                middleName: this.props.editData.middleName,
+                lastName: this.props.editData.lastName,
                 email: this.props.editData.email,
                 password: this.props.editData.password,
                 passwordCheck: this.props.editData.passwordCheck,
@@ -36,19 +40,24 @@ export default class EmployeeFormForm extends React.Component {
                 state: this.props.editData.state,
                 phoneNumber: this.props.editData.phoneNumber,
                 iban: this.props.editData.iban,
+                permissions: this.props.editData.permissions,
 
-                passwordMatch: ""
+                passwordMatch: "",
+                firstNameRequired: false
             };
         }
     }
 
     handlerOnChange(name, evt) {
         switch (name) {
-            case "name":
-                this.setState({name: evt.target.value});
+            case "firstName":
+                this.setState({firstName: evt.target.value});
                 break;
-            case "surname":
-                this.setState({surname: evt.target.value});
+            case "middleName":
+                this.setState({middleName: evt.target.value});
+                break;
+            case "lastName":
+                this.setState({lastName: evt.target.value});
                 break;
             case "email":
                 this.setState({email: evt.target.value});
@@ -76,11 +85,22 @@ export default class EmployeeFormForm extends React.Component {
             case "iban":
                 this.setState({iban: evt.target.value});
                 break;
+            case "permissions":
+                this.setState({permissions: evt.target.value});
+                break;
         }
     }
 
     checkValidity(name) {
         switch (name) {
+            case "firstName":
+                if (this.state.firstName == "") {
+                    this.setState({firstNameRequired: "has-error"})
+                }
+                if (this.state.firstNameRequired != null && this.state.firstName != "") {
+                    this.setState({firstNameRequired: null})
+                }
+                break;
             case "password":
                 if (this.state.password == this.state.passwordCheck) {
                     this.setState({passwordMatch: "has-success"});
@@ -94,8 +114,9 @@ export default class EmployeeFormForm extends React.Component {
 
     handlerSubmitBtn() {
         var data = {
-            name: this.state.name,
-            surname: this.state.surname,
+            firstName: this.state.firstName,
+            middleName: this.props.editData.middleName,
+            lastName: this.state.lastName,
             email: this.state.email,
             password: this.state.password,
             passwordCheck: this.state.passwordCheck,
@@ -104,6 +125,7 @@ export default class EmployeeFormForm extends React.Component {
             state: this.state.state,
             phoneNumber: this.state.phoneNumber,
             iban: this.state.iban,
+            permissions: this.props.editData.permissions
         };
 
         this.props.Submit(data);
@@ -114,21 +136,31 @@ export default class EmployeeFormForm extends React.Component {
             clear: "both"
         };
 
-        var EmailHelp = <small className="form-text text-muted">example@domain.com</small>;
-        var passwordHelp = <small className="form-text text-muted">Confirm your password.</small>;
+        var required = "This field is required!";
+        var EmailHelp = "example@domain.com";
+        var passwordHelp = "Confirm your password";
+        var permissionsHelp = <small className="form-text text-muted">Set user's permissions to the system</small>;
 
         return (
             <div>
                 <form style={tableStyle}>
-                    <InputLabelForm label="Name"
+                    <InputLabelForm label="First Name"
                                     type="text"
-                                    placeholder={this.state.name}
-                                    onChange={this.handlerOnChange.bind(this, "name")}/>
+                                    placeholder={this.state.firstName}
+                                    onBlur={this.checkValidity.bind(this, "firstName")}
+                                    onChange={this.handlerOnChange.bind(this, "firstName")}
+                                    validity={this.state.firstNameRequired}
+                                    errorMsg={this.state.firstNameRequired == null ? null : required}/>
 
-                    <InputLabelForm label="Surname"
+                    <InputLabelForm label="Middle Name"
                                     type="text"
-                                    placeholder={this.state.surname}
-                                    onChange={this.handlerOnChange.bind(this, "surname")}/>
+                                    placeholder={this.state.middleName}
+                                    onChange={this.handlerOnChange.bind(this, "middleName")}/>
+
+                    <InputLabelForm label="Last Name"
+                                    type="text"
+                                    placeholder={this.state.lastName}
+                                    onChange={this.handlerOnChange.bind(this, "lastName")}/>
 
                     <InputLabelForm label="Email"
                                     type="text"
@@ -173,6 +205,20 @@ export default class EmployeeFormForm extends React.Component {
                                     type="text"
                                     placeholder={this.state.iban}
                                     onChange={this.handlerOnChange.bind(this, "iban")}/>
+
+                    <div className="form-group row ">
+                        <label className="col-xs-2 col-form-label">Permissions:</label>
+                        <div className="col-xs-6">
+                            <select className="form-control"
+                                    value={this.state.permissions}
+                                    onChange={this.handlerOnChange.bind(this, "permissions")}>
+                                <option value="none">None</option>
+                                <option value="user">User</option>
+                                <option value="root">Root</option>
+                            </select>
+                            {permissionsHelp}
+                        </div>
+                    </div>
                 </form>
 
                 <FormButtons Submit={this.handlerSubmitBtn.bind(this)} Cancel={this.props.Cancel}/>

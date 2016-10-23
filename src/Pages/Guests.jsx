@@ -93,11 +93,9 @@ export default class Guests extends React.Component {
         ];
 
         var Form = (
-            <div>
-                <GuestForm Submit={this.handlerSubmitBtn.bind(this)}
-                           Cancel={this.handlerCancelBtn.bind(this)}
-                           editData={this.state.editData}/>
-            </div>
+            <GuestForm Submit={this.handlerSubmitBtn.bind(this)}
+                       Cancel={this.handlerCancelBtn.bind(this)}
+                       editData={this.state.editData}/>
         );
 
         var LeftBtnToolbar = (

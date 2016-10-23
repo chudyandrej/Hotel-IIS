@@ -5,6 +5,16 @@ export default class InputLabelForm extends React.Component {
     render() {
 
         var valid = this.props.validity || "";
+        var help = null;
+        var errorMsg = null;
+
+        if (this.props.help != null) {
+            help = <small className="form-text text-muted">{this.props.help}</small>;
+        }
+
+        if (this.props.errorMsg != null) {
+            errorMsg = <strong className="form-text alert alert-danger">{this.props.errorMsg}</strong>;
+        }
 
         return (
             <div className={"form-group row " + valid}>
@@ -16,8 +26,9 @@ export default class InputLabelForm extends React.Component {
                         placeholder={this.props.placeholder || this.props.label}
                         onChange={this.props.onChange}
                         onBlur={this.props.onBlur}/>
-                    {this.props.help}
+                    {help}
                 </div>
+                {errorMsg}
             </div>
         )
     }

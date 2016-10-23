@@ -3,6 +3,8 @@ import React from 'react';
 import Table from '../Components/Table.jsx';
 import ServiceForm from '../Components/Forms/ServiceForm.jsx';
 import RightBtnToolbar from '../Components/RightBtnToolbar.jsx';
+import DetailsTable from '../Components/DetailsTable.jsx';
+
 
 export default class Services extends React.Component {
 
@@ -51,6 +53,10 @@ export default class Services extends React.Component {
         });
     }
 
+    handlerOrderBtn() {
+        //TODO
+    }
+
     handlerEditBtn(data) {
         // data = data which sends the row, which a user wants to edit
         this.setState({
@@ -75,7 +81,6 @@ export default class Services extends React.Component {
     }
 
     handlerRemoveBtn() {
-        console.log("here in Services"); //DEBUG
         this.setState({removeAction: !this.state.removeAction});
     }
 
@@ -103,11 +108,9 @@ export default class Services extends React.Component {
         ];
 
         var Form = (
-            <div>
-                <ServiceForm Submit={this.handlerSubmitBtn.bind(this)}
-                             Cancel={this.handlerCancelBtn.bind(this)}
-                             editData={this.state.editData}/>
-            </div>
+            <ServiceForm Submit={this.handlerSubmitBtn.bind(this)}
+                         Cancel={this.handlerCancelBtn.bind(this)}
+                         editData={this.state.editData}/>
         );
 
         var LeftBtnToolbar = (

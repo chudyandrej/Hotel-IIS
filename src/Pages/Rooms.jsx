@@ -1,7 +1,13 @@
 import React from 'react';
+import moment from 'moment';
+
+//TODO import of datepicker css file here instead of index.html
+//import '../../node_modules/react-datepicker/dist/react-datepicker.css';
 
 import Table from '../Components/Table.jsx';
+import DetailsTable from '../Components/DetailsTable.jsx';
 import RightBtnToolbar from '../Components/RightBtnToolbar.jsx';
+import CalendarInput from '../Components/CalendarInput.jsx';
 
 
 export default class Rooms extends React.Component {
@@ -14,7 +20,12 @@ export default class Rooms extends React.Component {
             unavailable: "default",
             all: "default",
             history: "default",
-            subHeader: "Available Rooms"
+            subHeader: "Available Rooms",
+            showTable: true,
+
+            startDate: moment(),
+            endDate: moment(),
+            details: null
         };
     }
 
@@ -24,7 +35,7 @@ export default class Rooms extends React.Component {
             unavailable: "default",
             all: "default",
             history: "default",
-            subHeader: "Available rooms"
+            subHeader: "Available Rooms"
         });
     }
 
@@ -34,7 +45,7 @@ export default class Rooms extends React.Component {
             unavailable: "active",
             all: "default",
             history: "default",
-            subHeader: "Unavailable rooms"
+            subHeader: "Unavailable Rooms"
         });
     }
 
@@ -44,20 +55,48 @@ export default class Rooms extends React.Component {
             unavailable: "default",
             all: "active",
             history: "default",
-            subHeader: "All services"
+            subHeader: "All Rooms"
         });
     }
 
-    handlerAddBtn() {
+    handleDayChange(name, date) {
+        switch (name) {
+            case "start":
+                this.setState({startDate: date});
+                break;
+            case "end":
+                this.setState({endDate: date});
+                //TODO call backend to get free rooms in the specified time
+                break;
+        }
+    }
 
+    handleShowDetails(data) {
+        this.setState({
+            showTable: false,
+            details: data
+        })
+    }
+
+    handlerBackBtn() {
+        this.setState({
+            showTable: true
+        })
+    }
+
+    handlerAddBtn() {
+        //TODO ?
+        //beyond this school project
     }
 
     handlerRemoveBtn() {
-
+        //TODO ?
+        //beyond this school project
     }
 
     render() {
         var clsBtn = "btn btn-info ";
+        var mainContent = null;
 
         var FAKEservicesDATA = [
             {name: "Name", desc: "Description", price: "Price"},
@@ -66,11 +105,8 @@ export default class Rooms extends React.Component {
             {name: "service3", desc: "desc", price: 400}
         ];
 
-
-        return (
-            <div>
-                <h1 className="page-header">{this.state.subHeader}</h1>
-
+        if (this.state.showTable){
+            var LeftBtnToolbar = (
                 <div className='btn-toolbar pull-left'>
                     <button type="button"
                             className={clsBtn + this.state.available}
@@ -88,12 +124,49 @@ export default class Rooms extends React.Component {
                         All
                     </button>
                 </div>
+            );
 
-                <RightBtnToolbar Add={this.handlerAddBtn.bind(this)}
-                                 AddState={false}
-                                 Remove={this.handlerRemoveBtn.bind(this)}/>
+            mainContent = (
+                <div>
+                    {LeftBtnToolbar}
+                    <CalendarInput startDate={this.state.startDate}
+                                   endDate={this.state.endDate}
+                                   onChangeStart={this.handleDayChange.bind(this, "start")}
+                                   onChangeEnd={this.handleDayChange.bind(this, "end")}/>
 
-                <Table TableData={FAKEservicesDATA}/>
+                    <RightBtnToolbar Add={this.handlerAddBtn.bind(this)}
+                                     AddState={false}
+                                     Remove={this.handlerRemoveBtn.bind(this)}/>
+
+                    <Table TableData={FAKEservicesDATA}
+                           showDetails={this.handleShowDetails.bind(this)}/>
+                </div>
+            )
+        }
+        else {
+            var backBtn = (
+                <div className='btn-toolbar'>
+                    <button type="button"
+                            className={clsBtn}
+                            onClick={this.handlerBackBtn.bind(this)}>
+                        Back
+                    </button>
+                </div>
+            );
+
+            mainContent = (
+                <DetailsTable Headers={FAKEservicesDATA[0]}
+                              DetailsData={this.state.details}/>
+            );
+        }
+
+        return (
+            <div>
+                <h1 className="page-header">{this.state.subHeader}</h1>
+
+                {this.state.showTable ? null : backBtn}
+
+                {mainContent}
             </div>
         );
     }

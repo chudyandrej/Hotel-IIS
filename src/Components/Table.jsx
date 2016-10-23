@@ -33,7 +33,6 @@ class TableRow extends React.Component {
 
         this.state = {
             columns: [],
-            table: [],
             remove: false,
             hover: false
         };
@@ -44,28 +43,22 @@ class TableRow extends React.Component {
                     {this.props.Row[column]}
                 </td>
             );
-            this.state.table.push(
-                <tr key={this.state.table.length}>
-                    <td key={0} style={{fontWeight: "bold"}}>{header[column]}</td>
-                    <td key={1}>{this.props.Row[column]}</td>
-                </tr>
-            )
         }
     }
 
     hoverAction() {
+        //hover trigger for action buttons on the row
         this.setState({hover: true});
-        console.log("enter " + this.state.hover);
     }
 
     leaveAction() {
+        //mouse leave trigger for action buttons on the row
         this.setState({hover: false});
-        console.log("leave " + this.state.hover);
     }
 
     handlerClick(data) {
         //TODO show details
-        console.log(data.name);
+        this.props.showDetails(data);
     }
 
     handlerEditBtn(data) {
@@ -88,22 +81,33 @@ class TableRow extends React.Component {
             </td>
         );
 
+        var buttons = (
+            <div>
+                <button type="button"
+                        className="btn btn-info btn-sm"
+                        onClick={this.handlerEditBtn.bind(this, this.props.Row)}>
+                    Edit
+                </button>
+                <button type="button"
+                        className="btn btn-info btn-sm"
+                        onClick={this.handlerEditBtn.bind(this, this.props.Row)}>
+                    Order
+                </button>
+            </div>
+        );
+
         var actionBtns = (
             <td style={{color: "transparent"}}
                 onMouseEnter={this.hoverAction.bind(this)}
                 onMouseLeave={this.leaveAction.bind(this)}
                 className='btn-toolbar pull-right'>
 
-                {this.state.hover ? <button type="button"
-                                            className="btn btn-info btn-sm"
-                                            onClick={this.handlerEditBtn.bind(this, this.props.Row)}>
-                    Edit
-                </button> : <div style={{width: 88, height: 30}}></div>}
+                {this.state.hover ?  buttons : <div style={{width: 100, height: 30}}></div>}
             </td>
         );
 
         var Row = (
-            <tr onClick={this.handlerClick.bind(this, this.props.Row)}>
+            <tr onClick={this.handlerClick.bind(this, this.props.Row)} style={{cursor: "pointer"}}>
                 {this.state.columns}
                 {this.props.RemoveAction ? removeBtn : actionBtns}
             </tr>
@@ -136,6 +140,7 @@ export default class Table extends React.Component {
             rows.push(<TableRow key={row.name}
                                 Row={row}
                                 onEdit={this.props.onEdit}
+                                showDetails={this.props.showDetails}
                                 RemoveAction={this.props.RemoveAction}/>);
         }.bind(this));
 
