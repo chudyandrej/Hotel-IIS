@@ -9,16 +9,30 @@ export default class GuestForm extends React.Component {
     constructor(props, context) {
         super(props, context);
 
-        this.state = {
-            name: this.props.editData.name,
-            surname: this.props.editData.surname,
-            email: this.props.editData.email,
-            address: this.props.editData.address,
-            city: this.props.editData.city,
-            state: this.props.editData.state,
-            phoneNumber: this.props.editData.phoneNumber,
-            iban: this.props.editData.iban,
-        };
+        if (this.props.editData == null) {
+            this.state = {
+                name: null,
+                surname: null,
+                email: null,
+                address: null,
+                city: null,
+                state: null,
+                phoneNumber: null,
+                iban: null,
+            };
+        }
+        else {
+            this.state = {
+                name: this.props.editData.name,
+                surname: this.props.editData.surname,
+                email: this.props.editData.email,
+                address: this.props.editData.address,
+                city: this.props.editData.city,
+                state: this.props.editData.state,
+                phoneNumber: this.props.editData.phoneNumber,
+                iban: this.props.editData.iban,
+            };
+        }
     }
 
     handlerOnChange(name, evt) {

@@ -7,27 +7,39 @@ export default class ServiceForm extends React.Component {
     constructor(props, context) {
         super(props, context);
 
-        this.state = {
-            name: this.props.editData.name,
-            description: this.props.editData.description,
-            price: this.props.editData.price,
-        };
+        if (this.props.editData == null) {
+            this.state = {
+                name: null,
+                description: null,
+                price: null,
+            };
+        }
+        else {
+            this.state = {
+                name: this.props.editData.name,
+                description: this.props.editData.description,
+                price: this.props.editData.price,
+            };
+        }
     }
 
-    handlerOnChange(name, evt){
+    handlerOnChange(name, evt) {
         console.log(name);
-        switch (name){
+        switch (name) {
             case "name":
-                this.setState({name: evt.target.value}); break;
+                this.setState({name: evt.target.value});
+                break;
             case "desc":
-                this.setState({description: evt.target.value}); break;
+                this.setState({description: evt.target.value});
+                break;
             case "price":
-                this.setState({price: evt.target.value}); break;
+                this.setState({price: evt.target.value});
+                break;
         }
     }
 
     checkValidity(name) {
-        switch(name) {
+        switch (name) {
 
         }
     }
