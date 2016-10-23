@@ -15,6 +15,7 @@ db.employees = sequelize.import(__dirname + '/models/employees.js');
 db.guests = sequelize.import(__dirname + '/models/guests.js');
 db.invoices = sequelize.import(__dirname + '/models/invoices.js');
 db.stays = sequelize.import(__dirname + '/models/stays.js');
+db.tokens = sequelize.import(__dirname + '/models/tokens.js');
 
 db.rooms = sequelize.import(__dirname + '/models/rooms.js');
 db.templateRooms = sequelize.import(__dirname + '/models/templateRooms.js');
