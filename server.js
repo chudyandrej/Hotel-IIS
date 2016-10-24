@@ -2,10 +2,12 @@ var db = require('./db.js');
 var express = require('express');
 var _ = require('underscore');
 var bodyParser = require('body-parser');
+var cors = require('cors');
 
 
 var PORT = process.env.PORT || 3000;
 var app = express();
+app.use(cors());
 
 app.use(bodyParser.json());
 
@@ -55,6 +57,8 @@ app.post('/logout', function(req, res) {
 
 
 //#################   EMPLOYEES     ##################
+
+
 // Registration employees
 app.post('/join', function(req, res) {
     var body = _.pick(req.body, 'first_name', 'middle_name', 'last_name', 'email', 'password', 'permissions', 'address', 'city', 'state', 'phone_number', 'iban');
@@ -127,10 +131,6 @@ app.post('/editEmployee', function(req, res) {
         });
     });
 });
-
-
-
-
 
 
 setInterval(function() {
