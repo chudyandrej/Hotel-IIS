@@ -43,7 +43,7 @@ module.exports = function(sequelize, DataTypes) {
             tokensTimeoutWatchdog() {
                 tokens.findAll({}).then((tokensInstances) => {
                     tokensInstances.forEach((tokenInst) => {
-                        if ((moment(tokenInst.get('createdAt'), 'YYYY-MM-DDTHH:mm:ss.SSS').add(1, 'minute').isBefore(moment()))) {
+                        if ((moment(tokenInst.get('createdAt'), 'YYYY-MM-DDTHH:mm:ss.SSS').add(30, 'minute').isBefore(moment()))) {
                             tokenInst.destroy().then(() => {
                                 console.log("Token was destroyed successful");
                             }, () => {
