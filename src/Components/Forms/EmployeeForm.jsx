@@ -114,16 +114,15 @@ export default class EmployeeFormForm extends React.Component {
 
     handlerSubmitBtn() {
         var data = {
-            firstName: this.state.firstName,
-            middleName: this.props.editData.middleName,
-            lastName: this.state.lastName,
+            first_name: this.state.firstName,
+            middle_name: this.props.editData.middleName,
+            last_name: this.state.lastName,
             email: this.state.email,
             password: this.state.password,
-            passwordCheck: this.state.passwordCheck,
             address: this.state.address,
             city: this.state.city,
             state: this.state.state,
-            phoneNumber: this.state.phoneNumber,
+            phone_number: this.state.phoneNumber,
             iban: this.state.iban,
             permissions: this.props.editData.permissions
         };

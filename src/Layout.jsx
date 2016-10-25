@@ -5,6 +5,12 @@ import SideBar from './Components/SideBar.jsx';
 
 
 export default class Layout extends React.Component {
+
+    componentWillMount(){
+        //TODO check if user is still logged in
+        //hashHistory.push('/');
+    }
+
     render() {
         return (
             <div>

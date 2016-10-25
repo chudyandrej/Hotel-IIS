@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import {Router, Route, IndexRoute, hashHistory} from 'react-router';
 
 //import Auth from './RequireAuth.jsx';
-//import LoginPage from './Pages/LoginPage.jsx';
+import PreLoginLayout from './PreLoginLayout.jsx';
+import LoginPage from './Pages/LoginPage.jsx';
 
 import Layout from './Layout.jsx';
 import Dashboard from './Pages/Dashboard.jsx';
@@ -18,15 +19,18 @@ import NotFound from './Pages/NotFound.jsx';
 
 ReactDOM.render(
     <Router history={hashHistory}>
-        <Route path="/" component={Layout}>
-            <IndexRoute component={Dashboard} />
-            <Route path="/search" component={Search} />
-            <Route path="/rooms" component={Rooms} />
-            <Route path="/services" component={Services} />
-            <Route path="/analytics" component={Analytics} />
-            <Route path="/employees" component={Employees} />
-            <Route path="/guests" component={Guests} />
-            <Route path="*" component={NotFound} />
+        <Route path="/" component={PreLoginLayout}>
+            <IndexRoute component={LoginPage}/>
+            <Route path="/dashboard" component={Layout}>
+                <IndexRoute component={Dashboard} />
+                <Route path="/dashboard/search" component={Search} />
+                <Route path="/dashboard/rooms" component={Rooms}/>
+                <Route path="/dashboard/services" component={Services} />
+                <Route path="/dashboard/analytics" component={Analytics} />
+                <Route path="/dashboard/employees" component={Employees} />
+                <Route path="/dashboard/guests" component={Guests} />
+                <Route path="*" component={NotFound} />
+            </Route>
         </Route>
     </Router>,
     document.getElementById('app')

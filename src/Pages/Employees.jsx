@@ -1,4 +1,5 @@
 import React from 'react';
+import request from 'superagent';
 
 import Table from '../Components/Table.jsx';
 import EmployeeForm from '../Components/Forms/EmployeeForm.jsx';
@@ -20,9 +21,36 @@ export default class Employees extends React.Component {
             addBtnClicked: false,
             removeAction: false,
 
-            editData: null
+            editData: null,
+            data: null
         };
-        // this.stateSetter = this.stateSetter.bind(this);
+    }
+
+    componentWillMount(){
+        /*
+        fetch('https://young-cliffs-79659.herokuapp.com/', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: 'jerdna11@gmail.com',
+                password: "123456789"
+            }).then(function(resp){
+              console.log(resp)
+            })
+        }); */
+
+        /*request
+            .post('https://young-cliffs-79659.herokuapp.com/login')
+            .set('Accept', 'application/json')
+            .field('user[email]', 'jerdna11@gmail.com')
+            .field('user[password]', '123456789')
+            .end(function(err, res){
+                console.log(err);
+                console.log(res);
+            });*/
     }
 
     handlerEditBtn(data) {
@@ -79,6 +107,8 @@ export default class Employees extends React.Component {
 
     handlerSubmitBtn(data) {
         //TODO send form to backend
+
+        socket
     }
 
     render() {

@@ -115,27 +115,27 @@ export default class SideBar extends React.Component {
             <div className="col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
                 <ul className="nav nav-sidebar">
                     <li className={this.state.dashboard}>
-                        <Link to="/" onClick={this.handlerDashboardBtn}>Dashboard</Link>
+                        <Link to="/dashboard" onClick={this.handlerDashboardBtn}>Dashboard</Link>
                     </li>
                     <li className={this.state.search}>
-                        <Link to="/search" onClick={this.handlerSearchBtn}>Search</Link>
+                        <Link to="/dashboard/search" onClick={this.handlerSearchBtn}>Search</Link>
                     </li>
                     <li className={this.state.rooms}>
-                        <Link to="/rooms" onClick={this.handlerRoomsBtn}>Rooms</Link>
+                        <Link to="/dashboard/rooms" onClick={this.handlerRoomsBtn}>Rooms</Link>
                     </li>
                     <li className={this.state.services}>
-                        <Link to="/services" onClick={this.handlerServicesBtn}>Services</Link>
+                        <Link to="/dashboard/services" onClick={this.handlerServicesBtn}>Services</Link>
                     </li>
                     <li className={this.state.guests}>
-                        <Link to="/guests" onClick={this.handlerGuestsBtn}>Guests</Link>
+                        <Link to="/dashboard/guests" onClick={this.handlerGuestsBtn}>Guests</Link>
                     </li>
                 </ul>
                 <ul className="nav nav-sidebar">
                     <li className={this.state.analytics}>
-                        <Link to="/analytics" onClick={this.handlerAnalyticsBtn}>Analytics</Link>
+                        <Link to="/dashboard/analytics" onClick={this.handlerAnalyticsBtn}>Analytics</Link>
                     </li>
                     <li className={this.state.employees}>
-                        <Link to="/employees" onClick={this.handlerEmployeesBtn}>Employees</Link>
+                        <Link to="/dashboard/employees" onClick={this.handlerEmployeesBtn}>Employees</Link>
                     </li>
                 </ul>
             </div>
