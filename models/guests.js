@@ -1,20 +1,27 @@
 module.exports = function(sequelize, DataTypes) {
-    return sequelize.define('guests', {
-        name: {
+    var guests =  sequelize.define('guests', {
+        first_name: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
                 len: [2, 15]
             }
         },
-        surname: {
+        middle_name: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            validate: {
+                len: [2, 15]
+            }
+        },
+        last_name: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
                 len: [2, 15]
             }
         },
-        noIdCard: {
+        idCardNumber: {
             type: DataTypes.STRING,
             allowNull: false,
         },
@@ -46,7 +53,7 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: true,
         },
-        addres: {
+        address: {
             type: DataTypes.STRING,
             allowNull: true,
         },
@@ -58,6 +65,25 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: true,
         }
+    }, {
+        classMethods: {
+            findByID(id){
+                return new Promise((resolve, reject) => {
+                    guests.findById(id).then((guestInstance) => {
+                        if (!guestInstance) {
+                            reject('Guest whit this ID not exist!')
+                        }
+                        resolve(guestInstance);
+                    }, (error) => {
+                        reject(error);
+                    });
+                });
+            }
+
+
+        }
+
     });
+    return guests;
 
 };

@@ -146,22 +146,7 @@ module.exports = function(sequelize, DataTypes) {
                     });
                 });
             },
-            findByWhere(where) {
-                return new Promise(function(resolve, reject) {
-                    employees.findOne({
-                        where
-                    }).then((employee) => {
-
-                        if (!employee) {
-                            reject('Employee whit this identifier not exist');
-                        }
-                        resolve(employee);
-                    }, (e) => {
-                        reject(e);
-                    });
-                });
-            },
-            findByEmployeeId(id) {
+            findByID(id) {
                 return new Promise(function(resolve, reject) {
                     employees.findById(id).then((employee) => {
                         if (!employee) {
