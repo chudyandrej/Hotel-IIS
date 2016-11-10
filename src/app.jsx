@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Router, Route, IndexRoute, hashHistory} from 'react-router';
 
-//import Auth from './RequireAuth.jsx';
 import PreLoginLayout from './PreLoginLayout.jsx';
 import LoginPage from './Pages/LoginPage.jsx';
 
