@@ -1,4 +1,6 @@
 import React from 'react';
+import {hashHistory} from 'react-router';
+import cookie from 'react-cookie';
 
 import Header from './Components/Header.jsx';
 import SideBar from './Components/SideBar.jsx';
@@ -6,13 +8,9 @@ import SideBar from './Components/SideBar.jsx';
 
 export default class Layout extends React.Component {
 
-    static contextTypes = {
-        user: React.PropTypes.object
-    };
-
     componentWillMount(){
-        console.log("checking if user is still signed in: "+ this.context.user.loggedIn); //DEBUG
-        if (!this.context.user.loggedIn){
+        console.log("checking if user is still signed in: " + cookie.load('loggedIn'));  //DEBUG
+        if (!cookie.load('loggedIn')){
             hashHistory.push('/');
         }
     }

@@ -1,13 +1,10 @@
 import React from 'react';
 import {hashHistory} from 'react-router';
 import request from 'superagent';
+import cookie from 'react-cookie';
 
 
 export default class LoginPage extends React.Component {
-
-    static contextTypes = {
-        user: React.PropTypes.object
-    };
 
     constructor(props, context) {
         super(props, context);
@@ -58,6 +55,7 @@ export default class LoginPage extends React.Component {
 
     _login(e) {
         e.preventDefault();
+        //TODO pending state
         request
             .post('https://young-cliffs-79659.herokuapp.com/login')
             .set('Accept', 'application/json')
@@ -68,18 +66,13 @@ export default class LoginPage extends React.Component {
                     console.log('Oh no! error');  //DEBUG
                     this.setState({username: "", password: ""});
                     this.setState({error: true});
-                    //TODO show error
                 } else {
-                    //fill user structure
                     this.setState({error: false});
-                    var token = JSON.parse(res.text).token;
-                    var user = {
-                        loggedIn: true,
-                        userName: this.state.username,
-                        token: token,
-                    };
-                    console.log(user);  //DEBUG
-                    this.context.user.changeHandler(user);
+
+                    cookie.remove('token');
+                    cookie.remove('loggedIn');
+                    cookie.save('token', JSON.parse(res.text).token);
+                    cookie.save('loggedIn', true);
                     hashHistory.push('/dashboard');
                 }
             });

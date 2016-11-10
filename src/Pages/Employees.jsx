@@ -1,9 +1,11 @@
 import React from 'react';
 import request from 'superagent';
+import cookie from 'react-cookie';
 
-import Table from '../Components/Table.jsx';
 import EmployeeForm from '../Components/Forms/EmployeeForm.jsx';
+import Loading from '../Components/Loading.jsx';
 import RightBtnToolbar from '../Components/RightBtnToolbar.jsx';
+import Table from '../Components/Table.jsx';
 
 
 export default class Employees extends React.Component {
@@ -22,39 +24,30 @@ export default class Employees extends React.Component {
             removeAction: false,
 
             editData: null,
-            data: null
+            data: null,
+            pending: true
         };
     }
 
-    componentWillMount(){
-        /*
-        fetch('https://young-cliffs-79659.herokuapp.com/', {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email: 'jerdna11@gmail.com',
-                password: "123456789"
-            }).then(function(resp){
-              console.log(resp)
-            })
-        }); */
-
-        /*request
-            .post('https://young-cliffs-79659.herokuapp.com/login')
+    componentWillMount() {
+        request
+            .post('https://young-cliffs-79659.herokuapp.com/getAllEmployes')
             .set('Accept', 'application/json')
-            .field('user[email]', 'jerdna11@gmail.com')
-            .field('user[password]', '123456789')
-            .end(function(err, res){
-                console.log(err);
-                console.log(res);
-            });*/
+            .send({token: cookie.load('token')})
+            .end((err, res)=> {
+                if (err != null || !res.ok) {
+                    console.log("error while fetching data");  //debug
+                    //TODO logout user
+                } else {
+                    console.log(res);
+                    this.setState({pending: false, data: JSON.parse(res.text)});
+                    console.log(this.state.data);
+                }
+            });
     }
 
     handlerEditBtn(data) {
-        // data = data which sends the row, which a user wants to edit
+        // data = data are sent by the row, which a user wants to edit
         this.setState({
             subHeader: "Edit the employee",
             showTable: false,
@@ -135,12 +128,21 @@ export default class Employees extends React.Component {
             </div>
         );
 
-        var FAKEservicesDATA = [
-            {name: "Name", desc: "Description", price: "Salary"},
-            {name: "Emp1", desc: "desc", price: 400},
-            {name: "Emp2", desc: "desc", price: 400},
-            {name: "Emp3", desc: "desc", price: 400}
-        ];
+        var content = null;
+
+        if (this.state.showTable) {
+            content = (
+                <Table TableData={this.state.data}
+                       onEdit={this.handlerEditBtn.bind(this)}
+                       onRemove={this.handlerRemoveBtn}
+                       RemoveAction={this.state.removeAction}/>
+            )
+        }
+        else {
+            content = (
+                {Form}
+            )
+        }
 
         return (
             <div>
@@ -152,11 +154,8 @@ export default class Employees extends React.Component {
                                  AddState={this.state.addBtnClicked}
                                  Remove={this.handlerRemoveBtn.bind(this)}/>
 
-                {this.state.showTable ?
-                    <Table TableData={FAKEservicesDATA}
-                           onEdit={this.handlerEditBtn.bind(this)}
-                           onRemove={this.handlerRemoveBtn}
-                           RemoveAction={this.state.removeAction}/> : Form}
+                {this.state.pending ? <Loading /> : content}
+
             </div>
         );
     }
