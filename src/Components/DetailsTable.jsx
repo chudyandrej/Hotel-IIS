@@ -11,14 +11,14 @@ export default class DetailsTable extends React.Component {
 
         var rows = [];
 
-        for (var column in this.props.DetailsData){
+        for (var column in this.props.Headers){
             rows.push(
                 <div key={rows.length} className={"form-group row"}>
                     <label className="col-xs-2 col-form-label">
                         {this.props.Headers[column]}
                     </label>
                     <p>
-                    {this.props.DetailsData[column]}
+                        {this.props.DetailsData[column]}
                     </p>
                 </div>
             )

@@ -1,5 +1,7 @@
 import React from 'react';
 
+import Loading from '../Loading.jsx';
+
 
 export default class FormButtons extends  React.Component {
     render(){
@@ -7,6 +9,7 @@ export default class FormButtons extends  React.Component {
             <div className='btn-toolbar form-actions'>
                 <button type="button" className="btn btn-secondary" onClick={this.props.Cancel}>Cancel</button>
                 <button type="button" className="btn btn-primary" onClick={this.props.Submit}>Submit</button>
+                {this.props.pending ? <Loading form={true} /> : null}
             </div>
         )
     }

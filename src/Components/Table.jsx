@@ -37,7 +37,7 @@ class TableRow extends React.Component {
             hover: false
         };
 
-        for (var column in this.props.Row) {
+        for (var column in header) {
             this.state.columns.push(
                 <td key={this.state.columns.length}>
                     {this.props.Row[column]}
@@ -67,14 +67,16 @@ class TableRow extends React.Component {
     }
 
     handlerRemove(data) {
-        //TODO send request to delete item
         this.setState({remove: true});
+        this.props.onRemove(data.id);
     }
 
     render() {
 
         var removeBtn = (
-            <td className='btn-toolbar pull-right'>
+            <td className='btn-toolbar pull-right'
+                onMouseEnter={this.hoverAction.bind(this)}
+                onMouseLeave={this.leaveAction.bind(this)}>
                 <button type="button"
                         className="btn btn-danger btn-sm"
                         onClick={this.handlerRemove.bind(this, this.props.Row)}>Remove
@@ -132,16 +134,16 @@ export default class Table extends React.Component {
         header = this.props.TableData[0];
         var rows = [];
 
-        //TODO move this style to css?
         var tableStyle = {
             clear: "both"
         };
 
-        this.props.TableData.splice(1,).forEach(function (row) {
+        this.props.TableData.slice(1,).forEach(function (row) {
             rows.push(<TableRow key={row.id}
                                 Row={row}
                                 onEdit={this.props.onEdit}
                                 showDetails={this.props.showDetails}
+                                onRemove={this.props.onRemove}
                                 RemoveAction={this.props.RemoveAction}/>);
         }.bind(this));
 
