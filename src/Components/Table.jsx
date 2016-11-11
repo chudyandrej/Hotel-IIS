@@ -57,8 +57,9 @@ class TableRow extends React.Component {
     }
 
     handlerClick(data) {
-        //TODO show details
-        this.props.showDetails(data);
+        if (!this.state.hover) {
+            this.props.showDetails(data);
+        }
     }
 
     handlerEditBtn(data) {
@@ -102,7 +103,7 @@ class TableRow extends React.Component {
                 onMouseLeave={this.leaveAction.bind(this)}
                 className='btn-toolbar pull-right'>
 
-                {this.state.hover ?  buttons : <div style={{width: 100, height: 30}}></div>}
+                {this.state.hover ? buttons : <div style={{width: 100, height: 30}}></div>}
             </td>
         );
 
@@ -137,7 +138,7 @@ export default class Table extends React.Component {
         };
 
         this.props.TableData.splice(1,).forEach(function (row) {
-            rows.push(<TableRow key={row.name}
+            rows.push(<TableRow key={row.id}
                                 Row={row}
                                 onEdit={this.props.onEdit}
                                 showDetails={this.props.showDetails}
@@ -149,7 +150,7 @@ export default class Table extends React.Component {
                 <table className="table table-striped table-hover">
                     <TableHeader Headers={header}/>
                     <tbody>
-                    {rows}
+                        {rows}
                     </tbody>
                 </table>
             </div>
