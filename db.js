@@ -53,10 +53,4 @@ db.templateServices.hasMany(db.services);
 db.services.belongsTo(db.templateServices);
 
 
-
-
-
-
-
-
 module.exports = db;

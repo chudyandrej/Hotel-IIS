@@ -15,7 +15,7 @@ module.exports = function(app, db, _) {
 
 
     //Get all employees
-    app.post('/getAllEmployes', function(req, res) {
+    app.post('/getEmployees', function(req, res) {
         db.tokens.findToken(req.body.token).then(() => {
             return db.employees.findAll({
                 where: {

@@ -34,7 +34,12 @@ module.exports = function(sequelize, DataTypes) {
                             tokenHash: cryptojs.MD5(hashToken).toString()
                         }
                     }).then(function(token) {
-                        (token) ? resolve(token): reject("Error: Token not found");
+                        if (token){
+                            token.update({});
+                            resolve(token);
+                        }else{
+                            reject("Error: Token not found");
+                        }
                     }, function(error) {
                         reject(error)
                     });
@@ -43,7 +48,7 @@ module.exports = function(sequelize, DataTypes) {
             tokensTimeoutWatchdog() {
                 tokens.findAll({}).then((tokensInstances) => {
                     tokensInstances.forEach((tokenInst) => {
-                        if ((moment(tokenInst.get('createdAt'), 'YYYY-MM-DDTHH:mm:ss.SSS').add(30, 'minute').isBefore(moment()))) {
+                        if ((moment(tokenInst.get('updatedAt'), 'YYYY-MM-DDTHH:mm:ss.SSS').add(30, 'minute').isBefore(moment()))) {
                             tokenInst.destroy().then(() => {
                                 console.log("Token was destroyed successful");
                             }, () => {

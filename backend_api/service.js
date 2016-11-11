@@ -12,15 +12,13 @@ module.exports = function(app, db, _) {
     });
 
 
-    app.post('/getAvailableServices', function(req, res) {
+    app.post('/getServices', function(req, res) {
         db.tokens.findToken(req.body.token).then(() => {
-            return db.templateServices.findAll({
-                available: true
-            });
+            return db.templateServices.findAll();
         }).then((servicesInstances) => {
             let result = [];
             servicesInstances.forEach((service) => {
-                result.push(service.toJSON());
+                result.push(service.toPublicJSON());
             });
             res.status(200).json(result);
         }).catch((error) => {
@@ -31,9 +29,9 @@ module.exports = function(app, db, _) {
     app.post('/editService', function(req, res) {
         db.tokens.findToken(req.body.token).then(() => {
             return db.templateServices.findByID(req.body.id);
-        }).then((service) => {
+        }).then((serviceInstance) => {
             var body = _.pick(req.body, 'name', 'actualPrice', 'description', 'available', 'duration');
-            return service.update(body);
+            return serviceInstance.update(body);
         }).then(() => {
             res.status(200).send();
         }).catch((error) => {

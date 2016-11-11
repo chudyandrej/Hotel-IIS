@@ -15,6 +15,7 @@ require('./backend_api/employe.js')(app, db, _);
 require('./backend_api/room.js')(app, db, _);
 require('./backend_api/service.js')(app, db, _);
 require('./backend_api/guest.js')(app, db, _);
+require('./backend_api/stay.js')(app, db, _);
 
 
 

@@ -12,13 +12,13 @@ module.exports = function(app, db, _) {
         });
     });
 
-    app.post('/getAllGuests', function(req, res) {
+    app.post('/getGuests', function(req, res) {
         db.tokens.findToken(req.body.token).then(() => {
             return db.guests.findAll({});
         }).then((guestsInstances) => {
             let result = [];
             guestsInstances.forEach((employee) => {
-                result.push(employee.toJSON());
+                result.push(employee.toPublicJSON());
             });
             res.status(200).json(result);
         }).catch((error) => {

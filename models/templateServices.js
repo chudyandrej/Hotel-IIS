@@ -1,3 +1,4 @@
+var _ = require('underscore');
 module.exports = function(sequelize, DataTypes) {
     var services = sequelize.define('templateServices', {
         name: {
@@ -19,6 +20,12 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.INTEGER,
         }
     }, {
+        instanceMethods:{
+            toPublicJSON(){
+                return _.pick(this.toJSON(), 'id', 'name', 'actualPrice','description', 'available', 'duration');
+            }
+
+        },
         classMethods: {
             findByID(id) {
                 return new Promise((resolve, reject) => {

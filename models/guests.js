@@ -1,3 +1,5 @@
+var _ = require('underscore');
+
 module.exports = function(sequelize, DataTypes) {
     var guests =  sequelize.define('guests', {
         first_name: {
@@ -9,10 +11,7 @@ module.exports = function(sequelize, DataTypes) {
         },
         middle_name: {
             type: DataTypes.STRING,
-            allowNull: true,
-            validate: {
-                len: [2, 15]
-            }
+            allowNull: true
         },
         last_name: {
             type: DataTypes.STRING,
@@ -65,7 +64,12 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: true,
         }
-    }, {
+    },{
+        instanceMethods: {
+            toPublicJSON() {
+                return _.pick(this.toJSON(), 'id', 'first_name', 'middle_name', 'last_name','idCardNumber', 'email','phoneNumber','typeOfGuest','nameCompany','ico','dic', 'address', 'city', 'state');
+            }
+        },
         classMethods: {
             findByID(id){
                 return new Promise((resolve, reject) => {
@@ -79,10 +83,7 @@ module.exports = function(sequelize, DataTypes) {
                     });
                 });
             }
-
-
         }
-
     });
     return guests;
 
