@@ -26,7 +26,7 @@ module.exports = function(app, db, _) {
 
     app.post('/getStays', function(req, res) {
         db.tokens.findToken(req.body.token).then(() => {
-            return db.stays.findStaysAtTime(db.employees, db.guests, db.rooms,
+            return db.stays.findTotalStaysByTime(db.employees, db.guests, db.rooms,
                             db.templateRooms, req.body.from, req.body.to);
         }).then((result)=>{
             res.status(200).json(result);

@@ -14,6 +14,11 @@ module.exports = function(app, db, _) {
         });
     });
 
+    app.post('/getFreeRooms', function(req, res) {
+
+    });
+
+
 
 
 
