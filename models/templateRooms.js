@@ -1,5 +1,12 @@
+var _ = require('underscore');
 module.exports = function(sequelize, DataTypes) {
-    return sequelize.define('templateRooms', {
+    var templateRooms =  sequelize.define('templateRooms', {
+        roomNumber: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            unique: true,
+
+        },
         actualPrice: {
             type: DataTypes.FLOAT,
             allowNull: false,
@@ -25,5 +32,37 @@ module.exports = function(sequelize, DataTypes) {
         balcony: {
             type: DataTypes.BOOLEAN
         }
+    }, {
+        instanceMethods: {
+            toPublicJSON(){
+                return _.pick(this.toJSON(), 'id','actualPrice','capacity','tv','internet',
+                              'bar','bathtub','kitchen','balcony');
+            }
+        },
+        classMethods: {
+            findByID(id){
+                return new Promise((resolve, reject) => {
+                    templateRooms.fundById(id).then((templateRoomInstance) => {
+                        if(!templateRoomInstance){
+                            reject({
+                                errors:[
+                                    {
+                                        message: "Room whit this identifier not exist",
+                                        path: "id",
+                                        value: id
+                                    }]
+                            });
+                        }
+                        resolve(templateRoomInstance);
+                    }, (e) => {
+                        reject(e);
+                    });
+                });
+            }
+
+
+
+        }
     });
+    return templateRooms;
 };

@@ -11,12 +11,11 @@ app.use(cors());
 
 
 require('./backend_api/login_logout.js')(app, db, _);
-require('./backend_api/employe.js')(app, db, _);
+require('./backend_api/employee.js')(app, db, _);
 require('./backend_api/room.js')(app, db, _);
 require('./backend_api/service.js')(app, db, _);
 require('./backend_api/guest.js')(app, db, _);
 require('./backend_api/stay.js')(app, db, _);
-
 
 
 
@@ -32,7 +31,7 @@ setInterval(function() {
 
 
 db.sequelize.sync({
-    //   force: true
+    //    force: true
 }).then(function() {
     app.listen(PORT, function() {
         console.log('Express listening on port ' + PORT + '!');

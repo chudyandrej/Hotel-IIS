@@ -4,6 +4,10 @@ module.exports = function(sequelize, DataTypes) {
         name: {
             type: DataTypes.STRING,
             allowNull: false,
+            unique: true,
+            validate: {
+                len: [2, 60]
+            }
         },
         actualPrice: {
             type: DataTypes.FLOAT,
@@ -15,6 +19,7 @@ module.exports = function(sequelize, DataTypes) {
         },
         available: {
             type: DataTypes.BOOLEAN,
+            allowNull: false
         },
         duration: {
             type: DataTypes.INTEGER,

@@ -35,8 +35,15 @@ module.exports = function(sequelize, DataTypes) {
                         }
                     }).then(function(token) {
                         if (token){
-                            token.update({});
-                            resolve(token);
+                            token.changed('updatedAt', true)
+                            token.update({
+                                updatedAt: moment()
+                            }).then((token) => {
+                                resolve(token);
+                            }, (error) => {
+                                reject(error);
+                            });
+
                         }else{
                             reject("Error: Token not found");
                         }
@@ -48,7 +55,8 @@ module.exports = function(sequelize, DataTypes) {
             tokensTimeoutWatchdog() {
                 tokens.findAll({}).then((tokensInstances) => {
                     tokensInstances.forEach((tokenInst) => {
-                        if ((moment(tokenInst.get('updatedAt'), 'YYYY-MM-DDTHH:mm:ss.SSS').add(30, 'minute').isBefore(moment()))) {
+                        let time = moment(tokenInst.get('updatedAt'), 'YYYY-MM-DDTHH:mm:ss.SSS');
+                        if ((time.add(30, 'minute').isBefore(moment()))) {
                             tokenInst.destroy().then(() => {
                                 console.log("Token was destroyed successful");
                             }, () => {

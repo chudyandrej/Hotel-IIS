@@ -1,7 +1,8 @@
 var _ = require('underscore');
+var moment = require('moment');
 module.exports = function(sequelize, DataTypes) {
     var stays =  sequelize.define('stays', {
-        form: {
+        from: {
             type: DataTypes.DATE,
             allowNull: false,
             validate: {
@@ -35,13 +36,66 @@ module.exports = function(sequelize, DataTypes) {
                         reject(error);
                     });
                 });
+            },
+            findStaysAtTime(employeesObj, guestsObj,roomsObj, templateRoomsObj, fromTime, toTime){
+                return new Promise(function(resolve, reject) {
+                    if (!_.isString(fromTime) || !_.isString(toTime) ){
+                        reject({
+                            errors:[
+                                {
+                                    message: "Undefined times 'from' and 'to'",
+                                    path: "from, to",
+                                    value: fromTime.concat("  ").concat(toTime)
+                                }]
+                        });
+                    }
+                    if(moment(fromTime) > moment(toTime)){
+                        reject({
+                            errors:[
+                                {
+                                    message: "'To' can't be bigger as 'From' ",
+                                    path: "trom, to",
+                                    value: fromTime.concat("  ").concat(toTime)
+                                }]
+                        });
+
+                    }
+                    stays.findAll({
+                        where: {
+                            from: {
+                                $or:[{$lte: fromTime},{$lte: toTime}]
+                            },
+                            to: {
+                                $or:[{$gte: fromTime},{$gte: toTime}]
+                            }
+                        },
+                        include: [employeesObj, guestsObj]
+                    }).then((staysInstances) => {
+                        let result = [];
+                        staysInstances.forEach((stayInstance) => {
+                            let stayInstanceJSON = stayInstance.toPublicJSON();
+                            roomsObj.findByStayId(stayInstanceJSON.id, templateRoomsObj).then((stayRooms) => {
+                                stayInstanceJSON.rooms = stayRooms;
+                                result.push(stayInstanceJSON);
+                                if(result.length === staysInstances.length){
+                                    resolve(result);
+                                }
+                            }, (error) => {
+                                reject(error);
+                            });
+                        });
+                    }, (error) => {
+                        reject(error);
+                    });
+                });
             }
 
         },
         instanceMethods:{
+            
             toPublicJSON() {
 
-                var publicData = _.pick(this.toJSON(), 'form', 'to', 'status','note');
+                var publicData = _.pick(this.toJSON(), 'id', 'from', 'to', 'status','note');
                 var employeePublicJSON = this.get('employee');
                 var guestPublicJSON = this.get('guest');
 

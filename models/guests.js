@@ -67,7 +67,9 @@ module.exports = function(sequelize, DataTypes) {
     },{
         instanceMethods: {
             toPublicJSON() {
-                return _.pick(this.toJSON(), 'id', 'first_name', 'middle_name', 'last_name','idCardNumber', 'email','phoneNumber','typeOfGuest','nameCompany','ico','dic', 'address', 'city', 'state');
+                return _.pick(this.toJSON(), 'id', 'first_name', 'middle_name', 'last_name', 'idCardNumber',
+                              'email', 'phoneNumber', 'typeOfGuest', 'nameCompany', 'ico', 'dic', 'address',
+                              'city', 'state');
             }
         },
         classMethods: {

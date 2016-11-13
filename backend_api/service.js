@@ -14,7 +14,11 @@ module.exports = function(app, db, _) {
 
     app.post('/getServices', function(req, res) {
         db.tokens.findToken(req.body.token).then(() => {
-            return db.templateServices.findAll();
+            return db.templateServices.findAll({
+                where: {
+                    available: true
+                }
+            });
         }).then((servicesInstances) => {
             let result = [];
             servicesInstances.forEach((service) => {

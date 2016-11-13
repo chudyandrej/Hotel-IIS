@@ -109,7 +109,9 @@ module.exports = function(sequelize, DataTypes) {
                 });
             },
             toPublicJSON() {
-                return _.pick(this.toJSON(), 'id', 'first_name', 'middle_name', 'last_name', 'email', 'permissions', 'address', 'city', 'state', 'phone_number', 'iban');
+                return _.pick(this.toJSON(), 'id', 'first_name', 'middle_name', 'last_name',
+                              'email', 'permissions', 'address', 'city', 'state', 'phone_number',
+                              'iban');
             }
         },
         classMethods: {
@@ -140,7 +142,8 @@ module.exports = function(sequelize, DataTypes) {
                             email: emailPass.email
                         }
                     }).then((employee) => {
-                        (employee && bcrypt.compareSync(emailPass.password, employee.get('password_hash'))) ? resolve(employee): reject('Wrong password or unexisting email');
+                        (employee && bcrypt.compareSync(emailPass.password, employee.get('password_hash'))) ?
+                            resolve(employee) : reject('Wrong password or unexisting email');
                     }, (error) => {
                         reject(error);
                     });
