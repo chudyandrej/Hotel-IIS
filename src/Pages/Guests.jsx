@@ -36,7 +36,8 @@ export default class Guests extends React.Component {
             editData: null,
             data: [],
             pending: true,
-            sending: false
+            sending: false,
+            errorMsg: null
         };
     }
 
@@ -136,9 +137,8 @@ export default class Guests extends React.Component {
 
 
     handlerSubmitBtn(data) {
-        this.setState({sending: true});
+        this.setState({sending: true, errorMsg: null});
         var url = null;
-        data['token'] = cookie.load('token');
 
         if (this.state.editData == null) {  //add a new guest
             url = 'https://young-cliffs-79659.herokuapp.com/addGuest';
@@ -154,7 +154,9 @@ export default class Guests extends React.Component {
                 this.setState({sending: false});
                 this.handlerCancelBtn();
             }, (err)=> {
-                //TODO handle error
+                this.setState({
+                    sending: false,
+                    errorMsg: JSON.parse(err.text).message});
             });
     }
 
@@ -204,6 +206,7 @@ export default class Guests extends React.Component {
                 <GuestForm Submit={this.handlerSubmitBtn.bind(this)}
                            Cancel={this.handlerCancelBtn.bind(this)}
                            editData={this.state.editData}
+                           errorMsg={this.props.errorMsg}
                            pending={this.state.sending}/>
             )
         }

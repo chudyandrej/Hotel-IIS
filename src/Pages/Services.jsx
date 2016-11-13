@@ -35,7 +35,8 @@ export default class Services extends React.Component {
             editData: null,
             data: [],
             pending: true,
-            sending: false
+            sending: false,
+            errorMsg: null
         };
     }
 
@@ -148,7 +149,7 @@ export default class Services extends React.Component {
     }
 
     handlerSubmitBtn(data) {
-        this.setState({sending: true});
+        this.setState({sending: true, errorMsg: null});
         var url = null;
 
         if (this.state.editData == null) {  //add a new service
@@ -165,7 +166,11 @@ export default class Services extends React.Component {
                 this.setState({sending: false});
                 this.handlerCancelBtn();
             }, (err)=> {
-                //TODO handle error
+                console.log(err);
+                console.log(JSON.parse(err.text).message);
+                this.setState({
+                    sending: false,
+                    errorMsg: JSON.parse(err.text).message});
             });
     }
 
@@ -220,6 +225,7 @@ export default class Services extends React.Component {
                 <ServiceForm Submit={this.handlerSubmitBtn.bind(this)}
                              Cancel={this.handlerCancelBtn.bind(this)}
                              editData={this.state.editData}
+                             errorMsg={this.state.errorMsg}
                              pending={this.state.sending}/>
             )
         }

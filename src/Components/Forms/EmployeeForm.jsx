@@ -23,8 +23,17 @@ export default class EmployeeFormForm extends React.Component {
                 iban: "",
                 permissions: "none",
 
-                passwordMatch: "",
-                firstNameRequired: null
+                passwordMatch: null,
+                firstNameRequired: null,
+                lastNameRequired: null,
+                emailRequired: null,
+                passwordRequired: null,
+                addressRequired: null,
+                cityRequired: null,
+                stateRequired: null,
+                phoneNumberRequired: null,
+                ibanRequired: null
+
             };
         }
         else {  //if editing, restore data
@@ -42,74 +51,45 @@ export default class EmployeeFormForm extends React.Component {
                 iban: this.props.editData.iban,
                 permissions: this.props.editData.permissions,
 
-                passwordMatch: "",
-                firstNameRequired: false
+                passwordMatch: null,
+                firstNameRequired: null,
+                lastNameRequired: null,
+                emailRequired: null,
+                passwordRequired: null,
+                addressRequired: null,
+                cityRequired: null,
+                stateRequired: null,
+                phoneNumberRequired: null,
+                ibanRequired: null
             };
         }
     }
 
     handlerOnChange(name, evt) {
-        switch (name) {
-            case "firstName":
-                this.setState({firstName: evt.target.value});
-                break;
-            case "middleName":
-                this.setState({middleName: evt.target.value});
-                break;
-            case "lastName":
-                this.setState({lastName: evt.target.value});
-                break;
-            case "email":
-                this.setState({email: evt.target.value});
-                break;
-            case "password":
-                //TODO check length of password
-                //TODO if short =>  this.state.weakPassword = true
-                this.setState({password: evt.target.value});
-                break;
-            case "passwordCheck":
-                this.setState({passwordCheck: evt.target.value});
-                break;
-            case "address":
-                this.setState({address: evt.target.value});
-                break;
-            case "city":
-                this.setState({city: evt.target.value});
-                break;
-            case "state":
-                this.setState({state: evt.target.value});
-                break;
-            case "phone":
-                this.setState({phoneNumber: evt.target.value});
-                break;
-            case "iban":
-                this.setState({iban: evt.target.value});
-                break;
-            case "permissions":
-                this.setState({permissions: evt.target.value});
-                break;
-        }
+        //TODO check length of password
+        //TODO if short =>  this.state.weakPassword = true
+        var state = {};
+        state[name] = evt.target.value;
+        this.setState(state);
     }
 
     checkValidity(name) {
-        switch (name) {
-            case "firstName":
-                if (this.state.firstName == "") {
-                    this.setState({firstNameRequired: "has-error"})
-                }
-                if (this.state.firstNameRequired != null && this.state.firstName != "") {
-                    this.setState({firstNameRequired: null})
-                }
-                break;
-            case "password":
-                if (this.state.password == this.state.passwordCheck) {
-                    this.setState({passwordMatch: "has-success"});
-                }
-                else {
-                    this.setState({passwordMatch: "has-error"});
-                }
-                break;
+        var state = {};
+        if (this.state[name] == ""){
+            state[name+"Required"] = "has-error";
         }
+        if (this.state[name] != "" && this.state[name+"Required"] != null){
+            state[name+"Required"] = null;
+        }
+        if (name == "password") {
+            if (this.state.password == this.state.passwordCheck) {
+                state["passwordMatch"] = "has-success";
+            }
+            else {
+                state["passwordMatch"] = "has-error";
+            }
+        }
+        this.setState(state);
     }
 
     handlerSubmitBtn() {
@@ -146,9 +126,10 @@ export default class EmployeeFormForm extends React.Component {
                     <InputLabelForm label="First Name"
                                     type="text"
                                     placeholder={this.state.firstName}
+                                    required={true}
+                                    validity={this.state.firstNameRequired}
                                     onBlur={this.checkValidity.bind(this, "firstName")}
                                     onChange={this.handlerOnChange.bind(this, "firstName")}
-                                    validity={this.state.firstNameRequired}
                                     errorMsg={this.state.firstNameRequired == null ? null : required}/>
 
                     <InputLabelForm label="Middle Name"
@@ -159,18 +140,30 @@ export default class EmployeeFormForm extends React.Component {
                     <InputLabelForm label="Last Name"
                                     type="text"
                                     placeholder={this.state.lastName}
-                                    onChange={this.handlerOnChange.bind(this, "lastName")}/>
+                                    required={true}
+                                    validity={this.state.lastNameRequired}
+                                    onBlur={this.checkValidity.bind(this, "lastName")}
+                                    onChange={this.handlerOnChange.bind(this, "lastName")}
+                                    errorMsg={this.state.lastNameRequired == null ? null : required}/>
 
                     <InputLabelForm label="Email"
                                     type="text"
                                     placeholder={this.state.email}
+                                    required={true}
+                                    validity={this.state.emailRequired}
+                                    onBlur={this.checkValidity.bind(this, "email")}
                                     onChange={this.handlerOnChange.bind(this, "email")}
+                                    errorMsg={this.state.emailRequired == null ? null : required}
                                     help={EmailHelp}/>
 
                     <InputLabelForm label="Password"
                                     type="text"
                                     placeholder={this.state.password}
-                                    onChange={this.handlerOnChange.bind(this, "password")}/>
+                                    required={true}
+                                    validity={this.state.passwordRequired}
+                                    onBlur={this.checkValidity.bind(this, "password")}
+                                    onChange={this.handlerOnChange.bind(this, "password")}
+                                    errorMsg={this.state.passwordRequired == null ? null : required}/>
 
                     <InputLabelForm label="Password"
                                     type="password"
@@ -183,27 +176,47 @@ export default class EmployeeFormForm extends React.Component {
                     <InputLabelForm label="Address"
                                     type="text"
                                     placeholder={this.state.address}
-                                    onChange={this.handlerOnChange.bind(this, "address")}/>
+                                    required={true}
+                                    validity={this.state.addressRequired}
+                                    onBlur={this.checkValidity.bind(this, "address")}
+                                    onChange={this.handlerOnChange.bind(this, "address")}
+                                    errorMsg={this.state.addressRequired == null ? null : required}/>
 
                     <InputLabelForm label="City"
                                     type="text"
                                     placeholder={this.state.city}
-                                    onChange={this.handlerOnChange.bind(this, "city")}/>
+                                    required={true}
+                                    validity={this.state.cityRequired}
+                                    onBlur={this.checkValidity.bind(this, "city")}
+                                    onChange={this.handlerOnChange.bind(this, "city")}
+                                    errorMsg={this.state.cityRequired == null ? null : required}/>
 
                     <InputLabelForm label="State"
                                     type="text"
                                     placeholder={this.state.state}
-                                    onChange={this.handlerOnChange.bind(this, "state")}/>
+                                    required={true}
+                                    validity={this.state.stateRequired}
+                                    onBlur={this.checkValidity.bind(this, "state")}
+                                    onChange={this.handlerOnChange.bind(this, "state")}
+                                    errorMsg={this.state.stateRequired == null ? null : required}/>
 
                     <InputLabelForm label="Phone Number"
                                     type="text"
                                     placeholder={this.state.phoneNumber}
-                                    onChange={this.handlerOnChange.bind(this, "phone")}/>
+                                    required={true}
+                                    validity={this.state.phoneNumberRequired}
+                                    onBlur={this.checkValidity.bind(this, "phoneNumber")}
+                                    onChange={this.handlerOnChange.bind(this, "phoneNumber")}
+                                    errorMsg={this.state.phoneNumberRequired == null ? null : required}/>
 
                     <InputLabelForm label="IBAN"
                                     type="text"
                                     placeholder={this.state.iban}
-                                    onChange={this.handlerOnChange.bind(this, "iban")}/>
+                                    required={true}
+                                    validity={this.state.ibanRequired}
+                                    onBlur={this.checkValidity.bind(this, "iban")}
+                                    onChange={this.handlerOnChange.bind(this, "iban")}
+                                    errorMsg={this.state.ibanRequired == null ? null : required}/>
 
                     <div className="form-group row ">
                         <label className="col-xs-2 col-form-label">Permissions:</label>
@@ -222,6 +235,7 @@ export default class EmployeeFormForm extends React.Component {
 
                 <FormButtons Submit={this.handlerSubmitBtn.bind(this)}
                              Cancel={this.props.Cancel}
+                             errorMsg={this.props.errorMsg}
                              pending={this.props.pending}/>
             </div>
         );

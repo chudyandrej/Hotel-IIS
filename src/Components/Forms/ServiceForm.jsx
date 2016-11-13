@@ -10,10 +10,15 @@ export default class ServiceForm extends React.Component {
 
         if (this.props.editData == null) {
             this.state = {
-                name: null,
-                description: null,
-                price: null,
-                duration: null
+                name: "",
+                description: "",
+                price: "",
+                duration: "",
+
+                nameRequired: null,
+                descriptionRequired: null,
+                priceRequired: null,
+                durationRequired: null
             };
         }
         else {
@@ -21,32 +26,31 @@ export default class ServiceForm extends React.Component {
                 name: this.props.editData.name,
                 description: this.props.editData.description,
                 price: this.props.editData.actualPrice,
-                duration: this.props.editData.duration
+                duration: this.props.editData.duration,
+
+                nameRequired: null,
+                descriptionRequired: null,
+                priceRequired: null,
+                durationRequired: null
             };
         }
     }
 
     handlerOnChange(name, evt) {
-        switch (name) {
-            case "name":
-                this.setState({name: evt.target.value});
-                break;
-            case "desc":
-                this.setState({description: evt.target.value});
-                break;
-            case "price":
-                this.setState({price: evt.target.value});
-                break;
-            case "duration":
-                this.setState({duration: evt.target.value});
-                break;
-        }
+        var state = {};
+        state[name] = evt.target.value;
+        this.setState(state);
     }
 
     checkValidity(name) {
-        switch (name) {
-
+        var state = {};
+        if (this.state[name] == ""){
+            state[name+"Required"] = "has-error";
         }
+        if (this.state[name] != "" && this.state[name+"Required"] != null){
+            state[name+"Required"] = null;
+        }
+        this.setState(state);
     }
 
     handlerSubmitBtn() {
@@ -66,32 +70,51 @@ export default class ServiceForm extends React.Component {
             clear: "both"
         };
 
+        var required = "This field is required!";
+
         return (
             <div>
                 <form style={tableStyle}>
                     <InputLabelForm label="Name"
                                     placeholder={this.state.name}
                                     type="text"
-                                    onChange={this.handlerOnChange.bind(this, "name")}/>
+                                    required={true}
+                                    validity={this.state.nameRequired}
+                                    onBlur={this.checkValidity.bind(this, "name")}
+                                    onChange={this.handlerOnChange.bind(this, "name")}
+                                    errorMsg={this.state.nameRequired == null ? null : required}/>
 
                     <InputLabelForm label="Description"
                                     placeholder={this.state.description}
                                     type="text"
-                                    onChange={this.handlerOnChange.bind(this, "desc")}/>
+                                    required={true}
+                                    validity={this.state.descriptionRequired}
+                                    onBlur={this.checkValidity.bind(this, "description")}
+                                    onChange={this.handlerOnChange.bind(this, "description")}
+                                    errorMsg={this.state.descriptionRequired == null ? null : required}/>
 
                     <InputLabelForm label="Price"
                                     placeholder={this.state.price}
                                     type="text"
-                                    onChange={this.handlerOnChange.bind(this, "price")}/>
+                                    required={true}
+                                    validity={this.state.priceRequired}
+                                    onBlur={this.checkValidity.bind(this, "price")}
+                                    onChange={this.handlerOnChange.bind(this, "price")}
+                                    errorMsg={this.state.priceRequired == null ? null : required}/>
 
                     <InputLabelForm label="Duration (min)"
                                     placeholder={this.state.duration}
                                     type="text"
-                                    onChange={this.handlerOnChange.bind(this, "duration")}/>
+                                    required={true}
+                                    validity={this.state.durationRequired}
+                                    onBlur={this.checkValidity.bind(this, "duration")}
+                                    onChange={this.handlerOnChange.bind(this, "duration")}
+                                    errorMsg={this.state.durationRequired == null ? null : required}/>
                 </form>
 
                 <FormButtons Submit={this.handlerSubmitBtn.bind(this)}
                              Cancel={this.props.Cancel}
+                             errorMsg={this.props.errorMsg}
                              pending={this.props.pending}/>
             </div>
         );

@@ -21,9 +21,8 @@ export default class Employees extends React.Component {
             subHeader: "Employees",
             tableHeaders: [{first_name: "First Name", last_name: "Family name", permissions: "Permissions"}],
             detailsHeaders: {first_name: "First Name:", middle_name: "Middle Name:", last_name: "Family name:",
-                permissions: "Permissions:", password: "Password:", email: "Email:", phoneNumber: "Phone number:",
-                idCardNumber: "Card Number:", nameCompany: "Company Name:", ico: "ICO:", dic: "DIC:",
-                address: "Address:", city: "City:", state: "State:"},
+                permissions: "Permissions:", password: "Password:", email: "Email:", phone_number: "Phone number:",
+                iban: "IBAN:", address: "Address:", city: "City:", state: "State:"},
 
 
             showTable: true,
@@ -35,7 +34,8 @@ export default class Employees extends React.Component {
             editData: null,
             data: [],
             pending: true,
-            sending: false
+            sending: false,
+            errorMsg: null
         };
     }
 
@@ -133,7 +133,8 @@ export default class Employees extends React.Component {
     }
 
     handlerSubmitBtn(data) {
-        this.setState({sending: true});
+        console.log("here i am ");
+        this.setState({sending: true, errorMsg: null});
         var url = null;
 
         if (this.state.editData == null) {  //add a new employee
@@ -150,7 +151,9 @@ export default class Employees extends React.Component {
                 this.setState({sending: false});
                 this.handlerCancelBtn();
             }, (err)=>{
-                //TODO handle error
+                this.setState({
+                    sending: false,
+                    errorMsg: JSON.parse(err.text).message});
             });
     }
 
@@ -200,6 +203,7 @@ export default class Employees extends React.Component {
                 <EmployeeForm Submit={this.handlerSubmitBtn.bind(this)}
                               Cancel={this.handlerCancelBtn.bind(this)}
                               editData={this.state.editData}
+                              errorMsg={this.state.errorMsg}
                               pending={this.state.sending}/>
             )
         }

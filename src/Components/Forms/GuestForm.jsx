@@ -24,7 +24,15 @@ export default class GuestForm extends React.Component {
                 typeOfGuest: "person",
                 nameCompany: "",
                 ico: "",
-                dic: ""
+                dic: "",
+
+                firstNameRequired: null,
+                lastNameRequired: null,
+                addressRequired: null,
+                cityRequired: null,
+                stateRequired: null,
+                phoneNumberRequired: null,
+                idCardNumberRequired: null
             };
         }
         else {
@@ -43,58 +51,33 @@ export default class GuestForm extends React.Component {
                 nameCompany: this.props.editData.nameCompany,
                 ico: this.props.editData.ico,
                 dic: this.props.editData.dic,
+
+                firstNameRequired: null,
+                lastNameRequired: null,
+                addressRequired: null,
+                cityRequired: null,
+                stateRequired: null,
+                phoneNumberRequired: null,
+                idCardNumberRequired: null
             };
         }
     }
 
     handlerOnChange(name, evt) {
-        switch (name) {
-            case "firstName":
-                this.setState({firstName: evt.target.value});
-                break;
-            case "middleName":
-                this.setState({middleName: evt.target.value});
-                break;
-            case "lastName":
-                this.setState({lastName: evt.target.value});
-                break;
-            case "email":
-                this.setState({email: evt.target.value});
-                break;
-            case "address":
-                this.setState({address: evt.target.value});
-                break;
-            case "city":
-                this.setState({city: evt.target.value});
-                break;
-            case "state":
-                this.setState({state: evt.target.value});
-                break;
-            case "phoneNumber":
-                this.setState({phoneNumber: evt.target.value});
-                break;
-            case "iban":
-                this.setState({iban: evt.target.value});
-                break;
-            case "typeOfGuest":
-                this.setState({typeOfGuest: evt.target.value});
-                break;
-            case "nameCompany":
-                this.setState({nameCompany: evt.target.value});
-                break;
-            case "ico":
-                this.setState({ico: evt.target.value});
-                break;
-            case "dic":
-                this.setState({dic: evt.target.value});
-                break;
-        }
+        var state = {};
+        state[name] = evt.target.value;
+        this.setState(state);
     }
 
     checkValidity(name) {
-        switch (name) {
-
+        var state = {};
+        if (this.state[name] == ""){
+            state[name+"Required"] = "has-error";
         }
+        if (this.state[name] != "" && this.state[name+"Required"] != null){
+            state[name+"Required"] = null;
+        }
+        this.setState(state);
     }
 
     handlerSubmitBtn() {
@@ -123,10 +106,16 @@ export default class GuestForm extends React.Component {
             clear: "both"
         };
 
+        var required = "This field is required!";
         var EmailHelp = <small className="form-text text-muted">example@domain.com</small>;
 
         var companyInfo = (
             <div>
+                <InputLabelForm label="Company Name"
+                                type="text"
+                                placeholder={this.state.nameCompany}
+                                onChange={this.handlerOnChange.bind(this, "nameCompany")}/>
+
                 <InputLabelForm label="ICO"
                                 type="text"
                                 placeholder={this.state.ico}
@@ -145,7 +134,11 @@ export default class GuestForm extends React.Component {
                     <InputLabelForm label="First Name"
                                     type="text"
                                     placeholder={this.state.firstName}
-                                    onChange={this.handlerOnChange.bind(this, "firstName")}/>
+                                    required={true}
+                                    validity={this.state.firstNameRequired}
+                                    onBlur={this.checkValidity.bind(this, "firstName")}
+                                    onChange={this.handlerOnChange.bind(this, "firstName")}
+                                    errorMsg={this.state.firstNameRequired == null ? null : required}/>
 
                     <InputLabelForm label="Middle Name"
                                     type="text"
@@ -155,7 +148,11 @@ export default class GuestForm extends React.Component {
                     <InputLabelForm label="Last Name"
                                     type="text"
                                     placeholder={this.state.lastName}
-                                    onChange={this.handlerOnChange.bind(this, "lastName")}/>
+                                    required={true}
+                                    validity={this.state.lastNameRequired}
+                                    onBlur={this.checkValidity.bind(this, "lastName")}
+                                    onChange={this.handlerOnChange.bind(this, "lastName")}
+                                    errorMsg={this.state.lastNameRequired == null ? null : required}/>
 
                     <InputLabelForm label="Email"
                                     type="text"
@@ -166,22 +163,38 @@ export default class GuestForm extends React.Component {
                     <InputLabelForm label="Address"
                                     type="text"
                                     placeholder={this.state.address}
-                                    onChange={this.handlerOnChange.bind(this, "address")}/>
+                                    required={true}
+                                    validity={this.state.addressRequired}
+                                    onBlur={this.checkValidity.bind(this, "address")}
+                                    onChange={this.handlerOnChange.bind(this, "address")}
+                                    errorMsg={this.state.addressRequired == null ? null : required}/>
 
                     <InputLabelForm label="City"
                                     type="text"
                                     placeholder={this.state.city}
-                                    onChange={this.handlerOnChange.bind(this, "city")}/>
+                                    required={true}
+                                    validity={this.state.cityRequired}
+                                    onBlur={this.checkValidity.bind(this, "city")}
+                                    onChange={this.handlerOnChange.bind(this, "city")}
+                                    errorMsg={this.state.cityRequired == null ? null : required}/>
 
                     <InputLabelForm label="State"
                                     type="text"
                                     placeholder={this.state.state}
-                                    onChange={this.handlerOnChange.bind(this, "state")}/>
+                                    required={true}
+                                    validity={this.state.stateRequired}
+                                    onBlur={this.checkValidity.bind(this, "state")}
+                                    onChange={this.handlerOnChange.bind(this, "state")}
+                                    errorMsg={this.state.stateRequired == null ? null : required}/>
 
                     <InputLabelForm label="Phone Number"
                                     type="text"
                                     placeholder={this.state.phoneNumber}
-                                    onChange={this.handlerOnChange.bind(this, "phoneNumber")}/>
+                                    required={true}
+                                    validity={this.state.phoneNumberRequired}
+                                    onBlur={this.checkValidity.bind(this, "phoneNumber")}
+                                    onChange={this.handlerOnChange.bind(this, "phoneNumber")}
+                                    errorMsg={this.state.phoneNumberRequired == null ? null : required}/>
 
                     <InputLabelForm label="IBAN"
                                     type="text"
@@ -191,16 +204,20 @@ export default class GuestForm extends React.Component {
                     <InputLabelForm label="ID Card Number"
                                     type="text"
                                     placeholder={this.state.idCardNumber}
-                                    onChange={this.handlerOnChange.bind(this, "idCardNumber")}/>
+                                    required={true}
+                                    validity={this.state.idCardNumberRequired}
+                                    onBlur={this.checkValidity.bind(this, "idCardNumber")}
+                                    onChange={this.handlerOnChange.bind(this, "idCardNumber")}
+                                    errorMsg={this.state.idCardNumberRequired == null ? null : required}/>
 
                     <div className="form-group row ">
-                        <label className="col-xs-2 col-form-label">Individual/Corporation:</label>
+                        <label className="col-xs-2 col-form-label">Person/Company:</label>
                         <div className="col-xs-6">
                             <select className="form-control"
                                     value={this.state.typeOfGuest}
                                     onChange={this.handlerOnChange.bind(this, "typeOfGuest")}>
-                                <option value="person">Individual</option>
-                                <option value="company">Corporation</option>
+                                <option value="person">Person</option>
+                                <option value="company">Company</option>
                             </select>
                         </div>
                     </div>
@@ -210,6 +227,7 @@ export default class GuestForm extends React.Component {
 
                 <FormButtons Submit={this.handlerSubmitBtn.bind(this)}
                              Cancel={this.props.Cancel}
+                             errorMsg={this.props.errorMsg}
                              pending={this.props.pending}/>
             </div>
         );
