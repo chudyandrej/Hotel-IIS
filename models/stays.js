@@ -37,18 +37,9 @@ module.exports = function(sequelize, DataTypes) {
                     });
                 });
             },
-            findOpenStaysByTime(fromTime, toTime){
+
+            getIdInProgressStays(fromTime, toTime){
                 return new Promise(function(resolve, reject) {
-                    if (!_.isString(fromTime) || !_.isString(toTime) ){
-                        reject({
-                            errors:[
-                                {
-                                    message: "Undefined times 'from' and 'to'",
-                                    path: "from, to",
-                                    value: fromTime.concat("  ").concat(toTime)
-                                }]
-                        });
-                    }
                     if(moment(fromTime) > moment(toTime)){
                         reject({
                             errors:[
@@ -67,18 +58,20 @@ module.exports = function(sequelize, DataTypes) {
                             to: {
                                 $or:[{$gte: fromTime},{$gte: toTime}]
                             }
-                        },
-                        include: [employeesObj, guestsObj]
+                        }
                     }).then((staysInstances) => {
                         let result = [];
                         staysInstances.forEach((stayInstance) => {
-                            result.push(stayInstance.toPublicJSON());
+                            result.push(stayInstance.get('id'));
                         });
+                        resolve(result);
+
+                    }, (error) => {
+                        reject(error);
                     });
                 });
 
             },
-
 
 
             findTotalStaysByTime(employeesObj, guestsObj,roomsObj, templateRoomsObj, fromTime, toTime){
@@ -88,11 +81,11 @@ module.exports = function(sequelize, DataTypes) {
                             errors:[
                                 {
                                     message: "Undefined times 'from' and 'to'",
-                                    path: "from, to",
-                                    value: fromTime.concat("  ").concat(toTime)
+                                    path: "from, to"
                                 }]
                         });
                     }
+
                     if(moment(fromTime) > moment(toTime)){
                         reject({
                             errors:[

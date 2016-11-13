@@ -24,7 +24,46 @@ module.exports = function(sequelize, DataTypes) {
                         reject(e);
                     });
                 });
+            },
+            findFreeRooms(staysObj,templateRoomsObj ,fromTime, toTime){
+                return new Promise(function(resolve, reject) {
+                    staysObj.getIdInProgressStays(fromTime,toTime).then((arrayOfStaysIDs) => {
+                        rooms.findAll({
+                            where: {
+                                stayId: {
+                                    $in: arrayOfStaysIDs
+                                }
+                            }
+                        }).then((roomsInstances) => {
+                            arrayOfRoomsInProgress = [];
+                            roomsInstances.forEach((roomInstance) => {
+                                arrayOfRoomsInProgress.push(roomInstance.get('templateRoomId'))
+                            });
+                            templateRoomsObj.findAll({
+                                where: {
+                                    id: {
+                                        $notIn: arrayOfRoomsInProgress
+                                    }
+                                }
+                            }).then((templatesFreeRooms) => {
+                                var result = [];
+                                templatesFreeRooms.forEach((templateFreeRoom) =>{
+                                    result.push(templateFreeRoom.toPublicJSON());
+                                });
+                                resolve(result);
+                            }, (error) => {
+                                reject(error);
+                            });
+                        }, (error) => {
+                            reject(error);
+                        });
+                    }, (error) => {
+                        reject(error);
+                    })
+                });
             }
+
+
         },
         instanceMethods:{
             toPublicJSON(){
