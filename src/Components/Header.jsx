@@ -1,24 +1,24 @@
 import React from 'react';
-import request from 'superagent';
 import cookie from 'react-cookie';
+import {hashHistory} from 'react-router';
+
+import {sendRequest} from '../Functions/HTTP-requests.js';
 
 
 export default class Header extends React.Component {
 
     onClickLogout() {
-        request
-            .post('https://young-cliffs-79659.herokuapp.com/logout')
-            .set('Accept', 'application/json')
-            .send({ token: cookie.load('token') })
-            .end((err, res)=>{
-                if (err != null || !res.ok) {
-                    console.log("error while fetching data");  //debug
-                } else {
-                    console.log("logged out");   //debug
-                }
-            });
+
+        sendRequest('https://young-cliffs-79659.herokuapp.com/logout', {}).then((data)=>{
+            console.log("logged out");
+        }, (err)=>{
+            //TODO handle error
+        });
+
         cookie.remove('token');
         cookie.remove('loggedIn');
+        console.log("you've been logged out");
+        hashHistory.push('/');
     }
 
     render() {

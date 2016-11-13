@@ -1,7 +1,7 @@
 import React from 'react';
 
 import InputLabelForm from './InputLabelForm.jsx';
-import FormButtons from './FormButtons.jsx';
+import FormButtons from '../Buttons/FormButtons.jsx';
 
 
 export default class GuestForm extends React.Component {
@@ -137,7 +137,9 @@ export default class GuestForm extends React.Component {
                                     onChange={this.handlerOnChange.bind(this, "iban")}/>
                 </form>
 
-                <FormButtons Submit={this.handlerSubmitBtn.bind(this)} Cancel={this.props.Cancel}/>
+                <FormButtons Submit={this.handlerSubmitBtn.bind(this)}
+                             Cancel={this.props.Cancel}
+                             pending={this.props.pending}/>
             </div>
         );
     }

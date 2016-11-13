@@ -21,7 +21,7 @@ export default class Layout extends React.Component {
                 <Header />
                 <div className="container-fluid">
                     <div className="row row-offcanvas row-offcanvas-left">
-                        <SideBar />
+                        <SideBar activeLocation={this.props.location.pathname} />
                         <div className="col-sm-9 col-md-10 main">
                             {this.props.children}
                         </div>

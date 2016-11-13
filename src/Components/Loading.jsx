@@ -10,14 +10,18 @@ export default class Loading extends React.Component {
 
         var toRender = (
             <div className="table-responsive" style={{ clear: "both", margin: "auto"}}>
-                <p style={{textAlign: "center", marginTop: 100}}><ImageLoader src="../../public/img/loading.gif" /></p>
+                <p style={{textAlign: "center", marginTop: 100}}>
+                    <ImageLoader src="../../public/img/loading.gif" />
+                </p>
             </div>
         );
 
         if (type) {
             toRender = (
                 <div className="table-responsive">
-                    <p style={{width: 30, height: 30, marginLeft: 30}}><ImageLoader src="../../public/img/loadingForm.gif" /></p>
+                    <p style={{width: 30, height: 30, marginLeft: 30}}>
+                        <ImageLoader src="../../public/img/loadingForm.gif" />
+                    </p>
                 </div>
             )
         }

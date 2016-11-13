@@ -1,6 +1,4 @@
 import React from 'react';
-import request from 'superagent';
-import cookie from 'react-cookie';
 
 import BackBtn from '../Components/Buttons/BackBtn.jsx';
 import DetailsTable from '../Components/DetailsTable.jsx';
@@ -8,6 +6,8 @@ import Loading from '../Components/Loading.jsx';
 import RightBtnToolbar from '../Components/Buttons/RightBtnToolbar.jsx';
 import ServiceForm from '../Components/Forms/ServiceForm.jsx';
 import Table from '../Components/Table.jsx';
+
+import {sendRequest} from '../Functions/HTTP-requests.js';
 
 
 export default class Services extends React.Component {
@@ -38,26 +38,17 @@ export default class Services extends React.Component {
     }
 
     componentWillMount() {
-        this.fetchServices();
+        this.fetchData();
     }
 
-    fetchServices() {
+    fetchData() {
         this.setState({pending: true});
-        request
-            .post('https://young-cliffs-79659.herokuapp.com/getServices')
-            .set('Accept', 'application/json')
-            .send({token: cookie.load('token')})
-            .end((err, res)=> {
-                if (err != null || !res.ok) {
-                    console.log("error while fetching data");  //debug
-                    //TODO logout user
-                } else {
-                    console.log(res);
-                    var data = this.state.tableHeaders.concat(JSON.parse(res.text));
-                    console.log(data);
-                    this.setState({pending: false, data: data});
-                }
-            });
+        sendRequest('https://young-cliffs-79659.herokuapp.com/getServices', {}).then((data)=>{
+            data = this.state.tableHeaders.concat(JSON.parse(data.text));
+            this.setState({pending: false, data: data});
+        }, (err)=>{
+            //TODO handle error
+        });
     }
 
     handlerAvailableBtn() {
@@ -92,7 +83,7 @@ export default class Services extends React.Component {
     }
 
     handlerEditBtn(data) {
-        // data = data which sends the row, which a user wants to edit
+        // data = data are sent by the row, which a user wants to edit
         this.setState({
             subHeader: "Edit the service",
             showTable: false,
@@ -119,19 +110,13 @@ export default class Services extends React.Component {
     }
 
     handlerRemove(id) {
-        request
-            .post("https://young-cliffs-79659.herokuapp.com/editService")
-            .set('Accept', 'application/json')
-            .send({token: cookie.load('token'), available: false, id: id})
-            .end((err, res)=> {
-                if (err != null || !res.ok) {
-                    console.log("error while deleting data");  //debug
-                    //TODO logout user
-                } else {
-                    console.log("data deleted successfully");
-                    this.setState({sending: false});
-                }
-            });
+        sendRequest('https://young-cliffs-79659.herokuapp.com/editService', {available: false, id: id})
+            .then((data)=>{
+                console.log("data's deleted successfully");
+                this.setState({sending: false});
+            }, (err)=>{
+                //TODO handle error
+        });
     }
 
     handlerCancelBtn() {
@@ -141,7 +126,7 @@ export default class Services extends React.Component {
             showAddForm: false,
             addBtnClicked: false
         });
-        this.fetchServices();
+        this.fetchData();
     }
 
     handleShowDetails(data) {
@@ -157,13 +142,12 @@ export default class Services extends React.Component {
             showTable: true,
             showDetails: false
         });
-        this.fetchServices();
+        this.fetchData();
     }
 
     handlerSubmitBtn(data) {
         this.setState({sending: true});
         var url = null;
-        data['token'] = cookie.load('token');
 
         if (this.state.editData == null) {  //add a new service
             url = 'https://young-cliffs-79659.herokuapp.com/addNewService';
@@ -173,20 +157,14 @@ export default class Services extends React.Component {
             data['id'] = this.state.editData.id;
         }
 
-        request
-            .post(url)
-            .set('Accept', 'application/json')
-            .send(data)
-            .end((err, res)=> {
-                if (err != null || !res.ok) {
-                    console.log("error while fetching data");  //debug
-                    //TODO logout user
-                } else {
-                    console.log("data sent successfully");
-                    this.setState({sending: false});
-                    this.handlerCancelBtn();
-                }
-            });
+        sendRequest(url, data)
+            .then(()=>{
+                console.log("data sent successfully");
+                this.setState({sending: false});
+                this.handlerCancelBtn();
+            }, (err)=>{
+                //TODO handle error
+        });
     }
 
     render() {

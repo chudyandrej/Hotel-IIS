@@ -1,7 +1,7 @@
 import React from 'react';
 
 import InputLabelForm from './InputLabelForm.jsx';
-import FormButtons from './FormButtons.jsx';
+import FormButtons from '../Buttons/FormButtons.jsx';
 
 
 export default class EmployeeFormForm extends React.Component {
@@ -29,16 +29,16 @@ export default class EmployeeFormForm extends React.Component {
         }
         else {  //if editing, restore data
             this.state = {
-                firstName: this.props.editData.firstName,
-                middleName: this.props.editData.middleName,
-                lastName: this.props.editData.lastName,
+                firstName: this.props.editData.first_name,
+                middleName: this.props.editData.middle_name,
+                lastName: this.props.editData.last_name,
                 email: this.props.editData.email,
                 password: this.props.editData.password,
-                passwordCheck: this.props.editData.passwordCheck,
+                passwordCheck: null,
                 address: this.props.editData.address,
                 city: this.props.editData.city,
                 state: this.props.editData.state,
-                phoneNumber: this.props.editData.phoneNumber,
+                phoneNumber: this.props.editData.phone_number,
                 iban: this.props.editData.iban,
                 permissions: this.props.editData.permissions,
 
@@ -168,7 +168,7 @@ export default class EmployeeFormForm extends React.Component {
                                     help={EmailHelp}/>
 
                     <InputLabelForm label="Password"
-                                    type="password"
+                                    type="text"
                                     placeholder={this.state.password}
                                     onChange={this.handlerOnChange.bind(this, "password")}/>
 
@@ -220,7 +220,9 @@ export default class EmployeeFormForm extends React.Component {
                     </div>
                 </form>
 
-                <FormButtons Submit={this.handlerSubmitBtn.bind(this)} Cancel={this.props.Cancel}/>
+                <FormButtons Submit={this.handlerSubmitBtn.bind(this)}
+                             Cancel={this.props.Cancel}
+                             pending={this.props.pending}/>
             </div>
         );
     }
