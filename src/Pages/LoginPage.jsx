@@ -3,6 +3,8 @@ import {hashHistory} from 'react-router';
 import request from 'superagent';
 import cookie from 'react-cookie';
 
+import Loading from '../Components/Loading.jsx';
+
 
 export default class LoginPage extends React.Component {
 
@@ -14,7 +16,8 @@ export default class LoginPage extends React.Component {
             password: "",
             error: false,
             loginClicked: false,
-            hoverLoginForm: false
+            hoverLoginForm: false,
+            pending: false
         };
     }
 
@@ -35,7 +38,7 @@ export default class LoginPage extends React.Component {
                 this.setState({loginClicked: true});
                 break;
             case "any":
-                if (!this.state.hoverLoginForm) {
+                if (!this.state.hoverLoginForm && !this.state.pending) {
                     this.setState({loginClicked: false});
                 }
                 break;
@@ -55,7 +58,7 @@ export default class LoginPage extends React.Component {
 
     _login(e) {
         e.preventDefault();
-        //TODO pending state
+        this.setState({pending: true});
         request
             .post('https://young-cliffs-79659.herokuapp.com/login')
             .set('Accept', 'application/json')
@@ -64,10 +67,11 @@ export default class LoginPage extends React.Component {
             .end((err, res)=>{
                 if (err != null || !res.ok) {
                     console.log('Oh no! error');  //DEBUG
+                    console.log(res);
                     this.setState({username: "", password: ""});
-                    this.setState({error: true});
+                    this.setState({error: true, pending: false});
                 } else {
-                    this.setState({error: false});
+                    this.setState({error: false, pending: false});
 
                     cookie.remove('token');
                     cookie.remove('loggedIn');
@@ -79,32 +83,43 @@ export default class LoginPage extends React.Component {
     }
 
     render() {
-
-        var LoginForm = (
-            <div className="formContainerLogin text-center">
-                <div className="formLogin"
-                     onMouseLeave={this.handleHover.bind(this, "down")}
-                     onMouseEnter={this.handleHover.bind(this, "up")}>
-                    <input placeholder="username"
-                           type="text"
-                           value={this.state.username}
-                           onChange={this.handlerOnChange.bind(this, "name")}/>
-                    <input placeholder="password"
-                           type="password"
-                           value={this.state.password}
-                           onChange={this.handlerOnChange.bind(this, "password")}/>
-                    { this.state.error ? <strong className="form-text alert alert-danger">ERROR</strong> : null }
-                    <div className='text-center'>
-                        <div className="btn-group" style={{marginTop: 5}}>
-                            <button type='button'
-                                    className='btn btn-primary'
-                                    onClick={this._login.bind(this)}>Login
-                            </button>
+        var errorMsg = <strong className="alert alert-danger">Wrong username or password!</strong>;
+        var content = null;
+        if (this.state.loginClicked && !this.state.pending) {
+            content = (
+                <div className="formContainerLogin text-center">
+                    {this.state.error ? errorMsg : null}
+                    <div className="formLogin"
+                         onMouseLeave={this.handleHover.bind(this, "down")}
+                         onMouseEnter={this.handleHover.bind(this, "up")}>
+                        <input placeholder="username"
+                               type="text"
+                               value={this.state.username}
+                               onChange={this.handlerOnChange.bind(this, "name")}/>
+                        <input placeholder="password"
+                               type="password"
+                               value={this.state.password}
+                               onChange={this.handlerOnChange.bind(this, "password")}/>
+                        <div className='text-center'>
+                            <div className="btn-group" style={{marginTop: 5}}>
+                                <button type='button'
+                                        className='btn btn-primary'
+                                        onClick={this._login.bind(this)}>Login
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        );
+            )
+        }
+        else if(this.state.pending) {
+            content = (
+                <Loading  />
+            )
+        }
+        else {
+            content = null;
+        }
 
         return (
             <div className="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -120,7 +135,7 @@ export default class LoginPage extends React.Component {
                     </div>
                 </div>
                 <div id="background-image-login" onClick={this.handlerClick.bind(this, "any")}>
-                    {this.state.loginClicked ? LoginForm : null}
+                    {content}
                 </div>
             </div>
         );

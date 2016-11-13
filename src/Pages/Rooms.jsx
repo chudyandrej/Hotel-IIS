@@ -4,10 +4,10 @@ import moment from 'moment';
 //TODO import of datepicker css file here instead of index.html
 //import '../../node_modules/react-datepicker/dist/react-datepicker.css';
 
-import Table from '../Components/Table.jsx';
-import DetailsTable from '../Components/DetailsTable.jsx';
-import RightBtnToolbar from '../Components/RightBtnToolbar.jsx';
+import BackBtn from '../Components/Buttons/BackBtn.jsx';
 import CalendarInput from '../Components/CalendarInput.jsx';
+import DetailsTable from '../Components/DetailsTable.jsx';
+import Table from '../Components/Table.jsx';
 
 
 export default class Rooms extends React.Component {
@@ -84,16 +84,6 @@ export default class Rooms extends React.Component {
         })
     }
 
-    handlerAddBtn() {
-        //TODO ?
-        //beyond this school project
-    }
-
-    handlerRemoveBtn() {
-        //TODO ?
-        //beyond this school project
-    }
-
     render() {
         var clsBtn = "btn btn-info ";
         var mainContent = null;
@@ -105,7 +95,7 @@ export default class Rooms extends React.Component {
             {name: "service3", desc: "desc", price: 400}
         ];
 
-        if (this.state.showTable){
+        if (this.state.showTable) {
             var LeftBtnToolbar = (
                 <div className='btn-toolbar pull-left'>
                     <button type="button"
@@ -134,26 +124,12 @@ export default class Rooms extends React.Component {
                                    onChangeStart={this.handleDayChange.bind(this, "start")}
                                    onChangeEnd={this.handleDayChange.bind(this, "end")}/>
 
-                    <RightBtnToolbar Add={this.handlerAddBtn.bind(this)}
-                                     AddState={false}
-                                     Remove={this.handlerRemoveBtn.bind(this)}/>
-
                     <Table TableData={FAKEservicesDATA}
                            showDetails={this.handleShowDetails.bind(this)}/>
                 </div>
             )
         }
         else {
-            var backBtn = (
-                <div className='btn-toolbar'>
-                    <button type="button"
-                            className={clsBtn}
-                            onClick={this.handlerBackBtn.bind(this)}>
-                        Back
-                    </button>
-                </div>
-            );
-
             mainContent = (
                 <DetailsTable Headers={FAKEservicesDATA[0]}
                               DetailsData={this.state.details}/>
@@ -164,7 +140,7 @@ export default class Rooms extends React.Component {
             <div>
                 <h1 className="page-header">{this.state.subHeader}</h1>
 
-                {this.state.showTable ? null : backBtn}
+                {this.state.showTable ? null : <BackBtn onClick={this.handlerBackBtn.bind(this)}/>}
 
                 {mainContent}
             </div>

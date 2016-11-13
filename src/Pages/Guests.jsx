@@ -20,10 +20,12 @@ export default class Guests extends React.Component {
             all: "default",
             subHeader: "Active guests",
             tableHeaders: [{first_name: "First Name", last_name: "Family name", typeOfGuest: "Type"}],
-            detailsHeaders: [{first_name: "First Name", middle_name: "Middle Name", last_name: "Family name",
-                              typeOfGuest: "Type", email: "email", phoneNumber: "Phone number",
-                              idCardNumber: "Card Number", nameCompany: "Company Name", ico: "ICO", dic: "DIC",
-                              address: "Address", city: "City", state: "State"}],
+            detailsHeaders: {
+                first_name: "First Name:", middle_name: "Middle Name:", last_name: "Family name:",
+                typeOfGuest: "Type:", email: "email:", phoneNumber: "Phone number:",
+                idCardNumber: "Card Number:", nameCompany: "Company Name:", ico: "ICO:", dic: "DIC:",
+                address: "Address:", city: "City:", state: "State:"
+            },
 
             showTable: true,
             showAddForm: false,
@@ -44,10 +46,10 @@ export default class Guests extends React.Component {
 
     fetchData() {
         this.setState({pending: true});
-        sendRequest('https://young-cliffs-79659.herokuapp.com/getGuests', {}).then((data)=>{
+        sendRequest('https://young-cliffs-79659.herokuapp.com/getGuests', {}).then((data)=> {
             data = this.state.tableHeaders.concat(JSON.parse(data.text));
             this.setState({pending: false, data: data});
-        }, (err)=>{
+        }, (err)=> {
             //TODO handle error
         });
     }
@@ -98,12 +100,12 @@ export default class Guests extends React.Component {
 
     handlerRemove(id) {
         sendRequest('https://young-cliffs-79659.herokuapp.com/editGuest', {available: false, id: id})
-            .then((data)=>{
+            .then((data)=> {
                 console.log("data's deleted successfully");
                 this.setState({sending: false});
-            }, (err)=>{
+            }, (err)=> {
                 //TODO handle error
-        });
+            });
     }
 
     handlerCancelBtn() {
@@ -147,13 +149,13 @@ export default class Guests extends React.Component {
         }
 
         sendRequest(url, data)
-            .then(()=>{
+            .then(()=> {
                 console.log("data sent successfully");
                 this.setState({sending: false});
                 this.handlerCancelBtn();
-            }, (err)=>{
+            }, (err)=> {
                 //TODO handle error
-        });
+            });
     }
 
     render() {
@@ -191,8 +193,8 @@ export default class Guests extends React.Component {
         else if (this.state.showDetails) {
             content = (
                 <div>
-                    <BackBtn onClick={this.handlerBackBtn.bind(this)} />
-                    <DetailsTable Headers={this.state.detailsHeaders[0]}
+                    <BackBtn onClick={this.handlerBackBtn.bind(this)}/>
+                    <DetailsTable Headers={this.state.detailsHeaders}
                                   DetailsData={this.state.data}/>
                 </div>
             )
@@ -215,7 +217,6 @@ export default class Guests extends React.Component {
                                                                   Remove={this.handlerRemoveBtn.bind(this)}/> }
 
                 {this.state.pending ? <Loading /> : content}
-
             </div>
         );
     }

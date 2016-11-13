@@ -21,8 +21,10 @@ export default class Services extends React.Component {
             all: "default",
             subHeader: "Available Services",
             tableHeaders: [{name: "Name", actualPrice: "Price", duration: "Duration"}],
-            detailsHeaders: [{name: "Name", actualPrice: "Price", description: "Description",
-                duration: "Duration"}],
+            detailsHeaders: {
+                name: "Name:", actualPrice: "Price:", description: "Description:",
+                duration: "Duration:"
+            },
 
             showTable: true,
             showAddForm: false,
@@ -43,10 +45,10 @@ export default class Services extends React.Component {
 
     fetchData() {
         this.setState({pending: true});
-        sendRequest('https://young-cliffs-79659.herokuapp.com/getServices', {}).then((data)=>{
+        sendRequest('https://young-cliffs-79659.herokuapp.com/getServices', {}).then((data)=> {
             data = this.state.tableHeaders.concat(JSON.parse(data.text));
             this.setState({pending: false, data: data});
-        }, (err)=>{
+        }, (err)=> {
             //TODO handle error
         });
     }
@@ -111,12 +113,12 @@ export default class Services extends React.Component {
 
     handlerRemove(id) {
         sendRequest('https://young-cliffs-79659.herokuapp.com/editService', {available: false, id: id})
-            .then((data)=>{
+            .then((data)=> {
                 console.log("data's deleted successfully");
                 this.setState({sending: false});
-            }, (err)=>{
+            }, (err)=> {
                 //TODO handle error
-        });
+            });
     }
 
     handlerCancelBtn() {
@@ -158,13 +160,13 @@ export default class Services extends React.Component {
         }
 
         sendRequest(url, data)
-            .then(()=>{
+            .then(()=> {
                 console.log("data sent successfully");
                 this.setState({sending: false});
                 this.handlerCancelBtn();
-            }, (err)=>{
+            }, (err)=> {
                 //TODO handle error
-        });
+            });
     }
 
     render() {
@@ -207,8 +209,8 @@ export default class Services extends React.Component {
         else if (this.state.showDetails) {
             content = (
                 <div>
-                    <BackBtn onClick={this.handlerBackBtn.bind(this)} />
-                    <DetailsTable Headers={this.state.detailsHeaders[0]}
+                    <BackBtn onClick={this.handlerBackBtn.bind(this)}/>
+                    <DetailsTable Headers={this.state.detailsHeaders}
                                   DetailsData={this.state.data}/>
                 </div>
             )
@@ -226,12 +228,11 @@ export default class Services extends React.Component {
             <div>
                 <h1 className="page-header">{this.state.subHeader}</h1>
 
-                {this.state.showDetails ? null :<RightBtnToolbar Add={this.handlerAddBtn.bind(this)}
-                                                                 AddState={this.state.addBtnClicked}
-                                                                 Remove={this.handlerRemoveBtn.bind(this)}/>}
+                {this.state.showDetails ? null : <RightBtnToolbar Add={this.handlerAddBtn.bind(this)}
+                                                                  AddState={this.state.addBtnClicked}
+                                                                  Remove={this.handlerRemoveBtn.bind(this)}/>}
 
                 {this.state.pending ? <Loading /> : content}
-
             </div>
         );
     }

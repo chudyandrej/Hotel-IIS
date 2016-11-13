@@ -20,10 +20,10 @@ export default class Employees extends React.Component {
             all: "default",
             subHeader: "Employees",
             tableHeaders: [{first_name: "First Name", last_name: "Family name", permissions: "Permissions"}],
-            detailsHeaders: [{first_name: "First Name", middle_name: "Middle Name", last_name: "Family name",
-                permissions: "Permissions", password: "Password", email: "Email", phoneNumber: "Phone number",
-                idCardNumber: "Card Number", nameCompany: "Company Name", ico: "ICO", dic: "DIC",
-                address: "Address", city: "City", state: "State"}],
+            detailsHeaders: {first_name: "First Name:", middle_name: "Middle Name:", last_name: "Family name:",
+                permissions: "Permissions:", password: "Password:", email: "Email:", phoneNumber: "Phone number:",
+                idCardNumber: "Card Number:", nameCompany: "Company Name:", ico: "ICO:", dic: "DIC:",
+                address: "Address:", city: "City:", state: "State:"},
 
 
             showTable: true,
@@ -190,7 +190,7 @@ export default class Employees extends React.Component {
             content = (
                 <div>
                     <BackBtn onClick={this.handlerBackBtn.bind(this)} />
-                    <DetailsTable Headers={this.state.detailsHeaders[0]}
+                    <DetailsTable Headers={this.state.detailsHeaders}
                                   DetailsData={this.state.data}/>
                 </div>
             )
@@ -213,7 +213,6 @@ export default class Employees extends React.Component {
                                                                   Remove={this.handlerRemoveBtn.bind(this)}/> }
 
                 {this.state.pending ? <Loading /> : content}
-
             </div>
         );
     }

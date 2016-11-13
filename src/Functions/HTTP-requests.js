@@ -1,6 +1,7 @@
 import React from 'react';
 import request from 'superagent';
 import cookie from 'react-cookie';
+import {hashHistory} from 'react-router';
 
 
 export var sendRequest = function(url, data) {
@@ -14,7 +15,10 @@ export var sendRequest = function(url, data) {
             .end((err, res)=> {
                 if (err != null || !res.ok) {
                     console.log(res);  //debug
-                    //TODO logout user
+                    if(res.status == 400) {
+                        console.log("Token has expired");
+                        hashHistory.push('/');
+                    }
                     reject(res);
                 } else {
                     console.log(res);
