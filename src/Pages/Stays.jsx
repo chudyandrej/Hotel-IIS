@@ -21,10 +21,25 @@ export default class Stays extends React.Component {
             all: "default",
             subHeader: "Current Stays",
 
-            tableHeaders: [{name: "Name", actualPrice: "Price", duration: "Duration"}],
-            detailsHeaders: {
-                name: "Name:", actualPrice: "Price:", description: "Description:",
-                duration: "Duration:"
+            tableHeaders: [{
+                last_name: "Last Name", status: "Status", from: "From", to: "To", roomNumber: "Room"
+            }],
+            stay: {
+                status: "Status:", from: "From:", to: "To:", note: "Note:"
+            },
+            rooms: {
+                roomNumber: "Room:", priceOfRoom: "Price:" //TODO more info about room
+            },
+            guest: {
+                first_name: "First Name:", middle_name: "Middle Name:", last_name: "Last Name:",
+                idCardNumber: "Card Number:", email: "Email:", phoneNumber: "Phone number:",
+                nameCompany: "Company Name:", ico: "ICO:", dic: "DIC:",
+                address: "Address:", city: "City:", state: "State:"
+            },
+            employee: {
+                first_name: "First Name:", middle_name: "Middle Name:", last_name: "Family name:",
+                permissions: "Permissions:", password: "Password:", email: "Email:", phone_number: "Phone number:",
+                iban: "IBAN:", address: "Address:", city: "City:", state: "State:"
             },
 
             showTable: true,
@@ -34,9 +49,10 @@ export default class Stays extends React.Component {
             addBtnClicked: false,
 
             startDate: moment(),
-            endDate: moment(),
+            endDate: moment().add(1, "day"),
 
             editData: null,
+            tableData: [],
             data: [],
             pending: true,
             sending: false
@@ -47,14 +63,51 @@ export default class Stays extends React.Component {
         this.fetchData();
     }
 
+    parseData(data) {
+        var tableData = [];
+        var rooms = [];
+
+        data.forEach(function (row) {
+            rooms = [];
+
+            row.rooms.forEach(function (room) {
+                rooms.push(room.templateRoom.roomNumber);
+
+            });
+            rooms = rooms.toString();
+            console.log(rooms);
+            tableData.push(
+                {
+                    id: row.id,
+                    last_name: row.guest.last_name,
+                    status: row.status,
+                    from: moment(row.from).format('YYYY-MM-DD'),
+                    to: moment(row.to).format('YYYY-MM-DD'),
+                    roomNumber: rooms
+                }
+            );
+        }.bind(this));
+
+        return tableData;
+    }
+
+
     fetchData() {
         this.setState({pending: true});
-        //TODO add default time to show stays in that specified time
-        sendRequest('https://young-cliffs-79659.herokuapp.com/getStays', {}).then((data)=> {
-            data = this.state.tableHeaders.concat(JSON.parse(data.text));
-            this.setState({pending: false, data: data});
+        var toSend = {
+            from: "2016-05-04",//this.state.startDate.format('YYYY-MM-DD'),
+            to: "2016-12-06",//this.state.endDate.format('YYYY-MM-DD')
+        };
+        sendRequest('https://young-cliffs-79659.herokuapp.com/getStays', toSend).then((data)=> {
+            data = JSON.parse(data.text);
+            var tableData = this.parseData(data);
+            data = this.state.tableHeaders.concat(data);
+            tableData = this.state.tableHeaders.concat(tableData);
+            this.setState({pending: false, data: data, tableData: tableData});
         }, (err)=> {
             //TODO handle error
+            console.log("error");
+            console.log(err);
         });
     }
 
@@ -81,10 +134,9 @@ export default class Stays extends React.Component {
                 break;
             case "end":
                 this.setState({endDate: date});
-                //TODO call backend to get stays in the specified time
-                //   - based on which selection is on (current/all)
                 break;
         }
+        this.fetchData();
     }
 
     handlerEditBtn(data) {
@@ -115,15 +167,28 @@ export default class Stays extends React.Component {
     }
 
     handleShowDetails(data) {
+        var stayDetails = null;
+
+        this.state.data.forEach(function (stay) {
+            if (stay.id == data.id) {
+                stayDetails = stay;
+            }
+        });
+
+        stayDetails['from'] = moment(stayDetails.from).format('YYYY-MM-DD');
+        stayDetails['to'] = moment(stayDetails.to).format('YYYY-MM-DD');
+
         this.setState({
+            //subHeader: "Stay Details",
             showTable: false,
             showDetails: true,
-            data: data
-        })
+            data: stayDetails
+        });
     }
 
     handlerBackBtn() {
         this.setState({
+           // subHeader: "Current Stays",
             showTable: true,
             showDetails: false
         });
@@ -179,7 +244,7 @@ export default class Stays extends React.Component {
                                    endDate={this.state.endDate}
                                    onChangeStart={this.handleDayChange.bind(this, "start")}
                                    onChangeEnd={this.handleDayChange.bind(this, "end")}/>
-                    <Table TableData={this.state.data}
+                    <Table TableData={this.state.tableData}
                            onEdit={this.handlerEditBtn.bind(this)}
                         //onRemove={this.handlerRemove.bind(this)}
                            showDetails={this.handleShowDetails.bind(this)}
@@ -191,8 +256,18 @@ export default class Stays extends React.Component {
             content = (
                 <div>
                     <BackBtn onClick={this.handlerBackBtn.bind(this)}/>
-                    <DetailsTable Headers={this.state.detailsHeaders}
+                    <hr/>
+                    <DetailsTable Headers={this.state.stay}
                                   DetailsData={this.state.data}/>
+                    <h3 className="page-header">Room:</h3>
+                    <DetailsTable Headers={this.state.rooms}
+                                  DetailsData={this.state.data.rooms}/>
+                    <h3 className="page-header">Guest:</h3>
+                    <DetailsTable Headers={this.state.guest}
+                                  DetailsData={this.state.data.guest}/>
+                    <h3 className="page-header">Employee:</h3>
+                    <DetailsTable Headers={this.state.employee}
+                                  DetailsData={this.state.data.employee}/>
                 </div>
             )
         }

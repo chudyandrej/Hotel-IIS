@@ -95,7 +95,7 @@ export default class EmployeeFormForm extends React.Component {
     handlerSubmitBtn() {
         var data = {
             first_name: this.state.firstName,
-            middle_name: this.props.editData.middleName,
+            middle_name: this.state.middleName,
             last_name: this.state.lastName,
             email: this.state.email,
             password: this.state.password,
@@ -104,9 +104,8 @@ export default class EmployeeFormForm extends React.Component {
             state: this.state.state,
             phone_number: this.state.phoneNumber,
             iban: this.state.iban,
-            permissions: this.props.editData.permissions
+            permissions: this.state.permissions
         };
-
         this.props.Submit(data);
     }
 
@@ -117,8 +116,29 @@ export default class EmployeeFormForm extends React.Component {
 
         var required = "This field is required!";
         var EmailHelp = "example@domain.com";
-        var passwordHelp = "Confirm your password";
+        var passwordHelp = "Confirm the password";
         var permissionsHelp = <small className="form-text text-muted">Set user's permissions to the system</small>;
+
+        var passwords = (
+            <div>
+                <InputLabelForm label="Password"
+                                type="text"
+                                placeholder={this.state.password}
+                                required={true}
+                                validity={this.state.passwordRequired}
+                                onBlur={this.checkValidity.bind(this, "password")}
+                                onChange={this.handlerOnChange.bind(this, "password")}
+                                errorMsg={this.state.passwordRequired == null ? null : required}/>
+
+                <InputLabelForm label="Password"
+                                type="password"
+                                placeholder={this.state.passwordCheck}
+                                validity={this.state.passwordMatch}
+                                onBlur={this.checkValidity.bind(this, "password")}
+                                onChange={this.handlerOnChange.bind(this, "passwordCheck")}
+                                help={passwordHelp}/>
+            </div>
+        );
 
         return (
             <div>
@@ -155,23 +175,6 @@ export default class EmployeeFormForm extends React.Component {
                                     onChange={this.handlerOnChange.bind(this, "email")}
                                     errorMsg={this.state.emailRequired == null ? null : required}
                                     help={EmailHelp}/>
-
-                    <InputLabelForm label="Password"
-                                    type="text"
-                                    placeholder={this.state.password}
-                                    required={true}
-                                    validity={this.state.passwordRequired}
-                                    onBlur={this.checkValidity.bind(this, "password")}
-                                    onChange={this.handlerOnChange.bind(this, "password")}
-                                    errorMsg={this.state.passwordRequired == null ? null : required}/>
-
-                    <InputLabelForm label="Password"
-                                    type="password"
-                                    placeholder={this.state.passwordCheck}
-                                    validity={this.state.passwordMatch}
-                                    onBlur={this.checkValidity.bind(this, "password")}
-                                    onChange={this.handlerOnChange.bind(this, "passwordCheck")}
-                                    help={passwordHelp}/>
 
                     <InputLabelForm label="Address"
                                     type="text"
@@ -231,6 +234,8 @@ export default class EmployeeFormForm extends React.Component {
                             {permissionsHelp}
                         </div>
                     </div>
+
+                    {this.state.permissions == "none" ? null : passwords}
                 </form>
 
                 <FormButtons Submit={this.handlerSubmitBtn.bind(this)}

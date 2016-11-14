@@ -133,7 +133,6 @@ export default class Employees extends React.Component {
     }
 
     handlerSubmitBtn(data) {
-        console.log("here i am ");
         this.setState({sending: true, errorMsg: null});
         var url = null;
 
@@ -142,7 +141,7 @@ export default class Employees extends React.Component {
         }
         else {  //edit the employee
             url = 'https://young-cliffs-79659.herokuapp.com/editEmployee';
-            data['id'] = this.state.editData.id;
+            data['email'] = this.state.editData.email;
         }
 
         sendRequest(url, data)
