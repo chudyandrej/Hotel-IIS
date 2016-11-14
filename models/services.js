@@ -1,6 +1,6 @@
 module.exports = function(sequelize, DataTypes) {
     return sequelize.define('services', {
-        priceOfService: {
+        price_service: {
             type: DataTypes.FLOAT,
             allowNull: false,
         }

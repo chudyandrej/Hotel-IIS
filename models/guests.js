@@ -20,7 +20,7 @@ module.exports = function(sequelize, DataTypes) {
                 len: [2, 15]
             }
         },
-        idCardNumber: {
+        idcard_number: {
             type: DataTypes.STRING,
             allowNull: false,
         },
@@ -32,15 +32,15 @@ module.exports = function(sequelize, DataTypes) {
                 isEmail: true
             }
         },
-        phoneNumber: {
+        phone_number: {
             type: DataTypes.STRING,
             allowNull: true,
             unique: true,
         },
-        typeOfGuest: {
+        type_of_guest: {
             type: DataTypes.ENUM('person', 'company'),
         },
-        nameCompany: {
+        name_company: {
             type: DataTypes.STRING,
             allowNull: true,
         },
@@ -67,8 +67,8 @@ module.exports = function(sequelize, DataTypes) {
     },{
         instanceMethods: {
             toPublicJSON() {
-                return _.pick(this.toJSON(), 'id', 'first_name', 'middle_name', 'last_name', 'idCardNumber',
-                              'email', 'phoneNumber', 'typeOfGuest', 'nameCompany', 'ico', 'dic', 'address',
+                return _.pick(this.toJSON(), 'id', 'first_name', 'middle_name', 'last_name', 'idcard_number',
+                              'email', 'phone_number', 'type_of_guest', 'name_company', 'ico', 'dic', 'address',
                               'city', 'state');
             }
         },

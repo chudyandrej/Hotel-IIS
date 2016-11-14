@@ -24,7 +24,11 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: true
         }
     }, {
+
+
         classMethods:{
+
+
             findByID(id) {
                 return new Promise((resolve, reject) => {
                     stays.findById(id).then((stay) => {
@@ -38,8 +42,13 @@ module.exports = function(sequelize, DataTypes) {
                 });
             },
 
-            getIdInProgressStays(fromTime, toTime){
+
+
+            getIdInProgressStaysByTime(fromTime, toTime){
                 return new Promise(function(resolve, reject) {
+                    if (!_.isString(fromTime) || !_.isString(toTime) ){
+                        reject("Undefined times 'from' and 'to'");
+                    }
                     if(moment(fromTime) > moment(toTime)){
                         reject({
                             errors:[
@@ -74,16 +83,12 @@ module.exports = function(sequelize, DataTypes) {
             },
 
 
+
+
             findTotalStaysByTime(employeesObj, guestsObj,roomsObj, templateRoomsObj, fromTime, toTime){
                 return new Promise(function(resolve, reject) {
                     if (!_.isString(fromTime) || !_.isString(toTime) ){
-                        reject({
-                            errors:[
-                                {
-                                    message: "Undefined times 'from' and 'to'",
-                                    path: "from, to"
-                                }]
-                        });
+                        reject("Undefined times 'from' and 'to'");
                     }
 
                     if(moment(fromTime) > moment(toTime)){
@@ -130,6 +135,8 @@ module.exports = function(sequelize, DataTypes) {
                     });
                 });
             }
+
+
 
         },
         instanceMethods:{

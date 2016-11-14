@@ -9,7 +9,7 @@ module.exports = function(sequelize, DataTypes) {
                 len: [2, 60]
             }
         },
-        actualPrice: {
+        actual_price: {
             type: DataTypes.FLOAT,
             allowNull: false,
         },
@@ -27,7 +27,7 @@ module.exports = function(sequelize, DataTypes) {
     }, {
         instanceMethods:{
             toPublicJSON(){
-                return _.pick(this.toJSON(), 'id', 'name', 'actualPrice','description', 'available', 'duration');
+                return _.pick(this.toJSON(), 'id', 'name', 'actual_price','description', 'available', 'duration');
             }
 
         },

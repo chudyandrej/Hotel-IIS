@@ -23,7 +23,14 @@ module.exports = function(sequelize, DataTypes) {
             unique: true,
         }
     }, {
+
         classMethods: {
+
+            /**
+            * Find token if exist
+            * @param {String} hashToken
+            * @return {TokenInstance} token
+            */
             findToken(hashToken) {
                 return new Promise(function(resolve, reject) {
                     if (!_.isString(hashToken) || hashToken === '') {
@@ -52,6 +59,13 @@ module.exports = function(sequelize, DataTypes) {
                     });
                 });
             },
+
+
+
+
+            /**
+            * Filter all tokens whit expire time
+            */
             tokensTimeoutWatchdog() {
                 tokens.findAll({}).then((tokensInstances) => {
                     tokensInstances.forEach((tokenInst) => {
@@ -66,6 +80,7 @@ module.exports = function(sequelize, DataTypes) {
 
                     });
                 });
+
 
 
             }

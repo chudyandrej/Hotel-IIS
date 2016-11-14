@@ -2,8 +2,8 @@ module.exports = function(app, db, _) {
 
     app.post('/addGuest', function(req, res) {
         db.tokens.findToken(req.body.token).then(() => {
-            var body = _.pick(req.body, 'first_name', 'middle_name', 'last_name', 'idCardNumber', 'email', 'phoneNumber',
-                    'typeOfGuest', 'nameCompany', 'ico', 'dic', 'address', 'city', 'state');
+            var body = _.pick(req.body, 'first_name', 'middle_name', 'last_name', 'idcard_number', 'email', 'phone_number',
+                    'type_of_guest', 'name_company', 'ico', 'dic', 'address', 'city', 'state');
             return db.guests.create(body);
         }).then((guest) => {
             res.status(200).send();
@@ -31,8 +31,8 @@ module.exports = function(app, db, _) {
         db.tokens.findToken(req.body.token).then(() => {
             return db.guests.findByID(req.body.id);
         }).then((employee) => {
-            var valuesToUpdate = _.pick(req.body, 'first_name', 'middle_name', 'last_name', 'idCardNumber', 'email', 'phoneNumber',
-                    'typeOfGuest', 'nameCompany', 'ico', 'dic', 'address', 'city', 'state');
+            var valuesToUpdate = _.pick(req.body, 'first_name', 'middle_name', 'last_name', 'idcard_number', 'email', 'phone_number',
+                    'type_of_guest', 'name_company', 'ico', 'dic', 'address', 'city', 'state');
             return employee.update(valuesToUpdate);
         }).then(() => {
             res.status(200).json();

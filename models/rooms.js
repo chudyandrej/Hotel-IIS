@@ -1,7 +1,7 @@
 var _ = require('underscore');
 module.exports = function(sequelize, DataTypes) {
     var rooms = sequelize.define('rooms', {
-        priceOfRoom: {
+        price_room: {
             type: DataTypes.FLOAT,
             allowNull: false,
         }
@@ -25,9 +25,10 @@ module.exports = function(sequelize, DataTypes) {
                     });
                 });
             },
+
             findFreeRooms(staysObj,templateRoomsObj ,fromTime, toTime){
                 return new Promise(function(resolve, reject) {
-                    staysObj.getIdInProgressStays(fromTime,toTime).then((arrayOfStaysIDs) => {
+                    staysObj.getIdInProgressStaysByTime(fromTime,toTime).then((arrayOfStaysIDs) => {
                         rooms.findAll({
                             where: {
                                 stayId: {
@@ -53,10 +54,7 @@ module.exports = function(sequelize, DataTypes) {
                                         }
                                     }
                                 }).then((templatesFreeRooms) => {
-                                    var result = [];
-                                    templatesFreeRooms.forEach((templateFreeRoom) =>{
-                                        result.push(templateFreeRoom.toPublicJSON());
-                                    });
+                        
                                     resolve(templatesFreeRooms);
                                 }, (error) => {
                                     reject(error);
@@ -75,7 +73,7 @@ module.exports = function(sequelize, DataTypes) {
         },
         instanceMethods:{
             toPublicJSON(){
-                var publicData = _.pick(this.toJSON(), 'id', 'priceOfRoom');
+                var publicData = _.pick(this.toJSON(), 'id', 'price_room');
                 var templateRoom = this.get('templateRoom');
                 if(templateRoom){
                     publicData.templateRoom = templateRoom.toPublicJSON();

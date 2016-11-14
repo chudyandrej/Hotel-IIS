@@ -20,7 +20,6 @@ require('./backend_api/stay.js')(app, db, _);
 
 
 app.get('/', function(req, res) {
-
     res.send('Todo API Roddddot');
 });
 
@@ -31,7 +30,7 @@ setInterval(function() {
 
 
 db.sequelize.sync({
-    //    force: true
+        //force: true
 }).then(function() {
     app.listen(PORT, function() {
         console.log('Express listening on port ' + PORT + '!');

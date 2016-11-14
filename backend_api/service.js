@@ -2,7 +2,7 @@ module.exports = function(app, db, _) {
 
     app.post('/addNewService', function(req, res) {
         db.tokens.findToken(req.body.token).then(() => {
-            var body = _.pick(req.body, 'name', 'actualPrice', 'description', 'available', 'duration');
+            var body = _.pick(req.body, 'name', 'actual_price', 'description', 'available', 'duration');
             return db.templateServices.create(body);
         }).then((serviceInstance) => {
             res.status(200).send();
@@ -34,7 +34,7 @@ module.exports = function(app, db, _) {
         db.tokens.findToken(req.body.token).then(() => {
             return db.templateServices.findByID(req.body.id);
         }).then((serviceInstance) => {
-            var body = _.pick(req.body, 'name', 'actualPrice', 'description', 'available', 'duration');
+            var body = _.pick(req.body, 'name', 'actual_price', 'description', 'available', 'duration');
             return serviceInstance.update(body);
         }).then(() => {
             res.status(200).send();

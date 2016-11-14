@@ -1,13 +1,7 @@
 var _ = require('underscore');
 module.exports = function(sequelize, DataTypes) {
     var templateRooms =  sequelize.define('templateRooms', {
-        roomNumber: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            unique: true,
-
-        },
-        actualPrice: {
+        actual_price: {
             type: DataTypes.FLOAT,
             allowNull: false,
         },
@@ -33,12 +27,14 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.BOOLEAN
         }
     }, {
+
         instanceMethods: {
             toPublicJSON(){
-                return _.pick(this.toJSON(), 'id','roomNumber','actualPrice','capacity','tv','internet',
+                return _.pick(this.toJSON(), 'id','actual_price','capacity','tv','internet',
                               'bar','bathtub','kitchen','balcony');
             }
         },
+
         classMethods: {
             findByID(id){
                 return new Promise((resolve, reject) => {
@@ -59,9 +55,6 @@ module.exports = function(sequelize, DataTypes) {
                     });
                 });
             }
-
-
-
         }
     });
     return templateRooms;
