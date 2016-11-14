@@ -39,21 +39,29 @@ module.exports = function(sequelize, DataTypes) {
                             roomsInstances.forEach((roomInstance) => {
                                 arrayOfRoomsInProgress.push(roomInstance.get('templateRoomId'))
                             });
-                            templateRoomsObj.findAll({
-                                where: {
-                                    id: {
-                                        $notIn: arrayOfRoomsInProgress
+                            if (arrayOfRoomsInProgress.length === 0){
+                                templateRoomsObj.findAll().then((templatesFreeRooms)=>{
+                                    resolve(templatesFreeRooms);
+                                }, (error) => {
+                                    reject(error);
+                                })
+                            } else {
+                                templateRoomsObj.findAll({
+                                    where: {
+                                        id: {
+                                            $notIn: arrayOfRoomsInProgress
+                                        }
                                     }
-                                }
-                            }).then((templatesFreeRooms) => {
-                                var result = [];
-                                templatesFreeRooms.forEach((templateFreeRoom) =>{
-                                    result.push(templateFreeRoom.toPublicJSON());
+                                }).then((templatesFreeRooms) => {
+                                    var result = [];
+                                    templatesFreeRooms.forEach((templateFreeRoom) =>{
+                                        result.push(templateFreeRoom.toPublicJSON());
+                                    });
+                                    resolve(templatesFreeRooms);
+                                }, (error) => {
+                                    reject(error);
                                 });
-                                resolve(result);
-                            }, (error) => {
-                                reject(error);
-                            });
+                            }
                         }, (error) => {
                             reject(error);
                         });
