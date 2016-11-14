@@ -4,14 +4,17 @@ import React from 'react';
 export default class DetailsTable extends React.Component {
     render(){
 
-        var tableStyle = {
+        let tableStyle = {
             clear: "both",
             marginTop: 20
         };
 
-        var rows = [];
+        let rows = [];
 
-        for (var column in this.props.Headers){
+        for (let column in this.props.Headers){
+            if ( !this.props.Headers.hasOwnProperty(column) || this.props.DetailsData[column] == null) {
+                continue;
+            }
             rows.push(
                 <div key={rows.length} className={"form-group row"}>
                     <label className="col-xs-2 col-form-label">

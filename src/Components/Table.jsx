@@ -1,13 +1,16 @@
 import React from 'react';
 
 
-var header = {};
+let header = {};
 
 
 class TableHeader extends React.Component {
     render() {
-        var columns = [];
-        for (var key in this.props.Headers) {
+        let columns = [];
+        for (let key in this.props.Headers) {
+            if (!this.props.Headers.hasOwnProperty(key)){
+                continue;
+            }
             columns.push(
                 <th className="col-xs-4" key={columns.length}>{this.props.Headers[key]}</th>
             )
@@ -37,7 +40,7 @@ class TableRow extends React.Component {
             hover: false
         };
 
-        for (var column in header) {
+        for (let column in header) {
             this.state.columns.push(
                 <td key={this.state.columns.length}>
                     {this.props.Row[column]}
@@ -73,7 +76,7 @@ class TableRow extends React.Component {
 
     render() {
 
-        var removeBtn = (
+        let removeBtn = (
             <td className='btn-toolbar pull-right'
                 onMouseEnter={this.hoverAction.bind(this)}
                 onMouseLeave={this.leaveAction.bind(this)}>
@@ -84,7 +87,7 @@ class TableRow extends React.Component {
             </td>
         );
 
-        var buttons = (
+        let buttons = (
             <div>
                 <button type="button"
                         className="btn btn-info btn-sm"
@@ -99,7 +102,7 @@ class TableRow extends React.Component {
             </div>
         );
 
-        var actionBtns = (
+        let actionBtns = (
             <td style={{color: "transparent"}}
                 onMouseEnter={this.hoverAction.bind(this)}
                 onMouseLeave={this.leaveAction.bind(this)}
@@ -109,7 +112,7 @@ class TableRow extends React.Component {
             </td>
         );
 
-        var Row = (
+        let Row = (
             <tr onClick={this.handlerClick.bind(this, this.props.Row)} style={{cursor: "pointer"}}>
                 {this.state.columns}
                 {this.props.RemoveAction ? removeBtn : actionBtns}
@@ -132,9 +135,9 @@ export default class Table extends React.Component {
     render() {
 
         header = this.props.TableData[0];
-        var rows = [];
+        let rows = [];
 
-        var tableStyle = {
+        let tableStyle = {
             clear: "both"
         };
 

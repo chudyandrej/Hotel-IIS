@@ -9,6 +9,7 @@ import RightBtnToolbar from '../Components/Buttons/RightBtnToolbar.jsx';
 import Table from '../Components/Table.jsx';
 
 import {sendRequest} from '../Functions/HTTP-requests.js';
+import {parseData} from '../Functions/dataParsing.js';
 
 
 export default class Stays extends React.Component {
@@ -50,6 +51,7 @@ export default class Stays extends React.Component {
 
             startDate: moment(),
             endDate: moment().add(1, "day"),
+            filter: "all",
 
             editData: null,
             tableData: [],
@@ -63,47 +65,20 @@ export default class Stays extends React.Component {
         this.fetchData();
     }
 
-    parseData(data) {
-        var tableData = [];
-        var rooms = [];
-
-        data.forEach(function (row) {
-            rooms = [];
-
-            row.rooms.forEach(function (room) {
-                rooms.push(room.templateRoom.roomNumber);
-
-            });
-            rooms = rooms.toString();
-            console.log(rooms);
-            tableData.push(
-                {
-                    id: row.id,
-                    last_name: row.guest.last_name,
-                    status: row.status,
-                    from: moment(row.from).format('YYYY-MM-DD'),
-                    to: moment(row.to).format('YYYY-MM-DD'),
-                    roomNumber: rooms
-                }
-            );
-        }.bind(this));
-
-        return tableData;
-    }
-
-
     fetchData() {
         this.setState({pending: true});
-        var toSend = {
+        let toSend = {
             from: "2016-05-04",//this.state.startDate.format('YYYY-MM-DD'),
             to: "2016-12-06",//this.state.endDate.format('YYYY-MM-DD')
         };
         sendRequest('https://young-cliffs-79659.herokuapp.com/getStays', toSend).then((data)=> {
             data = JSON.parse(data.text);
-            var tableData = this.parseData(data);
-            data = this.state.tableHeaders.concat(data);
-            tableData = this.state.tableHeaders.concat(tableData);
-            this.setState({pending: false, data: data, tableData: tableData});
+
+            parseData(data, "all").then((tableData) => {
+                data = this.state.tableHeaders.concat(data);
+                tableData = this.state.tableHeaders.concat(tableData);
+                this.setState({pending: false, data: data, tableData: tableData});
+            });
         }, (err)=> {
             //TODO handle error
             console.log("error");
@@ -111,20 +86,43 @@ export default class Stays extends React.Component {
         });
     }
 
-    handlerAvailableBtn() {
-        this.setState({
-            available: "active",
-            all: "default",
-            subHeader: "Current Stays"
-        });
-    }
-
-    handlerAllBtn() {
-        this.setState({
-            available: "default",
-            all: "active",
-            subHeader: "All Stays"
-        });
+    handlerButtons(name) {
+        switch (name) {
+            case "available":
+                this.setState({
+                    available: "active",
+                    all: "default",
+                    subHeader: "Current Stays"
+                });
+                break;
+            case "all":
+                this.setState({
+                    available: "default",
+                    all: "active",
+                    subHeader: "All Stays"
+                });
+                break;
+            case "add":
+                this.setState({
+                    subHeader: "Add a new stay",
+                    showTable: false,
+                    showAddForm: true,
+                    addBtnClicked: true,
+                    removeAction: false
+                });
+                break;
+            case "remove":
+                this.setState({removeAction: !this.state.removeAction});
+                break;
+            case "back":
+                this.setState({
+                    subHeader: "Current Stays",
+                    showTable: true,
+                    showDetails: false
+                });
+                this.fetchData();
+                break;
+        }
     }
 
     handleDayChange(name, date) {
@@ -139,6 +137,15 @@ export default class Stays extends React.Component {
         this.fetchData();
     }
 
+    handleFilter(evt){
+        let filter = evt.target.value;
+        //parse data, show only stays with status value equal to filter
+        parseData(this.state.data.slice(1,), filter).then((tableData) => {
+            tableData = this.state.tableHeaders.concat(tableData);
+            this.setState({pending: false, filter: filter, tableData: tableData});
+        });
+    }
+
     handlerEditBtn(data) {
         // data = data are sent by the row, which a user wants to edit
         this.setState({
@@ -147,27 +154,12 @@ export default class Stays extends React.Component {
             showAddForm: false,
             addBtnClicked: false,
             removeAction: false,
-
             editData: data
         });
     }
 
-    handlerAddBtn() {
-        this.setState({
-            subHeader: "Add a new stay",
-            showTable: false,
-            showAddForm: true,
-            addBtnClicked: true,
-            removeAction: false
-        });
-    }
-
-    handlerRemoveBtn() {
-        this.setState({removeAction: !this.state.removeAction});
-    }
-
     handleShowDetails(data) {
-        var stayDetails = null;
+        let stayDetails = null;
 
         this.state.data.forEach(function (stay) {
             if (stay.id == data.id) {
@@ -179,25 +171,16 @@ export default class Stays extends React.Component {
         stayDetails['to'] = moment(stayDetails.to).format('YYYY-MM-DD');
 
         this.setState({
-            //subHeader: "Stay Details",
+            subHeader: "Stay Details",
             showTable: false,
             showDetails: true,
             data: stayDetails
         });
     }
 
-    handlerBackBtn() {
-        this.setState({
-           // subHeader: "Current Stays",
-            showTable: true,
-            showDetails: false
-        });
-        this.fetchData();
-    }
-
     handlerSubmitBtn(data) {
         this.setState({sending: true});
-        var url = null;
+        let url = null;
 
         if (this.state.editData == null) {  //add a new stay
             url = 'https://young-cliffs-79659.herokuapp.com/addNewStay';
@@ -218,20 +201,20 @@ export default class Stays extends React.Component {
     }
 
     render() {
-        var clsBtn = "btn btn-info ";
-        var content = null;
+        let clsBtn = "btn btn-info ";
+        let content = null;
 
         if (this.state.showTable) {
-            var LeftBtnToolbar = (
+            let LeftBtnToolbar = (
                 <div className='btn-toolbar pull-left'>
                     <button type="button"
                             className={clsBtn + this.state.available}
-                            onClick={this.handlerAvailableBtn.bind(this)}>
+                            onClick={this.handlerButtons.bind(this, "available")}>
                         Current
                     </button>
                     <button type="button"
                             className={clsBtn + this.state.all}
-                            onClick={this.handlerAllBtn.bind(this)}>
+                            onClick={this.handlerButtons.bind(this, "all")}>
                         All
                     </button>
                 </div>
@@ -244,6 +227,18 @@ export default class Stays extends React.Component {
                                    endDate={this.state.endDate}
                                    onChangeStart={this.handleDayChange.bind(this, "start")}
                                    onChangeEnd={this.handleDayChange.bind(this, "end")}/>
+                    <div>
+                        Status:
+                    <select value={this.state.filter}
+                            onChange={this.handleFilter.bind(this)}>
+                        <option value="all">all</option>
+                        <option value="inProgress">inProgress</option>
+                        <option value="reservation">reservation</option>
+                        <option value="ended">ended</option>
+                        <option value="canceled">canceled</option>
+                    </select>
+                    </div>
+
                     <Table TableData={this.state.tableData}
                            onEdit={this.handlerEditBtn.bind(this)}
                         //onRemove={this.handlerRemove.bind(this)}
@@ -255,7 +250,7 @@ export default class Stays extends React.Component {
         else if (this.state.showDetails) {
             content = (
                 <div>
-                    <BackBtn onClick={this.handlerBackBtn.bind(this)}/>
+                    <BackBtn onClick={this.handlerButtons.bind(this, "back")}/>
                     <hr/>
                     <DetailsTable Headers={this.state.stay}
                                   DetailsData={this.state.data}/>
@@ -281,9 +276,9 @@ export default class Stays extends React.Component {
             <div>
                 <h1 className="page-header">{this.state.subHeader}</h1>
 
-                {this.state.showDetails ? null : <RightBtnToolbar Add={this.handlerAddBtn.bind(this)}
+                {this.state.showDetails ? null : <RightBtnToolbar Add={this.handlerButtons.bind(this, "add")}
                                                                   AddState={this.state.addBtnClicked}
-                                                                  Remove={this.handlerRemoveBtn.bind(this)}/>}
+                                                                  Remove={this.handlerButtons.bind(this, "remove")}/>}
 
                 {this.state.pending ? <Loading /> : content}
             </div>
