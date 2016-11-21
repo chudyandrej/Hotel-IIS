@@ -84,6 +84,46 @@ module.exports = function(sequelize, DataTypes) {
                         reject(error);
                     });
                 });
+            },
+
+            getCurrentAccom(objStays, fromTime, toTime){
+                return new Promise((resolve, reject) => {
+                    objStays.findAll({
+                        where: {
+                            from: {
+                                $or:[{$lte: fromTime},{$lte: toTime}]
+                            },
+                            to: {
+                                $or:[{$gte: fromTime},{$gte: toTime}]
+                            },
+                            status: {
+                                $in: ['reservation', 'inProgress']
+                            }
+                        },
+                        include: [guests]
+                    }).then((instances) => {
+                        resolve(instances);
+                    }, (error) => {
+                        reject(error);
+                    });
+                });
+            },
+
+            getStays(objStays, guestId){
+                return new Promise((resolve, reject) => {
+                    objStays.findAll({
+                        where: {
+                            guestId
+                        },
+                        include: [invoices]
+                    }).then((instances) => {
+                        resolve(instances);
+                    }, (error) => {
+                        reject(error);
+                    });
+
+                });
+
             }
         }
     });

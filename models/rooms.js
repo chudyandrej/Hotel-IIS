@@ -28,7 +28,7 @@ module.exports = function(sequelize, DataTypes) {
 
             findFreeRooms(staysObj,templateRoomsObj ,fromTime, toTime){
                 return new Promise(function(resolve, reject) {
-                    staysObj.getIdInProgressStaysByTime(fromTime,toTime).then((arrayOfStaysIDs) => {
+                    staysObj.getArrayValFromActualStays('id',fromTime,toTime).then((arrayOfStaysIDs) => {
                         rooms.findAll({
                             where: {
                                 stayId: {
@@ -54,7 +54,7 @@ module.exports = function(sequelize, DataTypes) {
                                         }
                                     }
                                 }).then((templatesFreeRooms) => {
-                        
+
                                     resolve(templatesFreeRooms);
                                 }, (error) => {
                                     reject(error);

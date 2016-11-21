@@ -1,3 +1,4 @@
+var moment = require('moment');
 module.exports = function(app, db, _) {
 
     app.post('/addGuest', function(req, res) {
@@ -24,6 +25,76 @@ module.exports = function(app, db, _) {
         }).catch((error) => {
             res.status(400).json(error);
         });
+    });
+
+    app.post('/getCurrenGuests', function(req, res) {
+        var timeFrom = req.body.from;
+        var timeTo = req.body.to;
+        db.tokens.findToken(req.body.token).then(() => {
+            return new Promise((resolve, reject) => {
+                if ((!_.isString(timeFrom) || !_.isString(timeTo)) || (moment(timeFrom) > moment(timeTo))){
+                    reject({
+                        errors:[{message: "Bad format of request"}]
+                    });
+                }
+                else{
+                    resolve();
+                }
+            });
+        }).then(() => {
+            return db.stays.findAll({
+                where: {
+                    from: {
+                        $or:[{$lte: timeFrom},{$lte: timeTo}]
+                    },
+                    to: {
+                        $or:[{$gte: timeFrom},{$gte: timeTo}]
+                    },
+                    status: {
+                        $in: ['reservation', 'inProgress']
+                    }
+                },
+                include: [db.guests]
+            });
+        }).then((stayEmployeesInstances) => {
+            let result = [];
+            stayEmployeesInstances.forEach((stayEmployee) => {
+                result.push(stayEmployee.toPublicJSON());
+            });
+            res.status(200).json(result);
+        }).catch((error) => {
+            res.status(400).json(error);
+        });
+    });
+
+    app.post('/getGuestsStays', function(req, res) {
+        db.tokens.findToken(req.body.token).then(() => {
+            return new Promise((resolve, reject) => {
+                if (_.isUndefined(req.body.id)){
+                    reject({
+                        errors:[{message: "Bad format of request"}]
+                    });
+                } else {
+                    resolve();
+                }
+            });
+        }).then(() => {
+            return db.stays.findAll({
+                where: {
+                    guestId : req.body.id
+                },
+                include: [db.invoices]
+            });
+        }).then((instances) => {
+            result = []
+            instances.forEach((instance) => {
+                result.push(instance.toPublicJSON());
+            });
+            res.status(200).json(result);
+        }).catch((error) => {
+            res.status(400).json(error);
+        });
+
     });
 
 

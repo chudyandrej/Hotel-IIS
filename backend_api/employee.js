@@ -1,5 +1,6 @@
 module.exports = function(app, db, _) {
 
+    //Create guests
     app.post('/registration', function(req, res) {
         // db.tokens.findToken(req.body.token).then(() => {
         var body = _.pick(req.body, 'first_name', 'middle_name', 'last_name', 'email', 'password',
@@ -11,7 +12,6 @@ module.exports = function(app, db, _) {
             res.status(400).json(error);
         });
     });
-
 
 
     //Get all employees
@@ -32,7 +32,6 @@ module.exports = function(app, db, _) {
             res.status(400).json(error);
         });
     });
-
 
 
 

@@ -27,8 +27,6 @@ module.exports = function(sequelize, DataTypes) {
 
 
         classMethods:{
-
-
             findByID(id) {
                 return new Promise((resolve, reject) => {
                     stays.findById(id).then((stay) => {
@@ -43,8 +41,7 @@ module.exports = function(sequelize, DataTypes) {
             },
 
 
-
-            getIdInProgressStaysByTime(fromTime, toTime){
+            getArrayValFromActualStays(key, fromTime, toTime){
                 return new Promise(function(resolve, reject) {
                     if (!_.isString(fromTime) || !_.isString(toTime) ){
                         reject("Undefined times 'from' and 'to'");
@@ -66,12 +63,15 @@ module.exports = function(sequelize, DataTypes) {
                             },
                             to: {
                                 $or:[{$gte: fromTime},{$gte: toTime}]
+                            },
+                            status: {
+                                $in: ['reservation', 'inProgress']
                             }
                         }
                     }).then((staysInstances) => {
                         let result = [];
                         staysInstances.forEach((stayInstance) => {
-                            result.push(stayInstance.get('id'));
+                            result.push(stayInstance.get(key));
                         });
                         resolve(result);
 
