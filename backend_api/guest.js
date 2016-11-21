@@ -112,4 +112,48 @@ module.exports = function(app, db, _) {
         });
     });
 
+
+    app.post('/filterGuests', function(req, res) {
+        db.tokens.findToken(req.body.token).then(() => {
+            return db.guests.findAll({
+                where: {
+                     $or: [
+                         {
+                             first_name: {
+                                 $like: '%' + req.body.text + '%'
+                            }
+                        },{
+                            middle_name: {
+                                 $like: '%' + req.body.text + '%'
+                            }
+                        },{
+                            last_name: {
+                                 $like: '%' + req.body.text + '%'
+                            }
+                        },{
+                            name_company: {
+                                 $like: '%' + req.body.text + '%'
+                            }
+                        }
+                    ]
+                }
+            });
+        }).then((employeesInstances) => {
+            result = [];
+            for (employee of employeesInstances) {
+                result.push(employee.toPublicJSON());
+            }
+            res.status(200).json(result);
+        }).catch((error) => {
+            res.status(400).json(error);
+        });
+    });
+
+
+
+
+
+
+
+
 }

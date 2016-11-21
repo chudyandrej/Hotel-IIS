@@ -86,28 +86,7 @@ module.exports = function(sequelize, DataTypes) {
                 });
             },
 
-            getCurrentAccom(objStays, fromTime, toTime){
-                return new Promise((resolve, reject) => {
-                    objStays.findAll({
-                        where: {
-                            from: {
-                                $or:[{$lte: fromTime},{$lte: toTime}]
-                            },
-                            to: {
-                                $or:[{$gte: fromTime},{$gte: toTime}]
-                            },
-                            status: {
-                                $in: ['reservation', 'inProgress']
-                            }
-                        },
-                        include: [guests]
-                    }).then((instances) => {
-                        resolve(instances);
-                    }, (error) => {
-                        reject(error);
-                    });
-                });
-            },
+
 
             getStays(objStays, guestId){
                 return new Promise((resolve, reject) => {
@@ -121,9 +100,7 @@ module.exports = function(sequelize, DataTypes) {
                     }, (error) => {
                         reject(error);
                     });
-
                 });
-
             }
         }
     });

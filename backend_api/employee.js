@@ -2,7 +2,17 @@ module.exports = function(app, db, _) {
 
     //Create guests
     app.post('/registration', function(req, res) {
-        // db.tokens.findToken(req.body.token).then(() => {
+        // db.employees.findByToken(req.body.token).then((instanceEmplyee) => {
+        //     return new Promise((resolve, reject) => {
+        //         if (instanceEmplyee.get('permissions') === 'root'){
+        //             resolve();
+        //         } else {
+        //             reject({
+        //                 errors:[{message: "Access denied! "}]
+        //             });
+        //         }
+        //     });
+        // }).then(() => {
         var body = _.pick(req.body, 'first_name', 'middle_name', 'last_name', 'email', 'password',
         'permissions', 'address', 'city', 'state', 'phone_number', 'iban');
         body.currently_employed = true;
@@ -16,7 +26,17 @@ module.exports = function(app, db, _) {
 
     //Get all employees
     app.post('/getEmployees', function(req, res) {
-        db.tokens.findToken(req.body.token).then(() => {
+        db.employees.findByToken(req.body.token).then((instanceEmplyee) => {
+            return new Promise((resolve, reject) => {
+                if (instanceEmplyee.get('permissions') === 'root'){
+                    resolve();
+                } else {
+                    reject({
+                        errors:[{message: "Access denied! "}]
+                    });
+                }
+            });
+        }).then(() => {
             return db.employees.findAll({
                 where: {
                     currently_employed: true
@@ -37,7 +57,17 @@ module.exports = function(app, db, _) {
 
 
     app.post('/deleteEmployee', function(req, res) {
-        db.tokens.findToken(req.body.token).then(() => {
+        db.employees.findByToken(req.body.token).then((instanceEmplyee) => {
+            return new Promise((resolve, reject) => {
+                if (instanceEmplyee.get('permissions') === 'root'){
+                    resolve();
+                } else {
+                    reject({
+                        errors:[{message: "Access denied! "}]
+                    });
+                }
+            });
+        }).then(() => {
             return db.employees.findByID(req.body.id);
         }).then((employeeInstance) => {
             return employeeInstance.update({
@@ -51,10 +81,18 @@ module.exports = function(app, db, _) {
     });
 
 
-
-
     app.post('/editEmployee', function(req, res) {
-        db.tokens.findToken(req.body.token).then(() => {
+        db.employees.findByToken(req.body.token).then((instanceEmplyee) => {
+            return new Promise((resolve, reject) => {
+                if (instanceEmplyee.get('permissions') === 'root'){
+                    resolve();
+                } else {
+                    reject({
+                        errors:[{message: "Access denied! "}]
+                    });
+                }
+            });
+        }).then(() => {
             return db.employees.findByID(req.body.id);
         }).then((employee) => {
             var valuesToUpdate = _.pick(req.body, 'first_name', 'middle_name', 'last_name', 'email',
@@ -66,6 +104,7 @@ module.exports = function(app, db, _) {
             res.status(400).json(error);
         });
     });
+
 
 
 

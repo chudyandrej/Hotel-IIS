@@ -1,7 +1,17 @@
 module.exports = function(app, db, _) {
 
     app.post('/addNewService', function(req, res) {
-        db.tokens.findToken(req.body.token).then(() => {
+        db.employees.findByToken(req.body.token).then((instanceEmplyee) => {
+            return new Promise((resolve, reject) => {
+                if (instanceEmplyee.get('permissions') === 'root'){
+                    resolve();
+                } else {
+                    reject({
+                        errors:[{message: "Access denied! "}]
+                    });
+                }
+            });
+        }).then(() => {
             var body = _.pick(req.body, 'name', 'actual_price', 'description', 'available', 'duration');
             return db.templateServices.create(body);
         }).then((serviceInstance) => {

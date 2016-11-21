@@ -60,9 +60,7 @@ module.exports = function(sequelize, DataTypes) {
                 });
             },
 
-
-
-
+        
             /**
             * Filter all tokens whit expire time
             */
