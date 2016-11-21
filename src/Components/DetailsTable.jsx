@@ -2,7 +2,7 @@ import React from 'react';
 
 
 export default class DetailsTable extends React.Component {
-    render(){
+    render() {
 
         let tableStyle = {
             clear: "both",
@@ -10,21 +10,38 @@ export default class DetailsTable extends React.Component {
         };
 
         let rows = [];
+        let value = null;
 
-        for (let column in this.props.Headers){
-            if ( !this.props.Headers.hasOwnProperty(column) || this.props.DetailsData[column] == null) {
+        for (let column in this.props.Headers) {
+            if (!this.props.Headers.hasOwnProperty(column) || this.props.DetailsData[column] == null) {
                 continue;
             }
-            rows.push(
-                <div key={rows.length} className={"form-group row"}>
-                    <label className="col-xs-2 col-form-label">
-                        {this.props.Headers[column]}
-                    </label>
-                    <p>
-                        {this.props.DetailsData[column]}
-                    </p>
-                </div>
-            )
+            if (typeof(this.props.DetailsData[column]) === "boolean") {
+                //TODO show images instead of text ???
+                value = this.props.DetailsData[column] ? "YES" : "NO";
+                rows.push (
+                    <div key={rows.length} className={"form-group row"}>
+                        <label className="col-xs-2 col-form-label">
+                            {this.props.Headers[column]}
+                        </label>
+                        <p>
+                            {value}
+                        </p>
+                    </div>
+                );
+            }
+            else {
+                rows.push (
+                    <div key={rows.length} className={"form-group row"}>
+                        <label className="col-xs-2 col-form-label">
+                            {this.props.Headers[column]}
+                        </label>
+                        <p>
+                            {this.props.DetailsData[column]}
+                        </p>
+                    </div>
+                );
+            }
         }
 
         return (

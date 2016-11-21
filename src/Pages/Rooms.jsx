@@ -5,9 +5,13 @@ import moment from 'moment';
 //import '../../node_modules/react-datepicker/dist/react-datepicker.css';
 
 import BackBtn from '../Components/Buttons/BackBtn.jsx';
+import BookRoomForm from '../Components/Forms/BookRoomForm.jsx';
 import CalendarInput from '../Components/CalendarInput.jsx';
 import DetailsTable from '../Components/DetailsTable.jsx';
+import Loading from '../Components/Loading.jsx';
 import Table from '../Components/Table.jsx';
+
+import {sendRequest} from '../Functions/HTTP-requests.js';
 
 
 export default class Rooms extends React.Component {
@@ -21,12 +25,43 @@ export default class Rooms extends React.Component {
             all: "default",
             history: "default",
             subHeader: "Available Rooms",
+
+            tableHeaders: [{id: "Room Number", capacity: "Capacity", actual_price: "Price"}],
+            detailsHeaders: {
+                id: "Room Number:", actual_price: "Price:", tv: "TV:", internet: "Internet:", bar: "Bar:",
+                bathtub: "Bathtub:", kitchen: "Kitchen:", balcony: "Balcony:"
+            },
+
             showTable: true,
+            showDetails: false,
 
             startDate: moment(),
             endDate: moment(),
-            details: null
+
+            data: [],
+            pending: true,
+            sending: false
         };
+    }
+
+    componentWillMount() {
+        this.fetchData();
+    }
+
+    fetchData() {
+        this.setState({pending: true});
+        let toSend = {
+            from: "2016-05-04",//this.state.startDate.format('YYYY-MM-DD'),
+            to: "2016-12-06",//this.state.endDate.format('YYYY-MM-DD')
+        };
+        sendRequest('https://young-cliffs-79659.herokuapp.com/getFreeRooms', toSend).then((data)=> {
+            data = this.state.tableHeaders.concat(JSON.parse(data.text));
+            this.setState({pending: false, data: data});
+        }, (err)=> {
+            //TODO handle error
+            console.log("error");
+            console.log(err);
+        });
     }
 
     handlerAvailableBtn() {
@@ -74,29 +109,40 @@ export default class Rooms extends React.Component {
     handleShowDetails(data) {
         this.setState({
             showTable: false,
-            details: data
+            showDetails: true,
+            data: data
         })
     }
 
-    handlerBackBtn() {
+    handlerBookRoomBtn(data) {
         this.setState({
-            showTable: true
-        })
+            showTable: false,
+            showDetails: false,
+            data: data
+        });
+    }
+
+    handlerCancelBtn() {
+        this.setState({
+            subHeader: "Available Rooms",
+            showTable: true,
+            showAddForm: false,
+            showDetails: false,
+            addBtnClicked: false
+        });
+        this.fetchData();
+    }
+
+    handlerBookRoom(data) {
+
     }
 
     render() {
-        var clsBtn = "btn btn-info ";
-        var mainContent = null;
-
-        var FAKEservicesDATA = [
-            {name: "Name", desc: "Description", price: "Price"},
-            {name: "service1", desc: "desc", price: 400},
-            {name: "service2", desc: "desc", price: 400},
-            {name: "service3", desc: "desc", price: 400}
-        ];
+        let clsBtn = "btn btn-info ";
+        let mainContent = null;
 
         if (this.state.showTable) {
-            var LeftBtnToolbar = (
+            let LeftBtnToolbar = (
                 <div className='btn-toolbar pull-left'>
                     <button type="button"
                             className={clsBtn + this.state.available}
@@ -118,31 +164,46 @@ export default class Rooms extends React.Component {
 
             mainContent = (
                 <div>
-                    {LeftBtnToolbar}
+                    {this.props.isChild == null ? LeftBtnToolbar : null}
                     <CalendarInput startDate={this.state.startDate}
                                    endDate={this.state.endDate}
                                    onChangeStart={this.handleDayChange.bind(this, "start")}
                                    onChangeEnd={this.handleDayChange.bind(this, "end")}/>
 
-                    <Table TableData={FAKEservicesDATA}
+                    <Table TableData={this.state.data}
+                           order={this.handlerBookRoomBtn.bind(this)}
                            showDetails={this.handleShowDetails.bind(this)}/>
                 </div>
             )
         }
-        else {
+        else if (this.state.showDetails) {
             mainContent = (
-                <DetailsTable Headers={FAKEservicesDATA[0]}
-                              DetailsData={this.state.details}/>
+                <div>
+                    <BackBtn onClick={this.handlerCancelBtn.bind(this)}/>
+                    <DetailsTable Headers={this.state.detailsHeaders}
+                                  DetailsData={this.state.data}/>
+                </div>
             );
+        }
+        else {  //order form
+            mainContent = (
+                <div>
+                    <BookRoomForm Cancel={this.handlerCancelBtn.bind(this)}
+                                   Submit={this.handlerBookRoom.bind(this)}
+                                   roomInfo={
+                                       <DetailsTable Headers={this.state.detailsHeaders}
+                                                     DetailsData={this.state.data}/>
+                                   }
+                                   pending={this.state.sending}/>
+                </div>
+            )
         }
 
         return (
             <div>
                 <h1 className="page-header">{this.state.subHeader}</h1>
 
-                {this.state.showTable ? null : <BackBtn onClick={this.handlerBackBtn.bind(this)}/>}
-
-                {mainContent}
+                {this.state.pending ? <Loading /> : mainContent}
             </div>
         );
     }

@@ -4,10 +4,10 @@ import React from 'react';
 export default class InputLabelForm extends React.Component {
     render() {
 
-        var valid = this.props.validity || "";
-        var help = null;
-        var required = null;
-        var errorMsg = null;
+        let valid = this.props.validity || "";
+        let help = null;
+        let required = null;
+        let errorMsg = null;
 
         if (this.props.help != null) {
             help = <small className="form-text text-muted">{this.props.help}</small>;

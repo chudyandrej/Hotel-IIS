@@ -1,6 +1,7 @@
 import React from 'react';
 
 import BackBtn from '../Components/Buttons/BackBtn.jsx';
+import BookRoomForm from '../Components/Forms/BookRoomForm.jsx';
 import DetailsTable from '../Components/DetailsTable.jsx';
 import GuestForm from '../Components/Forms/GuestForm.jsx'
 import Loading from '../Components/Loading.jsx';
@@ -18,18 +19,19 @@ export default class Guests extends React.Component {
         this.state = {
             current: "active",
             all: "default",
-            subHeader: "Active guests",
-            tableHeaders: [{first_name: "First Name", last_name: "Family name", typeOfGuest: "Type"}],
+            subHeader: "Current guests",
+            tableHeaders: [{first_name: "First Name", last_name: "Family name", type_of_guest: "Type"}],
             detailsHeaders: {
                 first_name: "First Name:", middle_name: "Middle Name:", last_name: "Family name:",
-                typeOfGuest: "Type:", email: "email:", phoneNumber: "Phone number:",
-                idCardNumber: "Card Number:", nameCompany: "Company Name:", ico: "ICO:", dic: "DIC:",
+                type_of_guest: "Type:", email: "email:", phone_number: "Phone number:",
+                idcard_number: "Card Number:", name_company: "Company Name:", ico: "ICO:", dic: "DIC:",
                 address: "Address:", city: "City:", state: "State:"
             },
 
             showTable: true,
             showAddForm: false,
             showDetails: false,
+            bookRoom: false,
             removeAction: false,
             addBtnClicked: false,
 
@@ -42,12 +44,12 @@ export default class Guests extends React.Component {
     }
 
     componentWillMount() {
-        this.fetchData();
+        this.fetchData("getGuests");  //TODO add api of current guests
     }
 
-    fetchData() {
+    fetchData(api) {
         this.setState({pending: true});
-        sendRequest('https://young-cliffs-79659.herokuapp.com/getGuests', {}).then((data)=> {
+        sendRequest('https://young-cliffs-79659.herokuapp.com/' + api, {}).then((data)=> {
             data = this.state.tableHeaders.concat(JSON.parse(data.text));
             this.setState({pending: false, data: data});
         }, (err)=> {
@@ -61,8 +63,8 @@ export default class Guests extends React.Component {
             all: "default",
             subHeader: "Current guests"
         });
+        this.fetchData("getCurrentGuests");
     }
-
 
     handlerAllBtn() {
         this.setState({
@@ -70,6 +72,7 @@ export default class Guests extends React.Component {
             all: "active",
             subHeader: "All guests"
         });
+        this.fetchData("getGuests");
     }
 
     handlerEditBtn(data) {
@@ -113,10 +116,12 @@ export default class Guests extends React.Component {
         this.setState({
             showTable: true,
             showAddForm: false,
+            showDetails: false,
+            bookRoom: false,
             subHeader: "Guests",
             addBtnClicked: false
         });
-        this.fetchData();
+        this.fetchData('getGuests');
     }
 
     handleShowDetails(data) {
@@ -127,18 +132,9 @@ export default class Guests extends React.Component {
         })
     }
 
-    handlerBackBtn() {
-        this.setState({
-            showTable: true,
-            showDetails: false
-        });
-        this.fetchData();
-    }
-
-
     handlerSubmitBtn(data) {
         this.setState({sending: true, errorMsg: null});
-        var url = null;
+        let url = null;
 
         if (this.state.editData == null) {  //add a new guest
             url = 'https://young-cliffs-79659.herokuapp.com/addGuest';
@@ -160,13 +156,26 @@ export default class Guests extends React.Component {
             });
     }
 
-    render() {
-        var clsBtn = "btn btn-info ";
+    handlerBookRoomBtn(data) {
+        this.setState({
+            showTable: false,
+            showDetails: false,
+            bookRoom: true,
+            data: data
+        });
+    }
 
-        var content = null;
+    handlerBookRoom(data) {
+
+    }
+
+    render() {
+        let clsBtn = "btn btn-info ";
+
+        let content = null;
 
         if (this.state.showTable) {
-            var LeftBtnToolbar = (
+            let LeftBtnToolbar = (
                 <div className='btn-toolbar pull-left'>
                     <button type="button"
                             className={clsBtn + this.state.current}
@@ -183,9 +192,10 @@ export default class Guests extends React.Component {
 
             content = (
                 <div>
-                    {LeftBtnToolbar}
+                    {this.props.isChild == null ? LeftBtnToolbar : null}
                     <Table TableData={this.state.data}
                            onEdit={this.handlerEditBtn.bind(this)}
+                           order={this.handlerBookRoomBtn.bind(this)}
                            onRemove={this.handlerRemove.bind(this)}
                            showDetails={this.handleShowDetails.bind(this)}
                            RemoveAction={this.state.removeAction}/>
@@ -195,10 +205,21 @@ export default class Guests extends React.Component {
         else if (this.state.showDetails) {
             content = (
                 <div>
-                    <BackBtn onClick={this.handlerBackBtn.bind(this)}/>
+                    <BackBtn onClick={this.handlerCancelBtn.bind(this)}/>
                     <DetailsTable Headers={this.state.detailsHeaders}
                                   DetailsData={this.state.data}/>
                 </div>
+            )
+        }
+        else if (this.state.bookRoom) {
+            content = (
+                <BookRoomForm Cancel={this.handlerCancelBtn.bind(this)}
+                              Submit={this.handlerBookRoom.bind(this)}
+                              guestInfo={
+                                  <DetailsTable Headers={this.state.detailsHeaders}
+                                                DetailsData={this.state.data}/>
+                              }
+                              pending={this.state.sending}/>
             )
         }
         else {
@@ -206,18 +227,22 @@ export default class Guests extends React.Component {
                 <GuestForm Submit={this.handlerSubmitBtn.bind(this)}
                            Cancel={this.handlerCancelBtn.bind(this)}
                            editData={this.state.editData}
-                           errorMsg={this.props.errorMsg}
+                           errorMsg={this.state.errorMsg}
                            pending={this.state.sending}/>
             )
         }
+
+        let RightToolbar = (
+            <RightBtnToolbar Add={this.handlerAddBtn.bind(this)}
+                             AddState={this.state.addBtnClicked}
+                             Remove={this.handlerRemoveBtn.bind(this)}/>
+        );
 
         return (
             <div>
                 <h1 className="page-header">{this.state.subHeader}</h1>
 
-                {this.state.showDetails ? null : <RightBtnToolbar Add={this.handlerAddBtn.bind(this)}
-                                                                  AddState={this.state.addBtnClicked}
-                                                                  Remove={this.handlerRemoveBtn.bind(this)}/> }
+                {this.props.isChild == null && !this.state.showDetails ? RightToolbar : null}
 
                 {this.state.pending ? <Loading /> : content}
             </div>

@@ -25,7 +25,7 @@ export default class ServiceForm extends React.Component {
             this.state = {
                 name: this.props.editData.name,
                 description: this.props.editData.description,
-                price: this.props.editData.actualPrice,
+                price: this.props.editData.actual_price,
                 duration: this.props.editData.duration,
 
                 nameRequired: null,
@@ -37,13 +37,13 @@ export default class ServiceForm extends React.Component {
     }
 
     handlerOnChange(name, evt) {
-        var state = {};
+        let state = {};
         state[name] = evt.target.value;
         this.setState(state);
     }
 
     checkValidity(name) {
-        var state = {};
+        let state = {};
         if (this.state[name] == ""){
             state[name+"Required"] = "has-error";
         }
@@ -54,10 +54,10 @@ export default class ServiceForm extends React.Component {
     }
 
     handlerSubmitBtn() {
-        var data = {
+        let data = {
             name: this.state.name,
             description: this.state.description,
-            actualPrice: this.state.price,
+            actual_price: this.state.price,
             duration: this.state.duration,
             available: true
         };
@@ -66,11 +66,11 @@ export default class ServiceForm extends React.Component {
     }
 
     render() {
-        var tableStyle = {
+        let tableStyle = {
             clear: "both"
         };
 
-        var required = "This field is required!";
+        let required = "This field is required!";
 
         return (
             <div>

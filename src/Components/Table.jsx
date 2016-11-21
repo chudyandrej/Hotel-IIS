@@ -4,7 +4,7 @@ import React from 'react';
 let header = {};
 
 
-class TableHeader extends React.Component {
+export class TableHeader extends React.Component {
     render() {
         let columns = [];
         for (let key in this.props.Headers) {
@@ -69,6 +69,10 @@ class TableRow extends React.Component {
         this.props.onEdit(data);
     }
 
+    handlerOrderBtn(data) {
+        this.props.order(data);
+    }
+
     handlerRemove(data) {
         this.setState({remove: true});
         this.props.onRemove(data.id);
@@ -87,18 +91,26 @@ class TableRow extends React.Component {
             </td>
         );
 
+        let editBtn = (
+            <button type="button"
+                    className="btn btn-info btn-sm"
+                    onClick={this.handlerEditBtn.bind(this, this.props.Row)}>
+                Edit
+            </button>
+        );
+
+        let orderBtn = (
+            <button type="button"
+                    className="btn btn-info btn-sm"
+                    onClick={this.handlerOrderBtn.bind(this, this.props.Row)}>
+                Order
+            </button>
+        );
+
         let buttons = (
             <div>
-                <button type="button"
-                        className="btn btn-info btn-sm"
-                        onClick={this.handlerEditBtn.bind(this, this.props.Row)}>
-                    Edit
-                </button>
-                <button type="button"
-                        className="btn btn-info btn-sm"
-                        onClick={this.handlerEditBtn.bind(this, this.props.Row)}>
-                    Order
-                </button>
+                {this.props.onEdit == null ? null : editBtn}
+                {this.props.order == null ? null : orderBtn}
             </div>
         );
 
@@ -146,6 +158,7 @@ export default class Table extends React.Component {
                                 Row={row}
                                 onEdit={this.props.onEdit}
                                 showDetails={this.props.showDetails}
+                                order={this.props.order}
                                 onRemove={this.props.onRemove}
                                 RemoveAction={this.props.RemoveAction}/>);
         }.bind(this));
