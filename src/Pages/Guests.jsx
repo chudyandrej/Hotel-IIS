@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 
 import BackBtn from '../Components/Buttons/BackBtn.jsx';
 import BookRoomForm from '../Components/Forms/BookRoomForm.jsx';
@@ -8,7 +9,8 @@ import Loading from '../Components/Loading.jsx';
 import RightBtnToolbar from '../Components/Buttons/RightBtnToolbar.jsx';
 import Table from '../Components/Table.jsx';
 
-import {sendRequest} from '../Functions/HTTP-requests.js';
+import {sendRequest, downloadData} from '../Functions/HTTP-requests.js';
+import {getGuests} from '../Functions/dataParsing.js';
 
 
 export default class Guests extends React.Component {
@@ -27,6 +29,7 @@ export default class Guests extends React.Component {
                 idcard_number: "Card Number:", name_company: "Company Name:", ico: "ICO:", dic: "DIC:",
                 address: "Address:", city: "City:", state: "State:"
             },
+            historyHeaders: [{from: "From:", to: "To:", status: "Status:", note: "Note:"}],
 
             showTable: true,
             showAddForm: false,
@@ -36,43 +39,90 @@ export default class Guests extends React.Component {
             addBtnClicked: false,
 
             editData: null,
+            historyData: null,
             data: [],
             pending: true,
+            pendingHistory: false,
             sending: false,
             errorMsg: null
         };
     }
 
     componentWillMount() {
-        this.fetchData("getGuests");  //TODO add api of current guests
+        this.fetchCurrentGuests();
     }
 
-    fetchData(api) {
+    fetchAllGuests() {
         this.setState({pending: true});
-        sendRequest('https://young-cliffs-79659.herokuapp.com/' + api, {}).then((data)=> {
-            data = this.state.tableHeaders.concat(JSON.parse(data.text));
+        downloadData("getGuests", {}).then((data) => {
+            data = this.state.tableHeaders.concat(data);
             this.setState({pending: false, data: data});
         }, (err)=> {
+            console.log(err);
             //TODO handle error
         });
     }
 
-    handlerCurrentBtn() {
-        this.setState({
-            current: "active",
-            all: "default",
-            subHeader: "Current guests"
+    fetchCurrentGuests(){
+        this.setState({pending: true});
+        let data = {
+            from: moment().format('YYYY-MM-DD'),
+            to: moment().format('YYYY-MM-DD')
+        };
+        //TODO correct typo in api
+        downloadData("getCurrenGuests", data).then((data) => {
+            console.log(data);
+            getGuests(data).then((data) => {
+                data = this.state.tableHeaders.concat(data);
+                this.setState({pending: false, data: data});
+            }, (err) => {
+                //TODO handle error
+            });
+        }, (err)=> {
+            console.log(err);
+            //TODO handle error
         });
-        this.fetchData("getCurrentGuests");
     }
 
-    handlerAllBtn() {
-        this.setState({
-            current: "default",
-            all: "active",
-            subHeader: "All guests"
-        });
-        this.fetchData("getGuests");
+    handlerBtn(name) {
+        switch(name) {
+            case "current":
+                this.setState({
+                    current: "active",
+                    all: "default",
+                    subHeader: "Current guests"
+                });
+                this.fetchCurrentGuests();
+                break;
+            case "all":
+                this.setState({
+                    current: "default",
+                    all: "active",
+                    subHeader: "All guests"
+                });
+                this.fetchAllGuests();
+                break;
+            case "add":
+                this.setState({
+                    showTable: false,
+                    showAddForm: true,
+                    subHeader: "Add a new guest",
+                    addBtnClicked: true,
+                    removeAction: false
+                });
+                break;
+            case "cancel":
+                this.setState({
+                    showTable: true,
+                    showAddForm: false,
+                    showDetails: false,
+                    bookRoom: false,
+                    subHeader: "Current Guests",
+                    addBtnClicked: false
+                });
+                this.fetchCurrentGuests();
+                break;
+        }
     }
 
     handlerEditBtn(data) {
@@ -88,48 +138,21 @@ export default class Guests extends React.Component {
         });
     }
 
-    handlerAddBtn() {
-        this.setState({
-            showTable: false,
-            showAddForm: true,
-            subHeader: "Add a new guest",
-            addBtnClicked: true,
-            removeAction: false
-        });
-    }
-
-    handlerRemoveBtn() {
-        this.setState({removeAction: !this.state.removeAction});
-    }
-
-    handlerRemove(id) {
-        sendRequest('https://young-cliffs-79659.herokuapp.com/editGuest', {available: false, id: id})
-            .then((data)=> {
-                console.log("data's deleted successfully");
-                this.setState({sending: false});
-            }, (err)=> {
-                //TODO handle error
-            });
-    }
-
-    handlerCancelBtn() {
-        this.setState({
-            showTable: true,
-            showAddForm: false,
-            showDetails: false,
-            bookRoom: false,
-            subHeader: "Guests",
-            addBtnClicked: false
-        });
-        this.fetchData('getGuests');
-    }
-
     handleShowDetails(data) {
+
         this.setState({
+            pendingHistory: true,
             showTable: false,
             showDetails: true,
             data: data
-        })
+        });
+        downloadData("getGuestsStays", {id: data.id}).then((history) => {
+            history = this.state.historyHeaders.concat(history);
+            this.setState({pendingHistory: false, historyData: history});
+        }, (err) => {
+            //TODO handle error
+        });
+
     }
 
     handlerSubmitBtn(data) {
@@ -166,7 +189,7 @@ export default class Guests extends React.Component {
     }
 
     handlerBookRoom(data) {
-
+        //TODO
     }
 
     render() {
@@ -179,12 +202,12 @@ export default class Guests extends React.Component {
                 <div className='btn-toolbar pull-left'>
                     <button type="button"
                             className={clsBtn + this.state.current}
-                            onClick={this.handlerCurrentBtn.bind(this)}>
+                            onClick={this.handlerBtn.bind(this, "current")}>
                         Current
                     </button>
                     <button type="button"
                             className={clsBtn + this.state.all}
-                            onClick={this.handlerAllBtn.bind(this)}>
+                            onClick={this.handlerBtn.bind(this, "all")}>
                         All
                     </button>
                 </div>
@@ -196,24 +219,28 @@ export default class Guests extends React.Component {
                     <Table TableData={this.state.data}
                            onEdit={this.handlerEditBtn.bind(this)}
                            order={this.handlerBookRoomBtn.bind(this)}
-                           onRemove={this.handlerRemove.bind(this)}
                            showDetails={this.handleShowDetails.bind(this)}
                            RemoveAction={this.state.removeAction}/>
                 </div>
             )
         }
         else if (this.state.showDetails) {
+            let history = (
+                <Table TableData={this.state.historyData}/>
+            );
             content = (
                 <div>
-                    <BackBtn onClick={this.handlerCancelBtn.bind(this)}/>
+                    <BackBtn onClick={this.handlerBtn.bind(this, "cancel")}/>
                     <DetailsTable Headers={this.state.detailsHeaders}
                                   DetailsData={this.state.data}/>
+                    <h3>Guest's History</h3>
+                    {this.state.pendingHistory ? <Loading /> : history}
                 </div>
             )
         }
         else if (this.state.bookRoom) {
             content = (
-                <BookRoomForm Cancel={this.handlerCancelBtn.bind(this)}
+                <BookRoomForm Cancel={this.handlerBtn.bind(this, "cancel")}
                               Submit={this.handlerBookRoom.bind(this)}
                               guestInfo={
                                   <DetailsTable Headers={this.state.detailsHeaders}
@@ -225,7 +252,7 @@ export default class Guests extends React.Component {
         else {
             content = (
                 <GuestForm Submit={this.handlerSubmitBtn.bind(this)}
-                           Cancel={this.handlerCancelBtn.bind(this)}
+                           Cancel={this.handlerBtn.bind(this, "cancel")}
                            editData={this.state.editData}
                            errorMsg={this.state.errorMsg}
                            pending={this.state.sending}/>
@@ -233,9 +260,8 @@ export default class Guests extends React.Component {
         }
 
         let RightToolbar = (
-            <RightBtnToolbar Add={this.handlerAddBtn.bind(this)}
-                             AddState={this.state.addBtnClicked}
-                             Remove={this.handlerRemoveBtn.bind(this)}/>
+            <RightBtnToolbar Add={this.handlerBtn.bind(this, "add")}
+                             AddState={this.state.addBtnClicked}/>
         );
 
         return (

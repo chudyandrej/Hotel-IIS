@@ -28,19 +28,26 @@ export default class RightBtnToolbar extends React.Component {
     }
 
     render() {
+        let AddBtn = (
+            <button type="button"
+                    className={this.props.AddState ? "btn btn-info active" : "btn btn-info"}
+                    onClick={this.handlerClick.bind(this, "add")}>
+                Add
+            </button>
+        );
+
+        let RemoveBtn = (
+            <button type="button"
+                    className={this.state.removeState ? "btn btn-info active" : "btn btn-info"}
+                    onClick={this.handlerClick.bind(this, "remove")}>
+                Remove
+            </button>
+        );
+
         return (
             <div className='btn-toolbar pull-right'>
-                <button type="button"
-                        className={this.props.AddState ? "btn btn-info active" : "btn btn-info"}
-                        onClick={this.handlerClick.bind(this, "add")}>
-                    Add
-                </button>
-
-                <button type="button"
-                        className={this.state.removeState ? "btn btn-info active" : "btn btn-info"}
-                        onClick={this.handlerClick.bind(this, "remove")}>
-                    Remove
-                </button>
+                {this.props.Remove == null ? null : RemoveBtn}
+                {this.props.Add == null ? null : AddBtn}
             </div>
         )
     }

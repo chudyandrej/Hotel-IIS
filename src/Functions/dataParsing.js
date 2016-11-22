@@ -3,7 +3,7 @@ import moment from 'moment';
 
 
 export const parseData = function(data, filter) {
-
+    //TODO rename function
     let tableData = [];
     let rooms = [];
 
@@ -22,6 +22,7 @@ export const parseData = function(data, filter) {
                     id: row.id,
                     last_name: row.guest.last_name,
                     status: row.status,
+                    //convert string date to object and change its format
                     from: moment(row.from).format('YYYY-MM-DD'),
                     to: moment(row.to).format('YYYY-MM-DD'),
                     roomNumber: rooms
@@ -41,5 +42,23 @@ export const parseData = function(data, filter) {
             resolve(filteredData);
         }
         resolve(tableData);
+    });
+};
+
+/**
+ * Function returns list of objects named guest from objects of objects
+ * @param data - list objects of objects - [{guest:{}}, {guest:{}},..]
+ * return list of objects
+ * */
+export const getGuests = function(data) {
+
+    let guests = [];
+
+    return new Promise((resolve, reject) => {
+        data.forEach(function (guest) {
+            guests.push(guest.guest);
+        });
+
+        resolve(guests);
     });
 };
