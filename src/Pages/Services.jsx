@@ -18,11 +18,10 @@ export default class Services extends React.Component {
         this.state = {
             available: "active",
             unavailable: "default",
-            all: "default",
             subHeader: "Available Services",
-            tableHeaders: [{name: "Name", actualPrice: "Price", duration: "Duration"}],
+            tableHeaders: [{name: "Name", actual_price: "Price", duration: "Duration"}],
             detailsHeaders: {
-                name: "Name:", actualPrice: "Price:", description: "Description:",
+                name: "Name:", actual_price: "Price:", description: "Description:",
                 duration: "Duration:"
             },
 
@@ -41,12 +40,12 @@ export default class Services extends React.Component {
     }
 
     componentWillMount() {
-        this.fetchData();
+        this.fetchData({available:true});
     }
 
-    fetchData() {
+    fetchData(data) {
         this.setState({pending: true});
-        sendRequest('https://young-cliffs-79659.herokuapp.com/getServices', {}).then((data)=> {
+        sendRequest('https://young-cliffs-79659.herokuapp.com/getServices', {data}).then((data)=> {
             data = this.state.tableHeaders.concat(JSON.parse(data.text));
             this.setState({pending: false, data: data});
         }, (err)=> {
@@ -58,31 +57,18 @@ export default class Services extends React.Component {
         this.setState({
             available: "active",
             unavailable: "default",
-            all: "default",
             subHeader: "Available Services"
         });
+        this.fetchData({available:true});
     }
 
     handlerUnAvailableBtn() {
         this.setState({
             available: "default",
             unavailable: "active",
-            all: "default",
             subHeader: "Unavailable Services"
         });
-    }
-
-    handlerAllBtn() {
-        this.setState({
-            available: "default",
-            unavailable: "default",
-            all: "active",
-            subHeader: "All Services"
-        });
-    }
-
-    handlerOrderBtn() {
-        //TODO
+        this.fetchData({available:false});
     }
 
     handlerEditBtn(data) {
@@ -127,9 +113,10 @@ export default class Services extends React.Component {
             subHeader: "Services",
             showTable: true,
             showAddForm: false,
+            showDetails: false,
             addBtnClicked: false
         });
-        this.fetchData();
+        this.fetchData({available:true});
     }
 
     handleShowDetails(data) {
@@ -140,17 +127,9 @@ export default class Services extends React.Component {
         })
     }
 
-    handlerBackBtn() {
-        this.setState({
-            showTable: true,
-            showDetails: false
-        });
-        this.fetchData();
-    }
-
     handlerSubmitBtn(data) {
         this.setState({sending: true, errorMsg: null});
-        var url = null;
+        let url = null;
 
         if (this.state.editData == null) {  //add a new service
             url = 'https://young-cliffs-79659.herokuapp.com/addNewService';
@@ -174,13 +153,17 @@ export default class Services extends React.Component {
             });
     }
 
-    render() {
-        var clsBtn = "btn btn-info ";
+    handlerOrderBtn(data) {
+        //TODO
+    }
 
-        var content = null;
+    render() {
+        let clsBtn = "btn btn-info ";
+
+        let content = null;
 
         if (this.state.showTable) {
-            var LeftBtnToolbar = (
+            let LeftBtnToolbar = (
                 <div className='btn-toolbar pull-left'>
                     <button type="button"
                             className={clsBtn + this.state.available}
@@ -192,21 +175,17 @@ export default class Services extends React.Component {
                             onClick={this.handlerUnAvailableBtn.bind(this)}>
                         Unavailable
                     </button>
-                    <button type="button"
-                            className={clsBtn + this.state.all}
-                            onClick={this.handlerAllBtn.bind(this)}>
-                        All
-                    </button>
                 </div>
             );
 
             content = (
                 <div>
-                    {LeftBtnToolbar}
+                    {this.props.isChild == null ? LeftBtnToolbar : null}
                     <Table TableData={this.state.data}
                            onEdit={this.handlerEditBtn.bind(this)}
-                           onRemove={this.handlerRemove.bind(this)}
                            showDetails={this.handleShowDetails.bind(this)}
+                           order={this.handlerOrderBtn.bind(this)}
+                           onRemove={this.handlerRemove.bind(this)}
                            RemoveAction={this.state.removeAction}/>
                 </div>
             )
@@ -214,7 +193,7 @@ export default class Services extends React.Component {
         else if (this.state.showDetails) {
             content = (
                 <div>
-                    <BackBtn onClick={this.handlerBackBtn.bind(this)}/>
+                    <BackBtn onClick={this.handlerCancelBtn.bind(this)}/>
                     <DetailsTable Headers={this.state.detailsHeaders}
                                   DetailsData={this.state.data}/>
                 </div>

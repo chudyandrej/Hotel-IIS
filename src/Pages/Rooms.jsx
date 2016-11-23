@@ -21,9 +21,7 @@ export default class Rooms extends React.Component {
 
         this.state = {
             available: "active",
-            unavailable: "default",
             all: "default",
-            history: "default",
             subHeader: "Available Rooms",
 
             tableHeaders: [{id: "Room Number", capacity: "Capacity", actual_price: "Price"}],
@@ -36,7 +34,7 @@ export default class Rooms extends React.Component {
             showDetails: false,
 
             startDate: moment(),
-            endDate: moment(),
+            endDate: moment().add(1, "day"),
 
             data: [],
             pending: true,
@@ -51,8 +49,8 @@ export default class Rooms extends React.Component {
     fetchData() {
         this.setState({pending: true});
         let toSend = {
-            from: "2016-05-04",//this.state.startDate.format('YYYY-MM-DD'),
-            to: "2016-12-06",//this.state.endDate.format('YYYY-MM-DD')
+            from: this.state.startDate.format('YYYY-MM-DD'),
+            to: this.state.endDate.format('YYYY-MM-DD')
         };
         sendRequest('https://young-cliffs-79659.herokuapp.com/getFreeRooms', toSend).then((data)=> {
             data = this.state.tableHeaders.concat(JSON.parse(data.text));
@@ -67,30 +65,26 @@ export default class Rooms extends React.Component {
     handlerAvailableBtn() {
         this.setState({
             available: "active",
-            unavailable: "default",
             all: "default",
-            history: "default",
             subHeader: "Available Rooms"
         });
-    }
-
-    handlerUnAvailableBtn() {
-        this.setState({
-            available: "default",
-            unavailable: "active",
-            all: "default",
-            history: "default",
-            subHeader: "Unavailable Rooms"
-        });
+        this.fetchData();
     }
 
     handlerAllBtn() {
         this.setState({
             available: "default",
-            unavailable: "default",
             all: "active",
-            history: "default",
             subHeader: "All Rooms"
+        });
+        this.setState({pending: true});
+        sendRequest('https://young-cliffs-79659.herokuapp.com/getRooms', {}).then((data)=> {
+            data = this.state.tableHeaders.concat(JSON.parse(data.text));
+            this.setState({pending: false, data: data});
+        }, (err)=> {
+            //TODO handle error
+            console.log("error");
+            console.log(err);
         });
     }
 
@@ -98,12 +92,18 @@ export default class Rooms extends React.Component {
         switch (name) {
             case "start":
                 this.setState({startDate: date});
+                if (this.props.startDate != null) {
+                    this.props.startDate(date);
+                }
                 break;
             case "end":
                 this.setState({endDate: date});
-                //TODO call backend to get free rooms in the specified time
+                if (this.props.endDate != null) {
+                    this.props.endDate(date);
+                }
                 break;
         }
+        this.fetchData();
     }
 
     handleShowDetails(data) {
@@ -125,6 +125,8 @@ export default class Rooms extends React.Component {
     handlerCancelBtn() {
         this.setState({
             subHeader: "Available Rooms",
+            available: "active",
+            all: "default",
             showTable: true,
             showAddForm: false,
             showDetails: false,
@@ -140,6 +142,7 @@ export default class Rooms extends React.Component {
     render() {
         let clsBtn = "btn btn-info ";
         let mainContent = null;
+        let title = (<h1 className="page-header">{this.state.subHeader}</h1>);
 
         if (this.state.showTable) {
             let LeftBtnToolbar = (
@@ -150,11 +153,6 @@ export default class Rooms extends React.Component {
                         Available
                     </button>
                     <button type="button"
-                            className={clsBtn + this.state.unavailable}
-                            onClick={this.handlerUnAvailableBtn.bind(this)}>
-                        Unavailable
-                    </button>
-                    <button type="button"
                             className={clsBtn + this.state.all}
                             onClick={this.handlerAllBtn.bind(this)}>
                         All
@@ -162,16 +160,21 @@ export default class Rooms extends React.Component {
                 </div>
             );
 
+            let calendar = (
+                <CalendarInput startDate={this.state.startDate}
+                               endDate={this.state.endDate}
+                               onChangeStart={this.handleDayChange.bind(this, "start")}
+                               onChangeEnd={this.handleDayChange.bind(this, "end")}/>
+            );
+
             mainContent = (
                 <div>
+                    {this.props.isChild == null ? title : null}
                     {this.props.isChild == null ? LeftBtnToolbar : null}
-                    <CalendarInput startDate={this.state.startDate}
-                                   endDate={this.state.endDate}
-                                   onChangeStart={this.handleDayChange.bind(this, "start")}
-                                   onChangeEnd={this.handleDayChange.bind(this, "end")}/>
+                    {this.state.all == "active" ? null : calendar}
 
                     <Table TableData={this.state.data}
-                           order={this.handlerBookRoomBtn.bind(this)}
+                           order={this.props.isChild || this.handlerBookRoomBtn.bind(this)}
                            showDetails={this.handleShowDetails.bind(this)}/>
                 </div>
             )
@@ -179,6 +182,7 @@ export default class Rooms extends React.Component {
         else if (this.state.showDetails) {
             mainContent = (
                 <div>
+                    {this.props.isChild == null ? title : null}
                     <BackBtn onClick={this.handlerCancelBtn.bind(this)}/>
                     <DetailsTable Headers={this.state.detailsHeaders}
                                   DetailsData={this.state.data}/>
@@ -201,8 +205,6 @@ export default class Rooms extends React.Component {
 
         return (
             <div>
-                <h1 className="page-header">{this.state.subHeader}</h1>
-
                 {this.state.pending ? <Loading /> : mainContent}
             </div>
         );

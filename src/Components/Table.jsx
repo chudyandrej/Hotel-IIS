@@ -37,7 +37,8 @@ class TableRow extends React.Component {
         this.state = {
             columns: [],
             remove: false,
-            hover: false
+            hover: false,
+            backgroundColor: ""
         };
 
         for (let column in header) {
@@ -71,6 +72,13 @@ class TableRow extends React.Component {
 
     handlerOrderBtn(data) {
         this.props.order(data);
+        if (this.state.backgroundColor == "") {
+            this.setState({backgroundColor: "#C3F7D3"})
+        }
+        else {
+            this.setState({backgroundColor: ""})
+        }
+
     }
 
     handlerRemove(data) {
@@ -125,7 +133,8 @@ class TableRow extends React.Component {
         );
 
         let Row = (
-            <tr onClick={this.handlerClick.bind(this, this.props.Row)} style={{cursor: "pointer"}}>
+            <tr onClick={this.handlerClick.bind(this, this.props.Row)}
+                style={{cursor: "pointer", backgroundColor: this.state.backgroundColor}}>
                 {this.state.columns}
                 {this.props.RemoveAction ? removeBtn : actionBtns}
             </tr>

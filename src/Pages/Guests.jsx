@@ -49,7 +49,13 @@ export default class Guests extends React.Component {
     }
 
     componentWillMount() {
-        this.fetchCurrentGuests();
+        if (this.props.isChild == null) {
+            this.fetchCurrentGuests();
+        }
+        else {
+            this.fetchAllGuests();
+            this.setState({subHeader: "Guests"});
+        }
     }
 
     fetchAllGuests() {
@@ -69,8 +75,7 @@ export default class Guests extends React.Component {
             from: moment().format('YYYY-MM-DD'),
             to: moment().format('YYYY-MM-DD')
         };
-        //TODO correct typo in api
-        downloadData("getCurrenGuests", data).then((data) => {
+        downloadData("getCurrentGuests", data).then((data) => {
             console.log(data);
             getGuests(data).then((data) => {
                 data = this.state.tableHeaders.concat(data);
@@ -215,6 +220,7 @@ export default class Guests extends React.Component {
 
             content = (
                 <div>
+                    <h1 className="page-header">{this.state.subHeader}</h1>
                     {this.props.isChild == null ? LeftBtnToolbar : null}
                     <Table TableData={this.state.data}
                            onEdit={this.handlerEditBtn.bind(this)}
@@ -230,6 +236,7 @@ export default class Guests extends React.Component {
             );
             content = (
                 <div>
+                    <h1 className="page-header">{this.state.subHeader}</h1>
                     <BackBtn onClick={this.handlerBtn.bind(this, "cancel")}/>
                     <DetailsTable Headers={this.state.detailsHeaders}
                                   DetailsData={this.state.data}/>
@@ -266,8 +273,6 @@ export default class Guests extends React.Component {
 
         return (
             <div>
-                <h1 className="page-header">{this.state.subHeader}</h1>
-
                 {this.props.isChild == null && !this.state.showDetails ? RightToolbar : null}
 
                 {this.state.pending ? <Loading /> : content}
