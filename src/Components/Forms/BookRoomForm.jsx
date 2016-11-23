@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 
+import DetailsTable from '../DetailsTable.jsx';
 import FormButtons from '../Buttons/FormButtons.jsx';
 import Guests from '../../Pages/Guests.jsx';
 import InputLabelForm from './InputLabelForm.jsx';
@@ -15,6 +16,12 @@ export default class BookOrderForm extends React.Component {
 
         this.state = {
             tableHeaders: {id: "Room Number", capacity: "Capacity", actual_price: "Price"},
+            detailsHeaders: {
+                first_name: "First Name:", middle_name: "Middle Name:", last_name: "Family name:",
+                type_of_guest: "Type:", email: "email:", phone_number: "Phone number:",
+                idcard_number: "Card Number:", name_company: "Company Name:", ico: "ICO:", dic: "DIC:",
+                address: "Address:", city: "City:", state: "State:"
+            },
 
             startDate: moment(),
             endDate: moment(),
@@ -25,6 +32,7 @@ export default class BookOrderForm extends React.Component {
             showFreeRooms: false,
             type: "reservation",
             note: null,
+            guest: this.props.guest,
 
             newOrder: false,
             ordered: [],
@@ -49,16 +57,16 @@ export default class BookOrderForm extends React.Component {
     handleChange(name, evt) {
         switch (name){
             case "type":
-                this.state({type: evt.target.value});
+                this.setState({type: evt.target.value});
                 break;
             case "note":
-                this.state({note: evt.target.value});
+                this.setState({note: evt.target.value});
                 break;
             case "startDate":
-                this.state({startDate: evt.target.value});
+                this.setState({startDate: evt.target.value});
                 break;
             case "endDate":
-                this.state({endDate: evt.target.value});
+                this.setState({endDate: evt.target.value});
                 break;
         }
     }
@@ -67,16 +75,34 @@ export default class BookOrderForm extends React.Component {
         let state = {};
         state[name] = date;
         this.setState(state);
+        console.log(state);
     }
 
+    /**
+     * Push data to ordered list if data isn't already there
+     * otherwise, pop them out
+     * @param data
+     */
     orderRoom(data) {
-        //TODO pop out data when clicked again
-        this.state.ordered.push(data);
-        this.setState({newOrder: true});
+        let newOrder = [];
+        let removeOrderFlag = false;
+        this.state.ordered.forEach(function (item) {
+            if (item == data) {
+                console.log("remove order");
+                removeOrderFlag = true;
+            }
+            else {
+                newOrder.push(item)
+            }
+        });
+        if (!removeOrderFlag){
+            newOrder.push(data);
+        }
+        this.setState({newOrder: true, ordered: newOrder});
     }
 
-    removeOrder(id) {
-
+    chooseGuest(data) {
+        this.setState({guest: data});
     }
 
     handlerSubmitBtn() {
@@ -93,11 +119,11 @@ export default class BookOrderForm extends React.Component {
             to: this.state.endDate.format('YYYY-MM-DD'),
             status: this.state.type,
             note: this.state.note,
-            guestId: "",
+            guestId: this.state.guest.id,
             rooms: rooms
         };
         console.log(data);
-        //TODO call backend API
+        this.props.Submit(data);
     }
 
     render() {
@@ -121,7 +147,11 @@ export default class BookOrderForm extends React.Component {
         else {
             guest = (
                 <div>
-                   <Guests isChild={true}/>
+                   <Guests isChild={this.chooseGuest.bind(this)}/>
+                    <h2 onClick={this.toggleHandler.bind(this, "guest")}
+                        className="page-header">Guest info:</h2>
+                    {this.state.showGuest ? <DetailsTable Headers={this.state.detailsHeaders}
+                                                          DetailsData={this.state.guest}/> : null}
                 </div>
             )
         }

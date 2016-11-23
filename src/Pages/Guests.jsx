@@ -194,7 +194,17 @@ export default class Guests extends React.Component {
     }
 
     handlerBookRoom(data) {
-        //TODO
+        //TODO CORRECT TYPO IN BACKEND
+        sendRequest('https://young-cliffs-79659.herokuapp.com/chackIn', data)
+            .then(()=> {
+                console.log("data sent successfully");
+                this.setState({sending: false});
+                this.handlerBtn.bind(this, "cancel");
+            }, (err)=> {
+                this.setState({
+                    sending: false,
+                    errorMsg: JSON.parse(err.text).message});
+            });
     }
 
     render() {
@@ -223,8 +233,8 @@ export default class Guests extends React.Component {
                     <h1 className="page-header">{this.state.subHeader}</h1>
                     {this.props.isChild == null ? LeftBtnToolbar : null}
                     <Table TableData={this.state.data}
-                           onEdit={this.handlerEditBtn.bind(this)}
-                           order={this.handlerBookRoomBtn.bind(this)}
+                           onEdit={this.props.isChild == null ? this.handlerEditBtn.bind(this) : null}
+                           order={this.props.isChild || this.handlerBookRoomBtn.bind(this)}
                            showDetails={this.handleShowDetails.bind(this)}
                            RemoveAction={this.state.removeAction}/>
                 </div>
@@ -249,6 +259,7 @@ export default class Guests extends React.Component {
             content = (
                 <BookRoomForm Cancel={this.handlerBtn.bind(this, "cancel")}
                               Submit={this.handlerBookRoom.bind(this)}
+                              guestID={this.state.data}
                               guestInfo={
                                   <DetailsTable Headers={this.state.detailsHeaders}
                                                 DetailsData={this.state.data}/>

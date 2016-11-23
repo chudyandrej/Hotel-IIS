@@ -2,6 +2,7 @@ import React from 'react';
 import moment from 'moment';
 
 import BackBtn from '../Components/Buttons/BackBtn.jsx';
+import BookRoomForm from '../Components/Forms/BookRoomForm.jsx';
 import CalendarInput from '../Components/CalendarInput.jsx';
 import DetailsTable from '../Components/DetailsTable.jsx';
 import Loading from '../Components/Loading.jsx';
@@ -23,18 +24,18 @@ export default class Stays extends React.Component {
             subHeader: "Current Stays",
 
             tableHeaders: [{
-                last_name: "Last Name", status: "Status", from: "From", to: "To", roomNumber: "Room"
+                last_name: "Last Name", status: "Status", from: "From", to: "To", id: "Room"
             }],
             stay: {
                 status: "Status:", from: "From:", to: "To:", note: "Note:"
             },
             rooms: {
-                roomNumber: "Room:", priceOfRoom: "Price:" //TODO more info about room
+                id: "Room:", price_room: "Price:" //TODO more info about room
             },
             guest: {
                 first_name: "First Name:", middle_name: "Middle Name:", last_name: "Last Name:",
-                idCardNumber: "Card Number:", email: "Email:", phoneNumber: "Phone number:",
-                nameCompany: "Company Name:", ico: "ICO:", dic: "DIC:",
+                idcard_number: "Card Number:", email: "Email:", phone_number: "Phone number:",
+                name_company: "Company Name:", ico: "ICO:", dic: "DIC:",
                 address: "Address:", city: "City:", state: "State:"
             },
             employee: {
@@ -68,8 +69,8 @@ export default class Stays extends React.Component {
     fetchData() {
         this.setState({pending: true});
         let toSend = {
-            from: "2016-05-04",//this.state.startDate.format('YYYY-MM-DD'),
-            to: "2016-12-06",//this.state.endDate.format('YYYY-MM-DD')
+            from: this.state.startDate.format('YYYY-MM-DD'),
+            to: this.state.endDate.format('YYYY-MM-DD')
         };
         sendRequest('https://young-cliffs-79659.herokuapp.com/getStays', toSend).then((data)=> {
             data = JSON.parse(data.text);
@@ -90,16 +91,16 @@ export default class Stays extends React.Component {
         switch (name) {
             case "available":
                 this.setState({
+                    subHeader: "Current Stays",
                     available: "active",
-                    all: "default",
-                    subHeader: "Current Stays"
+                    all: "default"
                 });
                 break;
             case "all":
                 this.setState({
+                    subHeader: "All Stays",
                     available: "default",
-                    all: "active",
-                    subHeader: "All Stays"
+                    all: "active"
                 });
                 break;
             case "add":
@@ -117,6 +118,8 @@ export default class Stays extends React.Component {
             case "back":
                 this.setState({
                     subHeader: "Current Stays",
+                    available: "active",
+                    all: "default",
                     showTable: true,
                     showDetails: false
                 });
@@ -223,6 +226,10 @@ export default class Stays extends React.Component {
             content = (
                 <div>
                     {LeftBtnToolbar}
+                    <RightBtnToolbar Add={this.handlerButtons.bind(this, "add")}
+                                     AddState={this.state.addBtnClicked}
+                                     Remove={this.handlerButtons.bind(this, "remove")}/>
+
                     <CalendarInput startDate={this.state.startDate}
                                    endDate={this.state.endDate}
                                    onChangeStart={this.handleDayChange.bind(this, "start")}
@@ -266,9 +273,21 @@ export default class Stays extends React.Component {
                 </div>
             )
         }
-        else {
+        else if (this.state.showAddForm){
             content = (
-                <div></div>
+                <div>
+                    <BookRoomForm Cancel={this.handlerButtons.bind(this, "back")}
+                                  Submit={this.handlerSubmitBtn.bind(this)}
+                                  pending={this.state.sending}/>
+                </div>
+            )
+        }
+        else {  //edit form
+            content = (
+                <div>
+                    <BackBtn onClick={this.handlerButtons.bind(this, "back")}/>
+                    ahoj
+                </div>
             )
         }
 
@@ -276,9 +295,6 @@ export default class Stays extends React.Component {
             <div>
                 <h1 className="page-header">{this.state.subHeader}</h1>
 
-                {this.state.showDetails ? null : <RightBtnToolbar Add={this.handlerButtons.bind(this, "add")}
-                                                                  AddState={this.state.addBtnClicked}
-                                                                  Remove={this.handlerButtons.bind(this, "remove")}/>}
 
                 {this.state.pending ? <Loading /> : content}
             </div>

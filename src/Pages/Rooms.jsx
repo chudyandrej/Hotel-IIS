@@ -91,12 +91,23 @@ export default class Rooms extends React.Component {
     handleDayChange(name, date) {
         switch (name) {
             case "start":
+                if (!date.isBefore(this.state.endDate)){
+                    console.log("INVALID DATE");
+                    this.setState({data: []});
+                    return;
+                }
                 this.setState({startDate: date});
                 if (this.props.startDate != null) {
                     this.props.startDate(date);
                 }
+
                 break;
             case "end":
+                if (date.isBefore(this.state.startDate)){
+                    console.log("INVALID DATE");
+                    this.setState({data: []});
+                    return;
+                }
                 this.setState({endDate: date});
                 if (this.props.endDate != null) {
                     this.props.endDate(date);
@@ -193,12 +204,12 @@ export default class Rooms extends React.Component {
             mainContent = (
                 <div>
                     <BookRoomForm Cancel={this.handlerCancelBtn.bind(this)}
-                                   Submit={this.handlerBookRoom.bind(this)}
-                                   roomInfo={
-                                       <DetailsTable Headers={this.state.detailsHeaders}
-                                                     DetailsData={this.state.data}/>
-                                   }
-                                   pending={this.state.sending}/>
+                                  Submit={this.handlerBookRoom.bind(this)}
+                                  roomInfo={
+                                      <DetailsTable Headers={this.state.detailsHeaders}
+                                                    DetailsData={this.state.data}/>
+                                  }
+                                  pending={this.state.sending}/>
                 </div>
             )
         }
