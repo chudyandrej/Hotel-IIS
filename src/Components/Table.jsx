@@ -8,7 +8,7 @@ export class TableHeader extends React.Component {
     render() {
         let columns = [];
         for (let key in this.props.Headers) {
-            if (!this.props.Headers.hasOwnProperty(key)){
+            if (!this.props.Headers.hasOwnProperty(key)) {
                 continue;
             }
             columns.push(
@@ -94,7 +94,8 @@ class TableRow extends React.Component {
                 onMouseLeave={this.leaveAction.bind(this)}>
                 <button type="button"
                         className="btn btn-danger btn-sm"
-                        onClick={this.handlerRemove.bind(this, this.props.Row)}>Remove
+                        onClick={this.handlerRemove.bind(this, this.props.Row)}>
+                    {this.props.removeBtnName || "Remove"}
                 </button>
             </td>
         );
@@ -111,7 +112,7 @@ class TableRow extends React.Component {
             <button type="button"
                     className="btn btn-info btn-sm"
                     onClick={this.handlerOrderBtn.bind(this, this.props.Row)}>
-                Order
+                {this.props.orderBtnName || "Order"}
             </button>
         );
 
@@ -168,7 +169,9 @@ export default class Table extends React.Component {
                                 onEdit={this.props.onEdit}
                                 showDetails={this.props.showDetails}
                                 order={this.props.order}
+                                orderBtnName={this.props.orderBtnName}
                                 onRemove={this.props.onRemove}
+                                removeBtnName={this.props.removeBtnName}
                                 RemoveAction={this.props.RemoveAction}/>);
         }.bind(this));
 

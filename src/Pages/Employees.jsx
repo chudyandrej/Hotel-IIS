@@ -17,13 +17,15 @@ export default class Employees extends React.Component {
 
         this.state = {
             employed: "active",
-            all: "default",
+            former: "default",
+            employedBefore: true,
             subHeader: "Employees",
             tableHeaders: [{first_name: "First Name", last_name: "Family name", permissions: "Permissions"}],
-            detailsHeaders: {first_name: "First Name:", middle_name: "Middle Name:", last_name: "Family name:",
+            detailsHeaders: {
+                first_name: "First Name:", middle_name: "Middle Name:", last_name: "Family name:",
                 permissions: "Permissions:", password: "Password:", email: "Email:", phone_number: "Phone number:",
-                iban: "IBAN:", address: "Address:", city: "City:", state: "State:"},
-
+                iban: "IBAN:", address: "Address:", city: "City:", state: "State:"
+            },
 
             showTable: true,
             showAddForm: false,
@@ -43,43 +45,34 @@ export default class Employees extends React.Component {
         this.fetchData();
     }
 
-    fetchData() {
+    fetchData(flag) {
         this.setState({pending: true});
-        sendRequest('https://young-cliffs-79659.herokuapp.com/getEmployees', {}).then((data)=>{
+        sendRequest('https://young-cliffs-79659.herokuapp.com/getEmployees', {flag}).then((data) => {
             data = this.state.tableHeaders.concat(JSON.parse(data.text));
             this.setState({pending: false, data: data});
-        }, (err)=>{
+        }, (err) => {
             //TODO handle error
-        });
-    }
-
-    handlerEditBtn(data) {
-        // data = data are sent by the row, which a user wants to edit
-        this.setState({
-            subHeader: "Edit the employee",
-            showTable: false,
-            showAddForm: false,
-            addBtnClicked: false,
-            removeAction: false,
-
-            editData: data
         });
     }
 
     handlerEmployedBtn() {
         this.setState({
             employed: "active",
-            all: "default",
+            former: "default",
+            employedBefore: true,
             subHeader: "Employees"
         });
+        this.fetchData({});
     }
 
-    handlerAllBtn() {
+    handlerFormerBtn() {
         this.setState({
             employed: "default",
-            all: "active",
+            former: "active",
+            employedBefore: false,
             subHeader: "Former Employees"
         });
+        this.fetchData({currently_employed: false});
     }
 
     handlerAddBtn() {
@@ -98,10 +91,10 @@ export default class Employees extends React.Component {
 
     handlerRemove(id) {
         sendRequest('https://young-cliffs-79659.herokuapp.com/deleteEmployee', {id: id})
-            .then((data)=>{
+            .then((data) => {
                 console.log("data's deleted successfully");
                 this.setState({sending: false});
-            }, (err)=>{
+            }, (err) => {
                 //TODO handle error
             });
     }
@@ -110,10 +103,11 @@ export default class Employees extends React.Component {
         this.setState({
             subHeader: "Employees",
             showTable: true,
+            showDetails: false,
             showAddForm: false,
             addBtnClicked: false
         });
-        this.fetchData();
+        this.state.employedBefore ? this.handlerEmployedBtn() : this.handlerFormerBtn();
     }
 
     handleShowDetails(data) {
@@ -124,17 +118,22 @@ export default class Employees extends React.Component {
         })
     }
 
-    handlerBackBtn() {
+    handlerEditBtn(data) {
+        // data = data are sent by the row, which a user wants to edit
         this.setState({
-            showTable: true,
-            showDetails: false
+            subHeader: "Edit the employee",
+            showTable: false,
+            showAddForm: false,
+            addBtnClicked: false,
+            removeAction: false,
+
+            editData: data
         });
-        this.fetchData();
     }
 
     handlerSubmitBtn(data) {
         this.setState({sending: true, errorMsg: null});
-        var url = null;
+        let url = null;
 
         if (this.state.editData == null) {  //add a new employee
             url = 'https://young-cliffs-79659.herokuapp.com/registration';
@@ -145,24 +144,26 @@ export default class Employees extends React.Component {
         }
 
         sendRequest(url, data)
-            .then(()=>{
+            .then(() => {
                 console.log("data sent successfully");
                 this.setState({sending: false});
                 this.handlerCancelBtn();
-            }, (err)=>{
+            }, (err) => {
+                console.log(err);
                 this.setState({
                     sending: false,
-                    errorMsg: JSON.parse(err.text).message});
+                    errorMsg: JSON.parse(err.text).errors[0].message
+                });
             });
     }
 
     render() {
-        var clsBtn = "btn btn-info ";
+        let clsBtn = "btn btn-info ";
 
-        var content = null;
+        let content = null;
 
         if (this.state.showTable) {
-            var LeftBtnToolbar = (
+            let LeftBtnToolbar = (
                 <div className='btn-toolbar pull-left'>
                     <button type="button"
                             className={clsBtn + this.state.employed}
@@ -170,19 +171,26 @@ export default class Employees extends React.Component {
                         Employed
                     </button>
                     <button type="button"
-                            className={clsBtn + this.state.all}
-                            onClick={this.handlerAllBtn.bind(this)}>
+                            className={clsBtn + this.state.former}
+                            onClick={this.handlerFormerBtn.bind(this)}>
                         Former
                     </button>
                 </div>
             );
 
+            let RightToolbar = (
+                <RightBtnToolbar Add={this.handlerAddBtn.bind(this)}
+                                 AddState={this.state.addBtnClicked}
+                                 Remove={this.handlerRemoveBtn.bind(this)}/>
+            );
+
             content = (
                 <div>
                     {LeftBtnToolbar}
+                    {this.state.former == "default" ? RightToolbar : null}
                     <Table TableData={this.state.data}
-                           onEdit={this.handlerEditBtn.bind(this)}
-                           onRemove={this.handlerRemoveBtn}
+                           onEdit={this.state.former == "default" ? this.handlerEditBtn.bind(this) : null}
+                           onRemove={this.handlerRemove.bind(this)}
                            showDetails={this.handleShowDetails.bind(this)}
                            RemoveAction={this.state.removeAction}/>
                 </div>
@@ -191,7 +199,7 @@ export default class Employees extends React.Component {
         else if (this.state.showDetails) {
             content = (
                 <div>
-                    <BackBtn onClick={this.handlerBackBtn.bind(this)} />
+                    <BackBtn onClick={this.handlerCancelBtn.bind(this)}/>
                     <DetailsTable Headers={this.state.detailsHeaders}
                                   DetailsData={this.state.data}/>
                 </div>
@@ -210,10 +218,6 @@ export default class Employees extends React.Component {
         return (
             <div>
                 <h2 className="page-header">{this.state.subHeader}</h2>
-
-                {this.state.showDetails ? null : <RightBtnToolbar Add={this.handlerAddBtn.bind(this)}
-                                                                  AddState={this.state.addBtnClicked}
-                                                                  Remove={this.handlerRemoveBtn.bind(this)}/> }
 
                 {this.state.pending ? <Loading /> : content}
             </div>

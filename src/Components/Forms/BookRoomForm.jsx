@@ -41,7 +41,7 @@ export default class BookOrderForm extends React.Component {
     }
 
     toggleHandler(name) {
-        switch(name) {
+        switch (name) {
             case "guest":
                 this.setState({showGuest: !this.state.showGuest});
                 break;
@@ -55,7 +55,7 @@ export default class BookOrderForm extends React.Component {
     }
 
     handleChange(name, evt) {
-        switch (name){
+        switch (name) {
             case "type":
                 this.setState({type: evt.target.value});
                 break;
@@ -95,7 +95,7 @@ export default class BookOrderForm extends React.Component {
                 newOrder.push(item)
             }
         });
-        if (!removeOrderFlag){
+        if (!removeOrderFlag) {
             newOrder.push(data);
         }
         this.setState({newOrder: true, ordered: newOrder});
@@ -147,7 +147,8 @@ export default class BookOrderForm extends React.Component {
         else {
             guest = (
                 <div>
-                   <Guests isChild={this.chooseGuest.bind(this)}/>
+                    <Guests isChild={this.chooseGuest.bind(this)}
+                            orderBtnName={"Add"}/>
                     <h2 onClick={this.toggleHandler.bind(this, "guest")}
                         className="page-header">Guest info:</h2>
                     {this.state.showGuest ? <DetailsTable Headers={this.state.detailsHeaders}

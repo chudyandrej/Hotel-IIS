@@ -32,8 +32,9 @@ export default class EmployeeFormForm extends React.Component {
                 cityRequired: null,
                 stateRequired: null,
                 phoneNumberRequired: null,
-                ibanRequired: null
+                ibanRequired: null,
 
+                errorMsg: null
             };
         }
         else {  //if editing, restore data
@@ -60,21 +61,27 @@ export default class EmployeeFormForm extends React.Component {
                 cityRequired: null,
                 stateRequired: null,
                 phoneNumberRequired: null,
-                ibanRequired: null
+                ibanRequired: null,
+
+                errorMsg: null
             };
         }
     }
 
     handlerOnChange(name, evt) {
-        //TODO check length of password
-        //TODO if short =>  this.state.weakPassword = true
-        var state = {};
+        if (name == "password" && evt.target.value.length < 8) {
+            this.setState({errorMsg: "Password is too short"});
+        }
+        else {
+            this.setState({errorMsg: null});
+        }
+        let state = {};
         state[name] = evt.target.value;
         this.setState(state);
     }
 
     checkValidity(name) {
-        var state = {};
+        let state = {};
         if (this.state[name] == ""){
             state[name+"Required"] = "has-error";
         }
@@ -93,7 +100,8 @@ export default class EmployeeFormForm extends React.Component {
     }
 
     handlerSubmitBtn() {
-        var data = {
+        //check for empty strings
+        let data = {
             first_name: this.state.firstName,
             middle_name: this.state.middleName,
             last_name: this.state.lastName,
@@ -110,16 +118,16 @@ export default class EmployeeFormForm extends React.Component {
     }
 
     render() {
-        var tableStyle = {
+        let tableStyle = {
             clear: "both"
         };
 
-        var required = "This field is required!";
-        var EmailHelp = "example@domain.com";
-        var passwordHelp = "Confirm the password";
-        var permissionsHelp = <small className="form-text text-muted">Set user's permissions to the system</small>;
+        let required = "This field is required!";
+        let EmailHelp = "example@domain.com";
+        let passwordHelp = "Confirm the password";
+        let permissionsHelp = <small className="form-text text-muted">Set user's permissions to the system</small>;
 
-        var passwords = (
+        let passwords = (
             <div>
                 <InputLabelForm label="Password"
                                 type="text"
@@ -240,7 +248,7 @@ export default class EmployeeFormForm extends React.Component {
 
                 <FormButtons Submit={this.handlerSubmitBtn.bind(this)}
                              Cancel={this.props.Cancel}
-                             errorMsg={this.props.errorMsg}
+                             errorMsg={this.props.errorMsg || this.state.errorMsg}
                              pending={this.props.pending}/>
             </div>
         );

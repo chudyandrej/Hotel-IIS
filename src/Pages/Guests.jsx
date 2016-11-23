@@ -21,6 +21,7 @@ export default class Guests extends React.Component {
         this.state = {
             current: "active",
             all: "default",
+            currentBefore: true,
             subHeader: "Current guests",
             tableHeaders: [{first_name: "First Name", last_name: "Family name", type_of_guest: "Type"}],
             detailsHeaders: {
@@ -63,13 +64,13 @@ export default class Guests extends React.Component {
         downloadData("getGuests", {}).then((data) => {
             data = this.state.tableHeaders.concat(data);
             this.setState({pending: false, data: data});
-        }, (err)=> {
+        }, (err) => {
             console.log(err);
             //TODO handle error
         });
     }
 
-    fetchCurrentGuests(){
+    fetchCurrentGuests() {
         this.setState({pending: true});
         let data = {
             from: moment().format('YYYY-MM-DD'),
@@ -83,18 +84,19 @@ export default class Guests extends React.Component {
             }, (err) => {
                 //TODO handle error
             });
-        }, (err)=> {
+        }, (err) => {
             console.log(err);
             //TODO handle error
         });
     }
 
     handlerBtn(name) {
-        switch(name) {
+        switch (name) {
             case "current":
                 this.setState({
                     current: "active",
                     all: "default",
+                    currentBefore: true,
                     subHeader: "Current guests"
                 });
                 this.fetchCurrentGuests();
@@ -103,6 +105,7 @@ export default class Guests extends React.Component {
                 this.setState({
                     current: "default",
                     all: "active",
+                    currentBefore: false,
                     subHeader: "All guests"
                 });
                 this.fetchAllGuests();
@@ -125,7 +128,12 @@ export default class Guests extends React.Component {
                     subHeader: "Current Guests",
                     addBtnClicked: false
                 });
-                this.fetchCurrentGuests();
+                if (this.state.currentBefore) {
+                    this.handlerBtn("current");
+                }
+                else {
+                    this.handlerBtn("all");
+                }
                 break;
         }
     }
@@ -144,20 +152,19 @@ export default class Guests extends React.Component {
     }
 
     handleShowDetails(data) {
-
         this.setState({
             pendingHistory: true,
             showTable: false,
             showDetails: true,
             data: data
         });
+        //download history of stays of the user
         downloadData("getGuestsStays", {id: data.id}).then((history) => {
             history = this.state.historyHeaders.concat(history);
             this.setState({pendingHistory: false, historyData: history});
         }, (err) => {
             //TODO handle error
         });
-
     }
 
     handlerSubmitBtn(data) {
@@ -173,14 +180,15 @@ export default class Guests extends React.Component {
         }
 
         sendRequest(url, data)
-            .then(()=> {
+            .then(() => {
                 console.log("data sent successfully");
                 this.setState({sending: false});
                 this.handlerCancelBtn();
-            }, (err)=> {
+            }, (err) => {
                 this.setState({
                     sending: false,
-                    errorMsg: JSON.parse(err.text).message});
+                    errorMsg: JSON.parse(err.text).message
+                });
             });
     }
 
@@ -194,16 +202,18 @@ export default class Guests extends React.Component {
     }
 
     handlerBookRoom(data) {
+        this.setState({sending: true});
         //TODO CORRECT TYPO IN BACKEND
         sendRequest('https://young-cliffs-79659.herokuapp.com/chackIn', data)
-            .then(()=> {
+            .then(() => {
                 console.log("data sent successfully");
                 this.setState({sending: false});
                 this.handlerBtn.bind(this, "cancel");
-            }, (err)=> {
+            }, (err) => {
                 this.setState({
                     sending: false,
-                    errorMsg: JSON.parse(err.text).message});
+                    errorMsg: JSON.parse(err.text).message
+                });
             });
     }
 
@@ -235,6 +245,7 @@ export default class Guests extends React.Component {
                     <Table TableData={this.state.data}
                            onEdit={this.props.isChild == null ? this.handlerEditBtn.bind(this) : null}
                            order={this.props.isChild || this.handlerBookRoomBtn.bind(this)}
+                           orderBtnName={this.props.orderBtnName || "Book"}
                            showDetails={this.handleShowDetails.bind(this)}
                            RemoveAction={this.state.removeAction}/>
                 </div>

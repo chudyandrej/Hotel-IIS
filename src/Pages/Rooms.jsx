@@ -11,7 +11,7 @@ import DetailsTable from '../Components/DetailsTable.jsx';
 import Loading from '../Components/Loading.jsx';
 import Table from '../Components/Table.jsx';
 
-import {sendRequest} from '../Functions/HTTP-requests.js';
+import {downloadData, sendRequest} from '../Functions/HTTP-requests.js';
 
 
 export default class Rooms extends React.Component {
@@ -22,6 +22,7 @@ export default class Rooms extends React.Component {
         this.state = {
             available: "active",
             all: "default",
+            availableBefore: true,
             subHeader: "Available Rooms",
 
             tableHeaders: [{id: "Room Number", capacity: "Capacity", actual_price: "Price"}],
@@ -52,10 +53,10 @@ export default class Rooms extends React.Component {
             from: this.state.startDate.format('YYYY-MM-DD'),
             to: this.state.endDate.format('YYYY-MM-DD')
         };
-        sendRequest('https://young-cliffs-79659.herokuapp.com/getFreeRooms', toSend).then((data)=> {
-            data = this.state.tableHeaders.concat(JSON.parse(data.text));
+        downloadData('getFreeRooms', toSend).then((data) => {
+            data = this.state.tableHeaders.concat(data);
             this.setState({pending: false, data: data});
-        }, (err)=> {
+        }, (err) => {
             //TODO handle error
             console.log("error");
             console.log(err);
@@ -66,6 +67,7 @@ export default class Rooms extends React.Component {
         this.setState({
             available: "active",
             all: "default",
+            availableBefore: true,
             subHeader: "Available Rooms"
         });
         this.fetchData();
@@ -75,13 +77,14 @@ export default class Rooms extends React.Component {
         this.setState({
             available: "default",
             all: "active",
+            availableBefore: false,
             subHeader: "All Rooms"
         });
         this.setState({pending: true});
-        sendRequest('https://young-cliffs-79659.herokuapp.com/getRooms', {}).then((data)=> {
-            data = this.state.tableHeaders.concat(JSON.parse(data.text));
+        downloadData('getRooms', {}).then((data) => {
+            data = this.state.tableHeaders.concat(data);
             this.setState({pending: false, data: data});
-        }, (err)=> {
+        }, (err) => {
             //TODO handle error
             console.log("error");
             console.log(err);
@@ -91,7 +94,7 @@ export default class Rooms extends React.Component {
     handleDayChange(name, date) {
         switch (name) {
             case "start":
-                if (!date.isBefore(this.state.endDate)){
+                if (!date.isBefore(this.state.endDate)) {
                     console.log("INVALID DATE");
                     this.setState({data: []});
                     return;
@@ -103,7 +106,7 @@ export default class Rooms extends React.Component {
 
                 break;
             case "end":
-                if (date.isBefore(this.state.startDate)){
+                if (date.isBefore(this.state.startDate)) {
                     console.log("INVALID DATE");
                     this.setState({data: []});
                     return;
@@ -143,11 +146,23 @@ export default class Rooms extends React.Component {
             showDetails: false,
             addBtnClicked: false
         });
-        this.fetchData();
+        this.state.availableBefore ? this.handlerAvailableBtn() : this.handlerAllBtn();
     }
 
     handlerBookRoom(data) {
-
+        this.setState({sending: true});
+        //TODO CORRECT TYPO IN BACKEND
+        sendRequest('https://young-cliffs-79659.herokuapp.com/chackIn', data)
+            .then(() => {
+                console.log("data sent successfully");
+                this.setState({sending: false});
+                this.handlerBtn.bind(this, "cancel");
+            }, (err) => {
+                this.setState({
+                    sending: false,
+                    errorMsg: JSON.parse(err.text).message
+                });
+            });
     }
 
     render() {

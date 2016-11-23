@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import Popup from 'react-popup';
 
 import BackBtn from '../Components/Buttons/BackBtn.jsx';
 import BookRoomForm from '../Components/Forms/BookRoomForm.jsx';
@@ -21,6 +22,7 @@ export default class Stays extends React.Component {
         this.state = {
             available: "active",
             all: "default",
+            availableBefore: true,
             subHeader: "Current Stays",
 
             tableHeaders: [{
@@ -63,16 +65,27 @@ export default class Stays extends React.Component {
     }
 
     componentWillMount() {
-        this.fetchData();
+        this.fetchData(true);
     }
 
-    fetchData() {
+    fetchData(current) {
         this.setState({pending: true});
-        let toSend = {
-            from: this.state.startDate.format('YYYY-MM-DD'),
-            to: this.state.endDate.format('YYYY-MM-DD')
-        };
-        sendRequest('https://young-cliffs-79659.herokuapp.com/getStays', toSend).then((data)=> {
+        let toSend = null;
+        if (current) {
+             toSend = {
+                from: this.state.startDate.format('YYYY-MM-DD'),
+                to: this.state.endDate.format('YYYY-MM-DD')
+            };
+        }
+        else {
+            toSend = {
+                from: moment("20000101", "YYYYMMDD"),
+                to: moment("23000101", "YYYYMMDD")
+            };
+            this.setState({startDate: toSend.from, endDate: toSend.to});
+        }
+
+        sendRequest('https://young-cliffs-79659.herokuapp.com/getStays', toSend).then((data) => {
             data = JSON.parse(data.text);
 
             parseData(data, "all").then((tableData) => {
@@ -80,7 +93,7 @@ export default class Stays extends React.Component {
                 tableData = this.state.tableHeaders.concat(tableData);
                 this.setState({pending: false, data: data, tableData: tableData});
             });
-        }, (err)=> {
+        }, (err) => {
             //TODO handle error
             console.log("error");
             console.log(err);
@@ -93,15 +106,19 @@ export default class Stays extends React.Component {
                 this.setState({
                     subHeader: "Current Stays",
                     available: "active",
-                    all: "default"
+                    all: "default",
+                    availableBefore: true
                 });
+                this.fetchData(true);
                 break;
             case "all":
                 this.setState({
                     subHeader: "All Stays",
                     available: "default",
-                    all: "active"
+                    all: "active",
+                    availableBefore: false
                 });
+                this.fetchData(false);
                 break;
             case "add":
                 this.setState({
@@ -123,8 +140,12 @@ export default class Stays extends React.Component {
                     showTable: true,
                     showDetails: false
                 });
-                this.fetchData();
-                break;
+                if (this.state.availableBefore) {
+                    this.handlerButtons("available");
+                }
+                else {
+                    this.handlerButtons("all");
+                }
         }
     }
 
@@ -137,10 +158,11 @@ export default class Stays extends React.Component {
                 this.setState({endDate: date});
                 break;
         }
-        this.fetchData();
+        //TODO check validity of date
+        this.fetchData(true);
     }
 
-    handleFilter(evt){
+    handleFilter(evt) {
         let filter = evt.target.value;
         //parse data, show only stays with status value equal to filter
         parseData(this.state.data.slice(1,), filter).then((tableData) => {
@@ -194,11 +216,11 @@ export default class Stays extends React.Component {
         }
 
         sendRequest(url, data)
-            .then(()=> {
+            .then(() => {
                 console.log("data sent successfully");
                 this.setState({sending: false});
                 this.handlerCancelBtn();
-            }, (err)=> {
+            }, (err) => {
                 //TODO handle error
             });
     }
@@ -236,19 +258,20 @@ export default class Stays extends React.Component {
                                    onChangeEnd={this.handleDayChange.bind(this, "end")}/>
                     <div>
                         Status:
-                    <select value={this.state.filter}
-                            onChange={this.handleFilter.bind(this)}>
-                        <option value="all">all</option>
-                        <option value="inProgress">inProgress</option>
-                        <option value="reservation">reservation</option>
-                        <option value="ended">ended</option>
-                        <option value="canceled">canceled</option>
-                    </select>
+                        <select value={this.state.filter}
+                                onChange={this.handleFilter.bind(this)}>
+                            <option value="all">all</option>
+                            <option value="inProgress">inProgress</option>
+                            <option value="reservation">reservation</option>
+                            <option value="ended">ended</option>
+                            <option value="canceled">canceled</option>
+                        </select>
                     </div>
 
                     <Table TableData={this.state.tableData}
                            onEdit={this.handlerEditBtn.bind(this)}
                         //onRemove={this.handlerRemove.bind(this)}
+                           removeBtnName={"CheckOut"}
                            showDetails={this.handleShowDetails.bind(this)}
                            RemoveAction={this.state.removeAction}/>
                 </div>
@@ -273,7 +296,7 @@ export default class Stays extends React.Component {
                 </div>
             )
         }
-        else if (this.state.showAddForm){
+        else if (this.state.showAddForm) {
             content = (
                 <div>
                     <BookRoomForm Cancel={this.handlerButtons.bind(this, "back")}
