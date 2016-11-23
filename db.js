@@ -23,7 +23,9 @@ db.templateRooms = sequelize.import(__dirname + '/models/templateRooms.js');
 db.services = sequelize.import(__dirname + '/models/services.js');
 db.templateServices = sequelize.import(__dirname + '/models/templateServices.js');
 
-
+// TODO foren key not null
+// Task.belongsTo(User, { foreignKey: { allowNull: false }, onDelete: 'CASCADE' })
+// User.hasMany(Task, { foreignKey: { allowNull: false }, onDelete: 'CASCADE' })
 db.employees.hasMany(db.stays);
 db.stays.belongsTo(db.employees);
 

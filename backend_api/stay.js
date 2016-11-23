@@ -27,7 +27,7 @@ module.exports = function(app, db, _) {
     app.post('/getStays', function(req, res) {
         db.tokens.findToken(req.body.token).then(() => {
             return db.stays.findTotalStaysByTime(db.employees, db.guests, db.rooms,
-                            db.templateRooms, req.body.from, req.body.to);
+                            db.templateRooms, req.body.from, req.body.to, req.body.statuses);
         }).then((result)=>{
             res.status(200).json(result);
         }).catch((error) => {
@@ -35,7 +35,48 @@ module.exports = function(app, db, _) {
         });
     });
 
+
+    app.post('/getStaySummary', function(req, res) {
+        var roomInstances;
+        db.tokens.findToken(req.body.token).then(() => {
+            return db.rooms.findByStayId(req.body.id, db.templateRooms);
+        }).then((instances) => {
+            return new Promise((resolve, reject) => {
+                var i = 0;
+                var sum = 0;
+                if (instances.length == 0){
+                    resolve([]);
+                }
+                instances.forEach((room) => {
+                    sum += room.price_room;
+                    console.log(room.id);
+                    db.services.sumPriceForRoom(room.id, db.templateServices).then((result) => {
+                        room.services = result.services
+                        sum += result.sum
+                        i++;
+                        if (instances.length == i){
+                            resolve({
+                                rooms : instances,
+                                sum
+                            });
+                        }
+                    }, (error) => {
+                        reject(error);
+                    });
+
+                });
+
+
+            });
+        }).then((response) => {
+            res.status(200).json(response);
+        }).catch((error) => {
+            res.status(400).json(error);
+        });
+    });
+
     app.post('/stayFilter', function(req, res) {
+
 
     });
 

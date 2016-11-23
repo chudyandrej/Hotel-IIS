@@ -85,7 +85,7 @@ module.exports = function(sequelize, DataTypes) {
 
 
 
-            findTotalStaysByTime(employeesObj, guestsObj,roomsObj, templateRoomsObj, fromTime, toTime){
+            findTotalStaysByTime(employeesObj, guestsObj,roomsObj, templateRoomsObj, fromTime, toTime, statuses){
                 return new Promise(function(resolve, reject) {
                     if (!_.isString(fromTime) || !_.isString(toTime) ){
                         reject("Undefined times 'from' and 'to'");
@@ -102,6 +102,9 @@ module.exports = function(sequelize, DataTypes) {
                         });
 
                     }
+                    if (_.isUndefined(statuses) ){
+                        statuses = ['reservation', 'inProgress', 'canceled', 'ended']
+                    }
                     stays.findAll({
                         where: {
                             from: {
@@ -109,6 +112,9 @@ module.exports = function(sequelize, DataTypes) {
                             },
                             to: {
                                 $or:[{$gte: fromTime},{$gte: toTime}]
+                            },
+                            status: {
+                                $in: statuses
                             }
                         },
                         include: [employeesObj, guestsObj]

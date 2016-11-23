@@ -26,7 +26,7 @@ module.exports = function(app, db, _) {
         db.tokens.findToken(req.body.token).then(() => {
             return db.templateServices.findAll({
                 where: {
-                    available: true
+                    available: req.body.available
                 }
             });
         }).then((servicesInstances) => {
@@ -40,6 +40,7 @@ module.exports = function(app, db, _) {
         });
     });
 
+
     app.post('/editService', function(req, res) {
         db.tokens.findToken(req.body.token).then(() => {
             return db.templateServices.findByID(req.body.id);
@@ -52,5 +53,42 @@ module.exports = function(app, db, _) {
             res.status(400).json(error);
         });
     });
+
+    app.post('/reserveService', function(req, res) {
+        db.employees.findByToken(req.body.token).then((instanceEmplyee) => {
+            var body = _.pick(req.body, 'price_service', 'roomId', 'templateServiceId');
+            body.employeeId = instanceEmplyee.get('id');
+            return db.services.create(body);
+        }).then((serviceInstance) => {
+            res.status(200).send();
+        }).catch((error) => {
+            res.status(400).json(error);
+        });
+    });
+
+    app.post('/removeInstanceService', function(req, res) {
+        db.tokens.findToken(req.body.token).then(() => {
+            return new Promise((resolve, reject) => {
+                db.services.findById(req.body.id).then((instance) => {
+                    if (!instance){
+                        reject({
+                            errors:[{message: "Service whit this ID not exist ! "}]
+                        });
+                    }
+                    resolve(instance);
+                },(error) => {
+                    reject(error);
+                });
+            });
+        }).then((serviceInstance) => {
+            return serviceInstance.destroy()
+        }).then(() => {
+            res.status(200).send();
+        }).catch((error) => {
+            res.status(400).json(error);
+        });
+
+    });
+
 
 }

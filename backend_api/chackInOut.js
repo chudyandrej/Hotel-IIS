@@ -3,18 +3,19 @@ module.exports = function(app, db, _) {
 
     app.post('/chackIn', function(req, res) {
         var stayInstanceGlobal;
-        db.tokens.findToken(req.body.token).then(() => {
+        db.employees.findByToken(req.body.token).then((instanceEmplyee) => {
             return new Promise((resolve, reject) => {
                 if (_.isArray(req.body.rooms) && req.body.rooms.length >= 1){
-                    resolve();
+                    resolve(instanceEmplyee.get('id'));
                 } else {
                     reject({
                         errors:[{message: "Error: Rooms not existing ! "}]
                     });
                 }
             });
-        }).then(() => {
-            var stayData =  _.pick(req.body, 'from', 'to', 'status', 'noe', 'employeeId', 'guestId');
+        }).then((employeeId) => {
+            var stayData =  _.pick(req.body, 'from', 'to', 'status', 'note', 'guestId');
+            stayData.employeeId = employeeId
             return db.stays.create(stayData);
         }).then((stayInstance) => {
             stayInstanceGlobal = stayInstance
@@ -40,11 +41,5 @@ module.exports = function(app, db, _) {
         });
 
     });
-
-    app.post('/chackOut', function(req, res) {
-        //TODO create invoices 
-    });
-
-
 
 }

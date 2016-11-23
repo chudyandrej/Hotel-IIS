@@ -27,7 +27,7 @@ module.exports = function(app, db, _) {
         });
     });
 
-    app.post('/getCurrenGuests', function(req, res) {
+    app.post('/getCurrentGuests', function(req, res) {
         var timeFrom = req.body.from;
         var timeTo = req.body.to;
         db.tokens.findToken(req.body.token).then(() => {

@@ -118,32 +118,49 @@ module.exports = function(sequelize, DataTypes) {
             findByToken(token) {
                 return new Promise(function(resolve, reject) {
                     try {
+                        if (!token){
+                            reject({
+                                errors:[{message: "Token not found"}]
+                            });
+                        }
                         let decodeJwt = jwt.verify(token, 'qwery09856');
                         let bytes = cryptojs.AES.decrypt(decodeJwt.token, 'abc123!@#!');
                         let tokenData = JSON.parse(bytes.toString(cryptojs.enc.Utf8));
                         employees.findById(tokenData.id).then((employee) => {
-                            (employee) ? resolve(employee): reject();
-                        }, () => {
-                            reject()
+                            if (!employee){
+                                reject({
+                                    errors:[{message: "Emply whit this id not found. Problem whit token"}]
+                                });
+                            } else {
+                                resolve(employee);
+                            }
+                        }, (e) => {
+                            reject(e)
                         });
-                    } catch (e) {
-                        console.log(e);
-                        reject();
+                    } catch (error) {
+                        reject(error);
                     }
                 });
             },
             authenticate(emailPass) {
                 return new Promise(function(resolve, reject) {
                     if (!_.isString(emailPass.email) || !_.isString(emailPass.password)) {
-                        reject('Email or password are not valid');
+                        reject({
+                            errors:[{message: "Email or password are not valid"}]
+                        });
                     }
                     employees.findOne({
                         where: {
                             email: emailPass.email
                         }
                     }).then((employee) => {
-                        (employee && bcrypt.compareSync(emailPass.password, employee.get('password_hash'))) ?
-                            resolve(employee) : reject('Wrong password or unexisting email');
+                        if (employee && bcrypt.compareSync(emailPass.password, employee.get('password_hash'))){
+                            resolve(employee);
+                        } else {
+                            reject({
+                                errors:[{message: "Wrong password or unexisting email"}]
+                            });
+                        }
                     }, (error) => {
                         reject(error);
                     });
@@ -153,7 +170,9 @@ module.exports = function(sequelize, DataTypes) {
                 return new Promise(function(resolve, reject) {
                     employees.findById(id).then((employee) => {
                         if (!employee) {
-                            reject('Employee whit this identifier not exist');
+                            reject({
+                                errors:[{message: "Employee whit this identifier not exist"}]
+                            });
                         }
                         resolve(employee);
                     }, (e) => {
