@@ -38,7 +38,8 @@ module.exports = function(app, db, _) {
             });
         }).then(() => {
             let currently_employed;
-            if (_.isUndefined(eq.body.token)){
+
+            if (_.isUndefined(req.body.currently_employed)){
                 currently_employed = true
             }
             return db.employees.findAll({
