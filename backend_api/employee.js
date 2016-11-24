@@ -41,6 +41,8 @@ module.exports = function(app, db, _) {
 
             if (_.isUndefined(req.body.currently_employed)){
                 currently_employed = true
+            } else {
+                currently_employed = req.body.currently_employed;
             }
             return db.employees.findAll({
                 where: {
