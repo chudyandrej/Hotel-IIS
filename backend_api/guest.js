@@ -115,35 +115,10 @@ module.exports = function(app, db, _) {
 
     app.post('/filterGuests', function(req, res) {
         db.tokens.findToken(req.body.token).then(() => {
-            return db.guests.findAll({
-                where: {
-                     $or: [
-                         {
-                             first_name: {
-                                 $like: '%' + req.body.text + '%'
-                            }
-                        },{
-                            middle_name: {
-                                 $like: '%' + req.body.text + '%'
-                            }
-                        },{
-                            last_name: {
-                                 $like: '%' + req.body.text + '%'
-                            }
-                        },{
-                            name_company: {
-                                 $like: '%' + req.body.text + '%'
-                            }
-                        }
-                    ]
-                }
-            });
+            return db.sequelize.query("select * from guests WHERE concat_ws(' ', first_name, last_name, name_company) LIKE '%" + req.body.text + "%' OR"
+                                      + " concat_ws(' ', last_name, first_name) LIKE '%" + req.body.text + "%'", { type: db.sequelize.QueryTypes.SELECT});
         }).then((employeesInstances) => {
-            result = [];
-            for (employee of employeesInstances) {
-                result.push(employee.toPublicJSON());
-            }
-            res.status(200).json(result);
+            res.status(200).json(employeesInstances);
         }).catch((error) => {
             res.status(400).json(error);
         });

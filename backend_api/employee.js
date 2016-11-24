@@ -37,9 +37,13 @@ module.exports = function(app, db, _) {
                 }
             });
         }).then(() => {
+            let currently_employed;
+            if (_.isUndefined(eq.body.token)){
+                currently_employed = true
+            }
             return db.employees.findAll({
                 where: {
-                    currently_employed: true
+                    currently_employed
                 }
             });
         }).then((employeesInstances) => {

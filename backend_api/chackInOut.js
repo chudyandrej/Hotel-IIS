@@ -1,7 +1,7 @@
 module.exports = function(app, db, _) {
 
 
-    app.post('/chackIn', function(req, res) {
+    app.post('/checkIn', function(req, res) {
         var stayInstanceGlobal;
         db.employees.findByToken(req.body.token).then((instanceEmplyee) => {
             return new Promise((resolve, reject) => {

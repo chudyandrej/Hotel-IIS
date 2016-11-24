@@ -56,10 +56,8 @@ module.exports = function(app, db, _) {
 
     app.post('/reserveService', function(req, res) {
         db.employees.findByToken(req.body.token).then((instanceEmplyee) => {
-            var body = _.pick(req.body, 'price_service', 'roomId', 'templateServiceId');
-            body.employeeId = instanceEmplyee.get('id');
-            return db.services.create(body);
-        }).then((serviceInstance) => {
+            return db.services.createReservationService(instanceEmplyee.get('id'),req.body);
+        }).then(() => {
             res.status(200).send();
         }).catch((error) => {
             res.status(400).json(error);
@@ -72,7 +70,7 @@ module.exports = function(app, db, _) {
                 db.services.findById(req.body.id).then((instance) => {
                     if (!instance){
                         reject({
-                            errors:[{message: "Service whit this ID not exist ! "}]
+                            errors:[{message: "Service with the identifier does not exist"}]
                         });
                     }
                     resolve(instance);

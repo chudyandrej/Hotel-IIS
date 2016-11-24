@@ -15,10 +15,7 @@ module.exports = function(sequelize, DataTypes) {
         },
         middle_name: {
             type: DataTypes.STRING,
-            allowNull: true,
-            validate: {
-                len: [2, 15]
-            }
+            allowNull: true
         },
         last_name: {
             type: DataTypes.STRING,
@@ -57,19 +54,31 @@ module.exports = function(sequelize, DataTypes) {
         address: {
             type: DataTypes.STRING,
             allowNull: false,
+            validate: {
+                len: [2, 20]
+            }
         },
         city: {
             type: DataTypes.STRING,
             allowNull: false,
+            validate: {
+                len: [2, 20]
+            }
         },
         state: {
             type: DataTypes.STRING,
             allowNull: false,
+            validate: {
+                len: [2, 20]
+            }
         },
         phone_number: {
             type: DataTypes.STRING,
             allowNull: true,
             unique: true,
+            validate: {
+                isNumeric: true,
+            }
         },
         iban: {
             type: DataTypes.STRING,
@@ -89,7 +98,7 @@ module.exports = function(sequelize, DataTypes) {
                 return new Promise((resolve, reject) => {
                     try {
                         if (!_.isString(type)) {
-                            reject('Type if token is not string');
+                            reject('Data type of token is not string');
 
                         }
 
@@ -129,7 +138,7 @@ module.exports = function(sequelize, DataTypes) {
                         employees.findById(tokenData.id).then((employee) => {
                             if (!employee){
                                 reject({
-                                    errors:[{message: "Emply whit this id not found. Problem whit token"}]
+                                    errors:[{message: "Emply with the identifier does not exist. Problem whit token"}]
                                 });
                             } else {
                                 resolve(employee);
@@ -171,7 +180,7 @@ module.exports = function(sequelize, DataTypes) {
                     employees.findById(id).then((employee) => {
                         if (!employee) {
                             reject({
-                                errors:[{message: "Employee whit this identifier not exist"}]
+                                errors:[{message: "Employee with the identifier does not exist."}]
                             });
                         }
                         resolve(employee);
