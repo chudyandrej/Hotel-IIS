@@ -43,6 +43,7 @@ export default class EmployeeFormForm extends React.Component {
                 middleName: this.props.editData.middle_name,
                 lastName: this.props.editData.last_name,
                 email: this.props.editData.email,
+                password: "",
                 passwordCheck: null,
                 address: this.props.editData.address,
                 city: this.props.editData.city,
@@ -71,7 +72,7 @@ export default class EmployeeFormForm extends React.Component {
         if (name == "password" && evt.target.value.length < 8) {
             this.setState({errorMsg: "Password is too short"});
         }
-        else {
+        else if (name == "password") {
             this.setState({errorMsg: null});
         }
         let state = {};
@@ -117,6 +118,7 @@ export default class EmployeeFormForm extends React.Component {
             data['id'] = this.props.editData.id;
         }
         this.props.Submit(data);
+        this.props.editData = null;
     }
 
     render() {
@@ -128,26 +130,31 @@ export default class EmployeeFormForm extends React.Component {
         let EmailHelp = "example@domain.com";
         let passwordHelp = "Confirm the password";
         let permissionsHelp = <small className="form-text text-muted">Set user's permissions to the system</small>;
+        let addNew = this.props.editData == null;
+
+        let confirmPass = (
+            <InputLabelForm label="Confirm Password"
+                            type="password"
+                            placeholder={this.state.passwordCheck}
+                            validity={this.state.passwordMatch}
+                            onBlur={this.checkValidity.bind(this, "password")}
+                            onChange={this.handlerOnChange.bind(this, "passwordCheck")}
+                            help={passwordHelp}/>
+        );
 
         let passwords = (
 
             <div>
                 <InputLabelForm label="Password"
-                                type="text"
-                                placeholder={this.props.editData == null ? this.state.password : "(old password)"}
-                                required={this.props.editData == null ? true : null}
-                                validity={this.props.editData == null ? this.state.passwordRequired : null}
-                                onBlur={this.props.editData == null ? this.checkValidity.bind(this, "password") : null}
+                                type="password"
+                                placeholder={addNew ? this.state.password : "(old password)"}
+                                required={addNew ? true : null}
+                                validity={addNew ? this.state.passwordRequired : null}
+                                onBlur={addNew ? this.checkValidity.bind(this, "password") : null}
                                 onChange={this.handlerOnChange.bind(this, "password")}
                                 errorMsg={this.state.passwordRequired == null ? null : required}/>
 
-                <InputLabelForm label="Password"
-                                type="password"
-                                placeholder={this.props.editData == null ? this.state.passwordCheck : "(old password)"}
-                                validity={this.state.passwordMatch}
-                                onBlur={this.checkValidity.bind(this, "password")}
-                                onChange={this.handlerOnChange.bind(this, "passwordCheck")}
-                                help={passwordHelp}/>
+                {!addNew && this.state.password == "" ? null : confirmPass}
             </div>
         );
 

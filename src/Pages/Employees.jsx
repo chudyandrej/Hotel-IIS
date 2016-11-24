@@ -20,7 +20,9 @@ export default class Employees extends React.Component {
             former: "default",
             employedBefore: true,
             subHeader: "Employees",
-            tableHeaders: [{first_name: "First Name", last_name: "Family name", permissions: "Permissions"}],
+            tableHeaders: [{
+                first_name: "First Name", last_name: "Family name", email: "Email", permissions: "Permissions"
+            }],
             detailsHeaders: {
                 first_name: "First Name:", middle_name: "Middle Name:", last_name: "Family name:",
                 permissions: "Permissions:", password: "Password:", email: "Email:", phone_number: "Phone number:",
@@ -31,7 +33,6 @@ export default class Employees extends React.Component {
             showAddForm: false,
             showDetails: false,
             addBtnClicked: false,
-            removeAction: false,
 
             editData: null,
             data: [],
@@ -80,13 +81,8 @@ export default class Employees extends React.Component {
             subHeader: "Add a new employee",
             showTable: false,
             showAddForm: true,
-            addBtnClicked: true,
-            removeAction: false
+            addBtnClicked: true
         });
-    }
-
-    handlerRemoveBtn() {
-        this.setState({removeAction: !this.state.removeAction});
     }
 
     handlerRemove(id) {
@@ -105,7 +101,8 @@ export default class Employees extends React.Component {
             showTable: true,
             showDetails: false,
             showAddForm: false,
-            addBtnClicked: false
+            addBtnClicked: false,
+            editData: null
         });
         this.state.employedBefore ? this.handlerEmployedBtn() : this.handlerFormerBtn();
     }
@@ -125,7 +122,6 @@ export default class Employees extends React.Component {
             showTable: false,
             showAddForm: false,
             addBtnClicked: false,
-            removeAction: false,
 
             editData: data
         });
@@ -141,6 +137,7 @@ export default class Employees extends React.Component {
         else {  //edit the employee
             url = 'https://young-cliffs-79659.herokuapp.com/editEmployee';
             data['email'] = this.state.editData.email;
+            this.setState({editData: null});
         }
 
         sendRequest(url, data)
@@ -180,8 +177,7 @@ export default class Employees extends React.Component {
 
             let RightToolbar = (
                 <RightBtnToolbar Add={this.handlerAddBtn.bind(this)}
-                                 AddState={this.state.addBtnClicked}
-                                 Remove={this.handlerRemoveBtn.bind(this)}/>
+                                 AddState={this.state.addBtnClicked}/>
             );
 
             content = (
@@ -191,8 +187,7 @@ export default class Employees extends React.Component {
                     <Table TableData={this.state.data}
                            onEdit={this.state.former == "default" ? this.handlerEditBtn.bind(this) : null}
                            onRemove={this.handlerRemove.bind(this)}
-                           showDetails={this.handleShowDetails.bind(this)}
-                           RemoveAction={this.state.removeAction}/>
+                           showDetails={this.handleShowDetails.bind(this)}/>
                 </div>
             )
         }

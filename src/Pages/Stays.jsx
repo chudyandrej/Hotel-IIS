@@ -48,7 +48,6 @@ export default class Stays extends React.Component {
             showTable: true,
             showAddForm: false,
             showDetails: false,
-            removeAction: false,
             addBtnClicked: false,
 
             startDate: moment(),
@@ -125,11 +124,8 @@ export default class Stays extends React.Component {
                     showTable: false,
                     showAddForm: true,
                     addBtnClicked: true,
-                    removeAction: false
+
                 });
-                break;
-            case "remove":
-                this.setState({removeAction: !this.state.removeAction});
                 break;
             case "back":
                 this.setState({
@@ -177,7 +173,6 @@ export default class Stays extends React.Component {
             showTable: false,
             showAddForm: false,
             addBtnClicked: false,
-            removeAction: false,
             editData: data
         });
     }
@@ -250,8 +245,7 @@ export default class Stays extends React.Component {
                     {title}
                     {LeftBtnToolbar}
                     <RightBtnToolbar Add={this.handlerButtons.bind(this, "add")}
-                                     AddState={this.state.addBtnClicked}
-                                     Remove={this.handlerButtons.bind(this, "remove")}/>
+                                     AddState={this.state.addBtnClicked}/>
 
                     <CalendarInput startDate={this.state.startDate}
                                    endDate={this.state.endDate}
@@ -273,8 +267,7 @@ export default class Stays extends React.Component {
                            onEdit={this.handlerEditBtn.bind(this)}
                         //onRemove={this.handlerRemove.bind(this)}
                            removeBtnName={"CheckOut"}
-                           showDetails={this.handleShowDetails.bind(this)}
-                           RemoveAction={this.state.removeAction}/>
+                           showDetails={this.handleShowDetails.bind(this)}/>
                 </div>
             )
         }

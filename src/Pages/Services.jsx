@@ -28,7 +28,6 @@ export default class Services extends React.Component {
             showTable: true,
             showAddForm: false,
             showDetails: false,
-            removeAction: false,
             addBtnClicked: false,
 
             editData: null,
@@ -78,7 +77,6 @@ export default class Services extends React.Component {
             showTable: false,
             showAddForm: false,
             addBtnClicked: false,
-            removeAction: false,
 
             editData: data
         });
@@ -90,12 +88,7 @@ export default class Services extends React.Component {
             showTable: false,
             showAddForm: true,
             addBtnClicked: true,
-            removeAction: false
         });
-    }
-
-    handlerRemoveBtn() {
-        this.setState({removeAction: !this.state.removeAction});
     }
 
     handlerRemove(id) {
@@ -185,8 +178,7 @@ export default class Services extends React.Component {
                            onEdit={this.handlerEditBtn.bind(this)}
                            showDetails={this.handleShowDetails.bind(this)}
                            order={this.handlerOrderBtn.bind(this)}
-                           onRemove={this.handlerRemove.bind(this)}
-                           RemoveAction={this.state.removeAction}/>
+                           onRemove={this.handlerRemove.bind(this)}/>
                 </div>
             )
         }
@@ -214,8 +206,7 @@ export default class Services extends React.Component {
                 <h1 className="page-header">{this.state.subHeader}</h1>
 
                 {this.state.showDetails ? null : <RightBtnToolbar Add={this.handlerAddBtn.bind(this)}
-                                                                  AddState={this.state.addBtnClicked}
-                                                                  Remove={this.handlerRemoveBtn.bind(this)}/>}
+                                                                  AddState={this.state.addBtnClicked}/>}
 
                 {this.state.pending ? <Loading /> : content}
             </div>

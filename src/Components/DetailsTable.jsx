@@ -13,7 +13,9 @@ export default class DetailsTable extends React.Component {
         let value = null;
 
         for (let column in this.props.Headers) {
-            if (!this.props.Headers.hasOwnProperty(column) || this.props.DetailsData[column] == null) {
+            if (!this.props.Headers.hasOwnProperty(column) ||
+                this.props.DetailsData[column] == null ||
+                this.props.DetailsData[column] === "") {
                 continue;
             }
             if (typeof(this.props.DetailsData[column]) === "boolean") {

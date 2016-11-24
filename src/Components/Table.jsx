@@ -7,12 +7,16 @@ let header = {};
 export class TableHeader extends React.Component {
     render() {
         let columns = [];
+
         for (let key in this.props.Headers) {
             if (!this.props.Headers.hasOwnProperty(key)) {
                 continue;
             }
             columns.push(
-                <th className="col-md-3" key={columns.length}>{this.props.Headers[key]}</th>
+                <th className={this.props.Rooms == null ? "col-md-3 text-center" : "col-md-1 text-center"}
+                    key={columns.length}>
+                    {this.props.Headers[key]}
+                </th>
             )
         }
 
@@ -20,9 +24,9 @@ export class TableHeader extends React.Component {
 
         return (
             <thead>
-            <tr>
-                {columns}
-            </tr>
+                <tr>
+                    {columns}
+                </tr>
             </thead>
         )
     }
@@ -40,11 +44,18 @@ class TableRow extends React.Component {
             hover: false,
             backgroundColor: ""
         };
+        let value = null;
 
         for (let column in header) {
+            if (typeof(this.props.Row[column]) === "boolean") {
+                value = this.props.Row[column] ? "YES" : "NO";
+            }
+            else {
+                value = this.props.Row[column];
+            }
             this.state.columns.push(
-                <td key={this.state.columns.length}>
-                    {this.props.Row[column]}
+                <td key={this.state.columns.length} className="text-center">
+                    {value}
                 </td>
             );
         }
@@ -88,21 +99,11 @@ class TableRow extends React.Component {
     render() {
 
         let removeBtn = (
-            <td className='btn-toolbar'
-                onMouseEnter={this.hoverAction.bind(this)}
-                onMouseLeave={this.leaveAction.bind(this)}>
-                <td style={{color: "transparent"}} className='btn-toolbar col-md-4'>
-                </td>
-                <td style={{color: "transparent"}} className='btn-toolbar col-md-4'>
-                </td>
-                <td style={{color: "transparent"}} className='btn-toolbar col-md-4'>
-                    <button type="button"
-                            className="btn btn-danger btn-sm"
-                            onClick={this.handlerRemove.bind(this, this.props.Row)}>
-                        {this.props.removeBtnName || "Remove"}
-                    </button>
-                </td>
-            </td>
+            <button type="button"
+                    className="btn btn-danger btn-sm"
+                    onClick={this.handlerRemove.bind(this, this.props.Row)}>
+                {this.props.removeBtnName || "Remove"}
+            </button>
         );
 
         let editBtn = (
@@ -125,6 +126,7 @@ class TableRow extends React.Component {
             <div>
                 {this.props.onEdit == null ? null : editBtn}
                 {this.props.order == null ? null : orderBtn}
+                {this.props.onRemove == null ? null : removeBtn}
             </div>
         );
 
@@ -147,7 +149,7 @@ class TableRow extends React.Component {
             <tr onClick={this.handlerClick.bind(this, this.props.Row)}
                 style={{cursor: "pointer", backgroundColor: this.state.backgroundColor}}>
                 {this.state.columns}
-                {this.props.RemoveAction ? removeBtn : actionBtns}
+                {actionBtns}
             </tr>
         );
 
@@ -181,14 +183,13 @@ export default class Table extends React.Component {
                                 order={this.props.order}
                                 orderBtnName={this.props.orderBtnName}
                                 onRemove={this.props.onRemove}
-                                removeBtnName={this.props.removeBtnName}
-                                RemoveAction={this.props.RemoveAction}/>);
+                                removeBtnName={this.props.removeBtnName}/>);
         }.bind(this));
 
         return (
             <div className="table-responsive" style={tableStyle}>
                 <table className="table table-striped table-hover">
-                    <TableHeader Headers={header}/>
+                    <TableHeader Headers={header} Rooms={this.props.Rooms}/>
                     <tbody>
                         {rows}
                     </tbody>

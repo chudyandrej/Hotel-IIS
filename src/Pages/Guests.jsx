@@ -23,7 +23,10 @@ export default class Guests extends React.Component {
             all: "default",
             currentBefore: this.props.isChild == null,
             subHeader: "Current guests",
-            tableHeaders: [{first_name: "First Name", last_name: "Family name", type_of_guest: "Type"}],
+            tableHeaders: [{
+                first_name: "First Name", last_name: "Family name",
+                type_of_guest: "Type", phone_number: "Phone number:"
+            }],
             detailsHeaders: {
                 first_name: "First Name:", middle_name: "Middle Name:", last_name: "Family name:",
                 type_of_guest: "Type:", email: "email:", phone_number: "Phone number:",
@@ -36,7 +39,6 @@ export default class Guests extends React.Component {
             showAddForm: false,
             showDetails: false,
             bookRoom: false,
-            removeAction: false,
             addBtnClicked: false,
 
             editData: null,
@@ -115,8 +117,7 @@ export default class Guests extends React.Component {
                     showTable: false,
                     showAddForm: true,
                     subHeader: "Add a new guest",
-                    addBtnClicked: true,
-                    removeAction: false
+                    addBtnClicked: true
                 });
                 break;
             case "cancel":
@@ -145,7 +146,6 @@ export default class Guests extends React.Component {
             showAddForm: false,
             subHeader: "Edit the guest",
             addBtnClicked: true,
-            removeAction: false,
 
             editData: data
         });
@@ -257,8 +257,7 @@ export default class Guests extends React.Component {
                            onEdit={this.props.isChild == null ? this.handlerEditBtn.bind(this) : null}
                            order={this.props.isChild || this.handlerBookRoomBtn.bind(this)}
                            orderBtnName={this.props.orderBtnName || "Book"}
-                           showDetails={this.handleShowDetails.bind(this)}
-                           RemoveAction={this.state.removeAction}/>
+                           showDetails={this.handleShowDetails.bind(this)}/>
                 </div>
             )
         }

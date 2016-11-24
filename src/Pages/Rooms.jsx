@@ -25,7 +25,8 @@ export default class Rooms extends React.Component {
             availableBefore: true,
             subHeader: "Available Rooms",
 
-            tableHeaders: [{id: "Room Number", capacity: "Capacity", actual_price: "Price"}],
+            tableHeaders: [{id: "Room Number:", actual_price: "Price:", tv: "TV:", internet: "Internet:", bar: "Bar:",
+                bathtub: "Bathtub:", kitchen: "Kitchen:", balcony: "Balcony:"}],
             detailsHeaders: {
                 id: "Room Number:", actual_price: "Price:", tv: "TV:", internet: "Internet:", bar: "Bar:",
                 bathtub: "Bathtub:", kitchen: "Kitchen:", balcony: "Balcony:"
@@ -200,6 +201,7 @@ export default class Rooms extends React.Component {
                     {this.state.all == "active" ? null : calendar}
 
                     <Table TableData={this.state.data}
+                           Rooms={true}
                            order={this.props.isChild || this.handlerBookRoomBtn.bind(this)}
                            showDetails={this.handleShowDetails.bind(this)}/>
                 </div>
