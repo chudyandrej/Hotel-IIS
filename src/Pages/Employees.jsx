@@ -4,7 +4,7 @@ import BackBtn from '../Components/Buttons/BackBtn.jsx';
 import DetailsTable from '../Components/DetailsTable.jsx';
 import EmployeeForm from '../Components/Forms/EmployeeForm.jsx';
 import Loading from '../Components/Loading.jsx';
-import RightBtnToolbar from '../Components/Buttons/RightBtnToolbar.jsx';
+import AddBtn from '../Components/Buttons/AddBtn.jsx';
 import Table from '../Components/Table.jsx';
 
 import {sendRequest} from '../Functions/HTTP-requests.js';
@@ -43,12 +43,12 @@ export default class Employees extends React.Component {
     }
 
     componentWillMount() {
-        this.fetchData();
+        this.fetchData({currently_employed: true});
     }
 
     fetchData(flag) {
         this.setState({pending: true});
-        sendRequest('https://young-cliffs-79659.herokuapp.com/getEmployees', {flag}).then((data) => {
+        sendRequest('https://young-cliffs-79659.herokuapp.com/getEmployees', flag).then((data) => {
             data = this.state.tableHeaders.concat(JSON.parse(data.text));
             this.setState({pending: false, data: data});
         }, (err) => {
@@ -63,7 +63,7 @@ export default class Employees extends React.Component {
             employedBefore: true,
             subHeader: "Employees"
         });
-        this.fetchData({});
+        this.fetchData({currently_employed: true});
     }
 
     handlerFormerBtn() {
@@ -176,8 +176,8 @@ export default class Employees extends React.Component {
             );
 
             let RightToolbar = (
-                <RightBtnToolbar Add={this.handlerAddBtn.bind(this)}
-                                 AddState={this.state.addBtnClicked}/>
+                <AddBtn Add={this.handlerAddBtn.bind(this)}
+                        AddState={this.state.addBtnClicked}/>
             );
 
             content = (

@@ -13,7 +13,7 @@ export default class RightBtnToolbar extends React.Component {
     render() {
         let AddBtn = (
             <button type="button"
-                    className={this.props.AddState ? "btn btn-info active" : "btn btn-info"}
+                    className="btn btn-info"
                     onClick={this.handlerClick.bind(this)}>
                 Add
             </button>
@@ -21,7 +21,7 @@ export default class RightBtnToolbar extends React.Component {
 
         return (
             <div className='btn-toolbar pull-right'>
-                {this.props.Add == null ? null : AddBtn}
+                {AddBtn}
             </div>
         )
     }

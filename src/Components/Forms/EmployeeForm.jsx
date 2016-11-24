@@ -105,7 +105,7 @@ export default class EmployeeFormForm extends React.Component {
             middle_name: this.state.middleName,
             last_name: this.state.lastName,
             email: this.state.email,
-            password: this.state.password,
+
             address: this.state.address,
             city: this.state.city,
             state: this.state.state,
@@ -115,7 +115,15 @@ export default class EmployeeFormForm extends React.Component {
         };
         if (this.props.editData != null) {
             // add id of editing employee
+            if (this.state.password != "") {
+                data['password'] = this.state.password;
+            }
             data['id'] = this.props.editData.id;
+        }
+        else {
+            if (this.state.permissions != "none"){
+                data['password'] = this.state.password;
+            }
         }
         this.props.Submit(data);
         this.props.editData = null;
