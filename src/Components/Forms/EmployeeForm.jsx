@@ -43,7 +43,6 @@ export default class EmployeeFormForm extends React.Component {
                 middleName: this.props.editData.middle_name,
                 lastName: this.props.editData.last_name,
                 email: this.props.editData.email,
-                password: this.props.editData.password,
                 passwordCheck: null,
                 address: this.props.editData.address,
                 city: this.props.editData.city,
@@ -100,7 +99,6 @@ export default class EmployeeFormForm extends React.Component {
     }
 
     handlerSubmitBtn() {
-        //check for empty strings
         let data = {
             first_name: this.state.firstName,
             middle_name: this.state.middleName,
@@ -114,6 +112,10 @@ export default class EmployeeFormForm extends React.Component {
             iban: this.state.iban,
             permissions: this.state.permissions
         };
+        if (this.props.editData != null) {
+            // add id of editing employee
+            data['id'] = this.props.editData.id;
+        }
         this.props.Submit(data);
     }
 
@@ -128,19 +130,20 @@ export default class EmployeeFormForm extends React.Component {
         let permissionsHelp = <small className="form-text text-muted">Set user's permissions to the system</small>;
 
         let passwords = (
+
             <div>
                 <InputLabelForm label="Password"
                                 type="text"
-                                placeholder={this.state.password}
-                                required={true}
-                                validity={this.state.passwordRequired}
-                                onBlur={this.checkValidity.bind(this, "password")}
+                                placeholder={this.props.editData == null ? this.state.password : "(old password)"}
+                                required={this.props.editData == null ? true : null}
+                                validity={this.props.editData == null ? this.state.passwordRequired : null}
+                                onBlur={this.props.editData == null ? this.checkValidity.bind(this, "password") : null}
                                 onChange={this.handlerOnChange.bind(this, "password")}
                                 errorMsg={this.state.passwordRequired == null ? null : required}/>
 
                 <InputLabelForm label="Password"
                                 type="password"
-                                placeholder={this.state.passwordCheck}
+                                placeholder={this.props.editData == null ? this.state.passwordCheck : "(old password)"}
                                 validity={this.state.passwordMatch}
                                 onBlur={this.checkValidity.bind(this, "password")}
                                 onChange={this.handlerOnChange.bind(this, "passwordCheck")}

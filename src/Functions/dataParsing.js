@@ -1,9 +1,13 @@
 import React from 'react';
 import moment from 'moment';
 
-
-export const parseData = function(data, filter) {
-    //TODO rename function
+/**
+ * Parses, edits and filters stays data.
+ * @param data - [{id,from,to,employee:{},guest:{},room:{}},{},..]
+ * @param filter - filter based on status of Stay (reservation, inProgress,..)
+ * @returns {Promise}
+ */
+export const parseStaysData = function(data, filter) {
     let tableData = [];
     let rooms = [];
 
@@ -48,7 +52,7 @@ export const parseData = function(data, filter) {
 /**
  * Function returns list of objects named guest from objects of objects
  * @param data - list objects of objects - [{guest:{}}, {guest:{}},..]
- * return list of objects
+ * @returns {Promise} - list of objects
  * */
 export const getGuests = function(data) {
 
@@ -60,5 +64,25 @@ export const getGuests = function(data) {
         });
 
         resolve(guests);
+    });
+};
+
+/**
+ * Changes format of dates in
+ * @param data - [{..from:Obj, to:Obj,...},{},{},..]
+ * @returns {Promise} - list of objects with formatted moments objects
+ */
+export const formatHistoryDates = function(data) {
+
+    let history = [];
+
+    return new Promise((resolve, reject) => {
+        data.forEach(function (h) {
+            h['from'] = moment(h.from).format('YYYY-MM-DD');
+            h['to'] = moment(h.to).format('YYYY-MM-DD');
+            history.push(h);
+        });
+
+        resolve(history);
     });
 };

@@ -10,7 +10,7 @@ import RightBtnToolbar from '../Components/Buttons/RightBtnToolbar.jsx';
 import Table from '../Components/Table.jsx';
 
 import {sendRequest, downloadData} from '../Functions/HTTP-requests.js';
-import {getGuests} from '../Functions/dataParsing.js';
+import {formatHistoryDates, getGuests} from '../Functions/dataParsing.js';
 
 
 export default class Guests extends React.Component {
@@ -21,7 +21,7 @@ export default class Guests extends React.Component {
         this.state = {
             current: "active",
             all: "default",
-            currentBefore: true,
+            currentBefore: this.props.isChild == null,
             subHeader: "Current guests",
             tableHeaders: [{first_name: "First Name", last_name: "Family name", type_of_guest: "Type"}],
             detailsHeaders: {
@@ -160,8 +160,12 @@ export default class Guests extends React.Component {
         });
         //download history of stays of the user
         downloadData("getGuestsStays", {id: data.id}).then((history) => {
-            history = this.state.historyHeaders.concat(history);
-            this.setState({pendingHistory: false, historyData: history});
+            formatHistoryDates(history).then((history) => {
+                history = this.state.historyHeaders.concat(history);
+                this.setState({pendingHistory: false, historyData: history});
+            }, (err) => {
+                //TODO handle error
+            });
         }, (err) => {
             //TODO handle error
         });
@@ -221,6 +225,7 @@ export default class Guests extends React.Component {
         let clsBtn = "btn btn-info ";
 
         let content = null;
+        let title = <h1 className="page-header">{this.state.subHeader}</h1>;
 
         if (this.state.showTable) {
             let LeftBtnToolbar = (
@@ -238,10 +243,16 @@ export default class Guests extends React.Component {
                 </div>
             );
 
+            let RightToolbar = (
+                <RightBtnToolbar Add={this.handlerBtn.bind(this, "add")}
+                                 AddState={this.state.addBtnClicked}/>
+            );
+
             content = (
                 <div>
-                    <h1 className="page-header">{this.state.subHeader}</h1>
+                    {this.props.isChild == null ? title: null}
                     {this.props.isChild == null ? LeftBtnToolbar : null}
+                    {this.props.isChild == null ? RightToolbar : null}
                     <Table TableData={this.state.data}
                            onEdit={this.props.isChild == null ? this.handlerEditBtn.bind(this) : null}
                            order={this.props.isChild || this.handlerBookRoomBtn.bind(this)}
@@ -257,7 +268,7 @@ export default class Guests extends React.Component {
             );
             content = (
                 <div>
-                    <h1 className="page-header">{this.state.subHeader}</h1>
+                    {this.props.isChild == null ? title: null}
                     <BackBtn onClick={this.handlerBtn.bind(this, "cancel")}/>
                     <DetailsTable Headers={this.state.detailsHeaders}
                                   DetailsData={this.state.data}/>
@@ -280,23 +291,19 @@ export default class Guests extends React.Component {
         }
         else {
             content = (
-                <GuestForm Submit={this.handlerSubmitBtn.bind(this)}
-                           Cancel={this.handlerBtn.bind(this, "cancel")}
-                           editData={this.state.editData}
-                           errorMsg={this.state.errorMsg}
-                           pending={this.state.sending}/>
+                <div>
+                    {title}
+                    <GuestForm Submit={this.handlerSubmitBtn.bind(this)}
+                               Cancel={this.handlerBtn.bind(this, "cancel")}
+                               editData={this.state.editData}
+                               errorMsg={this.state.errorMsg}
+                               pending={this.state.sending}/>
+                </div>
             )
         }
 
-        let RightToolbar = (
-            <RightBtnToolbar Add={this.handlerBtn.bind(this, "add")}
-                             AddState={this.state.addBtnClicked}/>
-        );
-
         return (
             <div>
-                {this.props.isChild == null && !this.state.showDetails ? RightToolbar : null}
-
                 {this.state.pending ? <Loading /> : content}
             </div>
         );

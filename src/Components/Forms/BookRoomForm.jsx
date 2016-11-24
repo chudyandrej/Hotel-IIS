@@ -195,7 +195,7 @@ export default class BookOrderForm extends React.Component {
 
         return (
             <div style={tableStyle}>
-                <h1 className="page-header">Book Room</h1>
+                <h1 className="page-header">Book a Room</h1>
                 {guest}
                 {room}
 

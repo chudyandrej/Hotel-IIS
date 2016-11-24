@@ -1,6 +1,5 @@
 import React from 'react';
 import moment from 'moment';
-import Popup from 'react-popup';
 
 import BackBtn from '../Components/Buttons/BackBtn.jsx';
 import BookRoomForm from '../Components/Forms/BookRoomForm.jsx';
@@ -11,7 +10,7 @@ import RightBtnToolbar from '../Components/Buttons/RightBtnToolbar.jsx';
 import Table from '../Components/Table.jsx';
 
 import {sendRequest} from '../Functions/HTTP-requests.js';
-import {parseData} from '../Functions/dataParsing.js';
+import {parseStaysData} from '../Functions/dataParsing.js';
 
 
 export default class Stays extends React.Component {
@@ -88,7 +87,7 @@ export default class Stays extends React.Component {
         sendRequest('https://young-cliffs-79659.herokuapp.com/getStays', toSend).then((data) => {
             data = JSON.parse(data.text);
 
-            parseData(data, "all").then((tableData) => {
+            parseStaysData(data, "all").then((tableData) => {
                 data = this.state.tableHeaders.concat(data);
                 tableData = this.state.tableHeaders.concat(tableData);
                 this.setState({pending: false, data: data, tableData: tableData});
@@ -165,7 +164,7 @@ export default class Stays extends React.Component {
     handleFilter(evt) {
         let filter = evt.target.value;
         //parse data, show only stays with status value equal to filter
-        parseData(this.state.data.slice(1,), filter).then((tableData) => {
+        parseStaysData(this.state.data.slice(1,), filter).then((tableData) => {
             tableData = this.state.tableHeaders.concat(tableData);
             this.setState({pending: false, filter: filter, tableData: tableData});
         });
@@ -227,6 +226,7 @@ export default class Stays extends React.Component {
 
     render() {
         let clsBtn = "btn btn-info ";
+        let title = <h1 className="page-header">{this.state.subHeader}</h1>;
         let content = null;
 
         if (this.state.showTable) {
@@ -247,6 +247,7 @@ export default class Stays extends React.Component {
 
             content = (
                 <div>
+                    {title}
                     {LeftBtnToolbar}
                     <RightBtnToolbar Add={this.handlerButtons.bind(this, "add")}
                                      AddState={this.state.addBtnClicked}
@@ -280,6 +281,7 @@ export default class Stays extends React.Component {
         else if (this.state.showDetails) {
             content = (
                 <div>
+                    {title}
                     <BackBtn onClick={this.handlerButtons.bind(this, "back")}/>
                     <hr/>
                     <DetailsTable Headers={this.state.stay}
@@ -316,9 +318,6 @@ export default class Stays extends React.Component {
 
         return (
             <div>
-                <h1 className="page-header">{this.state.subHeader}</h1>
-
-
                 {this.state.pending ? <Loading /> : content}
             </div>
         );

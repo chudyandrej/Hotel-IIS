@@ -12,11 +12,11 @@ export class TableHeader extends React.Component {
                 continue;
             }
             columns.push(
-                <th className="col-xs-4" key={columns.length}>{this.props.Headers[key]}</th>
+                <th className="col-md-3" key={columns.length}>{this.props.Headers[key]}</th>
             )
         }
 
-        columns.push(<th className="col-xs-3" style={{color: "transparent"}} key={columns.length}>X</th>);
+        columns.push(<th className="col-md-2" style={{color: "transparent"}} key={columns.length}>X</th>);
 
         return (
             <thead>
@@ -78,7 +78,6 @@ class TableRow extends React.Component {
         else {
             this.setState({backgroundColor: ""})
         }
-
     }
 
     handlerRemove(data) {
@@ -89,14 +88,20 @@ class TableRow extends React.Component {
     render() {
 
         let removeBtn = (
-            <td className='btn-toolbar pull-right'
+            <td className='btn-toolbar'
                 onMouseEnter={this.hoverAction.bind(this)}
                 onMouseLeave={this.leaveAction.bind(this)}>
-                <button type="button"
-                        className="btn btn-danger btn-sm"
-                        onClick={this.handlerRemove.bind(this, this.props.Row)}>
-                    {this.props.removeBtnName || "Remove"}
-                </button>
+                <td style={{color: "transparent"}} className='btn-toolbar col-md-4'>
+                </td>
+                <td style={{color: "transparent"}} className='btn-toolbar col-md-4'>
+                </td>
+                <td style={{color: "transparent"}} className='btn-toolbar col-md-4'>
+                    <button type="button"
+                            className="btn btn-danger btn-sm"
+                            onClick={this.handlerRemove.bind(this, this.props.Row)}>
+                        {this.props.removeBtnName || "Remove"}
+                    </button>
+                </td>
             </td>
         );
 
@@ -124,12 +129,17 @@ class TableRow extends React.Component {
         );
 
         let actionBtns = (
-            <td style={{color: "transparent"}}
-                onMouseEnter={this.hoverAction.bind(this)}
-                onMouseLeave={this.leaveAction.bind(this)}
-                className='btn-toolbar pull-right'>
-
-                {this.state.hover ? buttons : <div style={{width: 100, height: 30}}></div>}
+            <td style={{color: "transparent"}} className='btn-toolbar'>
+                <td style={{color: "transparent"}} className='btn-toolbar col-md-4'>
+                </td>
+                <td style={{color: "transparent"}} className='btn-toolbar col-md-4'>
+                </td>
+                <td style={{color: "transparent"}}
+                    className='btn-toolbar col-md-4'
+                    onMouseEnter={this.hoverAction.bind(this)}
+                    onMouseLeave={this.leaveAction.bind(this)}>
+                    {buttons}
+                </td>
             </td>
         );
 
