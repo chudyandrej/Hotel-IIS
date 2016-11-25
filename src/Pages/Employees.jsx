@@ -186,7 +186,7 @@ export default class Employees extends React.Component {
                     {this.state.former == "default" ? RightToolbar : null}
                     <Table TableData={this.state.data}
                            onEdit={this.state.former == "default" ? this.handlerEditBtn.bind(this) : null}
-                           onRemove={this.handlerRemove.bind(this)}
+                           onRemove={this.state.former == "default" ? this.handlerRemove.bind(this) : null}
                            showDetails={this.handleShowDetails.bind(this)}/>
                 </div>
             )

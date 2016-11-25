@@ -62,8 +62,8 @@ export default class LoginPage extends React.Component {
         request
             .post('https://young-cliffs-79659.herokuapp.com/login')
             .set('Accept', 'application/json')
-            .send({ email: 'jerdna11@gmail.com', password: '123456789' })  //for debug
-            //.send({email: this.state.username, password: this.state.password})
+            //.send({ email: 'jerdna11@gmail.com', password: '123456789' })  //for debug
+            .send({email: this.state.username, password: this.state.password})
             .end((err, res)=>{
                 if (err != null || !res.ok) {
                     console.log('Oh no! error');  //DEBUG
@@ -74,8 +74,10 @@ export default class LoginPage extends React.Component {
                     this.setState({error: false, pending: false});
 
                     cookie.remove('token');
+                    cookie.remove('permissions');
                     cookie.remove('loggedIn');
                     cookie.save('token', JSON.parse(res.text).token);
+                    cookie.save('permissions', JSON.parse(res.text).permissions);
                     cookie.save('loggedIn', true);
                     hashHistory.push('/dashboard');
                 }
@@ -83,8 +85,8 @@ export default class LoginPage extends React.Component {
     }
 
     render() {
-        var errorMsg = <strong className="alert alert-danger">Wrong username or password!</strong>;
-        var content = null;
+        let errorMsg = <strong className="alert alert-danger">Wrong username or password!</strong>;
+        let content = null;
         if (this.state.loginClicked && !this.state.pending) {
             content = (
                 <div className="formContainerLogin text-center">
@@ -92,7 +94,7 @@ export default class LoginPage extends React.Component {
                     <div className="formLogin"
                          onMouseLeave={this.handleHover.bind(this, "down")}
                          onMouseEnter={this.handleHover.bind(this, "up")}>
-                        <input placeholder="username"
+                        <input placeholder="email"
                                type="text"
                                value={this.state.username}
                                onChange={this.handlerOnChange.bind(this, "name")}/>

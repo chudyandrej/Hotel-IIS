@@ -1,5 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router';
+import cookie from 'react-cookie';
 
 
 export default class SideBar extends React.Component {
@@ -35,7 +36,7 @@ export default class SideBar extends React.Component {
     }
 
     setBtnActive(path) {
-        var active = path.split("/");
+        let active = path.split("/");
         if (active.length > 2) {
             this.handlerBtn(active[2]);
         }
@@ -58,6 +59,21 @@ export default class SideBar extends React.Component {
     }
 
     render() {
+        let highPermissionsPages = (
+            <ul className="nav nav-sidebar">
+                <li className={this.state.analytics}>
+                    <Link to="/dashboard/analytics" onClick={this.handlerBtn.bind(this, "analytics")}>
+                        Analytics
+                    </Link>
+                </li>
+                <li className={this.state.employees}>
+                    <Link to="/dashboard/employees" onClick={this.handlerBtn.bind(this, "employees")}>
+                        Employees
+                    </Link>
+                </li>
+            </ul>
+        );
+
         return (
             <div className="col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
                 <ul className="nav nav-sidebar">
@@ -92,18 +108,7 @@ export default class SideBar extends React.Component {
                         </Link>
                     </li>
                 </ul>
-                <ul className="nav nav-sidebar">
-                    <li className={this.state.analytics}>
-                        <Link to="/dashboard/analytics" onClick={this.handlerBtn.bind(this, "analytics")}>
-                            Analytics
-                        </Link>
-                    </li>
-                    <li className={this.state.employees}>
-                        <Link to="/dashboard/employees" onClick={this.handlerBtn.bind(this, "employees")}>
-                            Employees
-                        </Link>
-                    </li>
-                </ul>
+                {cookie.load('permissions') == "root" ? highPermissionsPages : null}
             </div>
         );
     }

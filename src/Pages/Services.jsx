@@ -1,3 +1,4 @@
+import cookie from 'react-cookie';
 import React from 'react';
 
 import BackBtn from '../Components/Buttons/BackBtn.jsx';
@@ -17,6 +18,7 @@ export default class Services extends React.Component {
         super(props, context);
 
         this.state = {
+            root: cookie.load('permissions') == "root",
             available: "active",
             unavailable: "default",
             subHeader: "Services",
@@ -199,17 +201,23 @@ export default class Services extends React.Component {
                 </div>
             );
 
+            let availableTable = (
+                <Table TableData={this.state.data}
+                       onEdit={this.state.root ? this.handlerEditBtn.bind(this) : null}
+                       showDetails={this.handleShowDetails.bind(this)}
+                       order={this.handlerOrderBtn.bind(this)}
+                       onRemove={this.state.root ? this.handlerRemove.bind(this) : null}/>
+            );
+
+            let addBtn = <AddBtn Add={this.handlerBtn.bind(this, "add")}/>;
+
             content = (
                 <div>
                     {this.props.isChild == null ? title: null}
                     {this.props.isChild == null ? LeftBtnToolbar : null}
-                    {this.props.isChild == null ? <AddBtn Add={this.handlerBtn.bind(this, "add")}/> : null}
+                    {this.props.isChild == null && this.state.root ? addBtn : null}
 
-                    {this.state.available == "active" ? <Table TableData={this.state.data}
-                           onEdit={this.handlerEditBtn.bind(this)}
-                           showDetails={this.handleShowDetails.bind(this)}
-                           order={this.handlerOrderBtn.bind(this)}
-                           onRemove={this.handlerRemove.bind(this)}/> :  <Table TableData={this.state.data} /> }
+                    {this.state.available == "active" ? availableTable : <Table TableData={this.state.data} /> }
                 </div>
             )
         }
