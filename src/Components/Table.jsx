@@ -121,7 +121,7 @@ class TableRow extends React.Component {
                 {this.props.orderBtnName || "Order"}
             </button>
         );
-        console.log("magic" + this.state.notEditBtn+" "+this.props.onEdit);
+
         let buttons = (
             <div>
                 {this.props.onEdit == null ? null : editBtn}

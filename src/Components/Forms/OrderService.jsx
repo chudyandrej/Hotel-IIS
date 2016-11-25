@@ -2,8 +2,9 @@ import React from 'react';
 
 import FormButtons from '../Buttons/FormButtons.jsx';
 import Stays from '../../Pages/Stays.jsx';
+import Table from '../Table.jsx';
 
-import {sendRequest} from '../../Functions/HTTP-requests.js';
+import {parseStaysData} from '../../Functions/dataParsing.js';
 
 
 export default class OrderService extends React.Component {
@@ -12,7 +13,11 @@ export default class OrderService extends React.Component {
 
         this.state = {
             chooseRoom: false,
+            chosenRoom: null,
             checkBtns: [],
+            tableHeaders: [{
+                last_name: "Last Name", status: "Status", from: "From", to: "To", roomNumber: "Room"
+            }],
 
             rooms: []
         }
@@ -37,24 +42,33 @@ export default class OrderService extends React.Component {
         this.setState({rooms: roomsTemp});
     }
 
+    handlerToggle(){
+        this.setState({chooseRoom: !this.state.chooseRoom});
+    }
+
     handlerChooseStay(data) {
-        console.log(data);
-        let checkBtns = [];
+        //give an array to parseStays data, parse it, then prepare checkboxes
+        parseStaysData([data], "all").then((tableData) => {
+            tableData = this.state.tableHeaders.concat(tableData);
+            this.setState({chosenRoom: tableData});
 
-        data.rooms.forEach((room) => {
-            checkBtns.push(
-                <label className="form-check-inline" key={checkBtns.length}>
-                    <input className="form-check-input"
-                           type="checkbox"
-                           id="inlineCheckbox1"
-                           onChange={this.handleCheck.bind(this)}
-                           value={room.id}/>
-                    {room.templateRoom.id}
-                </label>
-            )
+            //prepare checkboxes with numbers and identificators  of rooms in the chosen stay
+            let checkBtns = [];
+            data.rooms.forEach((room) => {
+                checkBtns.push(
+                    <label className="form-check-inline" key={checkBtns.length}>
+                        <input className="form-check-input"
+                               type="checkbox"
+                               id="inlineCheckbox1"
+                               onChange={this.handleCheck.bind(this)}
+                               value={room.id}/>
+                        {room.templateRoom.id}
+                    </label>
+                )
+            });
+
+            this.setState({chooseRoom: true, checkBtns: checkBtns});
         });
-
-        this.setState({chooseRoom: true, checkBtns: checkBtns});
     }
 
     handlerSubmitBtn(){
@@ -76,8 +90,24 @@ export default class OrderService extends React.Component {
 
         let checkButtons = (
             <div>
-                <h2>Choose Room</h2>
+                <h2>Room number(s):</h2>
                 {this.state.checkBtns}
+            </div>
+        );
+
+        let chooseStay = (
+            <div>
+                <h2>Choose a stay:</h2>
+                <Stays isChild={this.handlerChooseStay.bind(this)}/>
+            </div>
+        );
+
+        let chosenStay = (
+            <div>
+                <h2>Stay:</h2>
+                <Table TableData={this.state.chosenRoom}
+                        order={this.handlerToggle.bind(this)}
+                        orderBtnName="Remove"/>
             </div>
         );
 
@@ -87,7 +117,7 @@ export default class OrderService extends React.Component {
 
                 {this.props.serviceInfo}
 
-                <Stays isChild={this.handlerChooseStay.bind(this)}/>
+                {this.state.chooseRoom ? chosenStay : chooseStay}
 
                 {this.state.chooseRoom ? checkButtons : null}
 
