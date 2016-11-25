@@ -6,6 +6,7 @@ import FormButtons from '../Buttons/FormButtons.jsx';
 import Guests from '../../Pages/Guests.jsx';
 import InputLabelForm from './InputLabelForm.jsx';
 import Rooms from '../../Pages/Rooms.jsx';
+import StayType from './StayType.jsx';
 import Table from '../Table.jsx';
 
 
@@ -203,16 +204,9 @@ export default class BookOrderForm extends React.Component {
                                                        startDate={this.handleDate.bind(this, "startDate")}
                                                        endDate={this.handleDate.bind(this, "endDate")}/> : null}
 
-                    <div className="form-group row ">
-                        <label className="col-xs-2 col-form-label">Type of order:</label>
-                        <div className="col-xs-6">
-                            <select value={this.state.type}
-                                    onChange={this.handleChange.bind(this, "type")}>
-                                <option value="inProgress">inProgress</option>
-                                <option value="reservation">reservation</option>
-                            </select>
-                        </div>
-                    </div>
+                    <StayType type={this.state.type}
+                              onChange={this.handleChange.bind(this, "type")}
+                              createStay={true}/>
                     <InputLabelForm label="Note"
                                     type="text"
                                     onChange={this.handleChange.bind(this, "note")}/>

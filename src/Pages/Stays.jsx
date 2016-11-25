@@ -5,6 +5,7 @@ import BackBtn from '../Components/Buttons/BackBtn.jsx';
 import BookRoomForm from '../Components/Forms/BookRoomForm.jsx';
 import CalendarInput from '../Components/CalendarInput.jsx';
 import DetailsTable from '../Components/DetailsTable.jsx';
+import EditStayForm from '../Components/Forms/EditStayForm.jsx';
 import Loading from '../Components/Loading.jsx';
 import AddBtn from '../Components/Buttons/AddBtn.jsx';
 import Table from '../Components/Table.jsx';
@@ -69,8 +70,9 @@ export default class Stays extends React.Component {
         let toSend = null;
         if (current) {
              toSend = {
-                from: this.state.startDate.format('YYYY-MM-DD'),
-                to: this.state.endDate.format('YYYY-MM-DD')
+                 from: this.state.startDate.format('YYYY-MM-DD'),
+                 to: this.state.endDate.format('YYYY-MM-DD'),
+                 statuses: ["inProgress", "reservation"]
             };
         }
         else {
@@ -172,6 +174,7 @@ export default class Stays extends React.Component {
             showAddForm: false,
             editData: data
         });
+        console.log("edit data");
         console.log(data);
     }
 
@@ -301,8 +304,23 @@ export default class Stays extends React.Component {
         else {  //edit form
             content = (
                 <div>
-                    <BackBtn onClick={this.handlerButtons.bind(this, "back")}/>
-                    ahoj
+                    <EditStayForm Cancel={this.handlerButtons.bind(this, "back")}
+                                  Submit={this.handlerSubmitBtn.bind(this)}
+                                  pending={this.state.sending}
+                                  details={
+                                      <div>
+                                          <DetailsTable Headers={this.state.stay}
+                                                        DetailsData={this.state.editData}/>
+                                          <h3 className="page-header">Room:</h3>
+
+                                          <h3 className="page-header">Guest:</h3>
+                                          <DetailsTable Headers={this.state.guest}
+                                                        DetailsData={this.state.editData.guest}/>
+                                          <h3 className="page-header">Employee:</h3>
+                                          <DetailsTable Headers={this.state.employee}
+                                                        DetailsData={this.state.editData.employee}/>
+                                      </div>
+                                  }/>
                 </div>
             )
         }
