@@ -6,6 +6,7 @@ import FormButtons from '../Buttons/FormButtons.jsx';
 import Guests from '../../Pages/Guests.jsx';
 import InputLabelForm from './InputLabelForm.jsx';
 import Rooms from '../../Pages/Rooms.jsx';
+import Table from '../Table.jsx';
 
 
 export default class BookOrderForm extends React.Component {
@@ -15,6 +16,10 @@ export default class BookOrderForm extends React.Component {
 
         this.state = {
             tableHeaders: {id: "Room Number", capacity: "Capacity", actual_price: "Price"},
+            tableGuestHeaders: [{
+                first_name: "First Name", last_name: "Family name",
+                type_of_guest: "Type", phone_number: "Phone number:"
+            }],
             detailsHeaders: {
                 first_name: "First Name:", middle_name: "Middle Name:", last_name: "Family name:",
                 type_of_guest: "Type:", email: "email:", phone_number: "Phone number:",
@@ -32,6 +37,7 @@ export default class BookOrderForm extends React.Component {
             type: "reservation",
             note: null,
             guest: this.props.guest,
+            oneGuestChosen: false,
 
             newOrder: false,
             ordered: [],
@@ -50,6 +56,8 @@ export default class BookOrderForm extends React.Component {
             case "freeRooms":
                 this.setState({showFreeRooms: !this.state.showFreeRooms});
                 break;
+            case "oneGuestChosen":
+                this.setState({oneGuestChosen: !this.state.oneGuestChosen});
         }
     }
 
@@ -78,7 +86,7 @@ export default class BookOrderForm extends React.Component {
     }
 
     /**
-     * Push data to ordered list if data isn't already there
+     * Push data to the list of ordered rooms if data isn't already there
      * otherwise, pop them out
      * @param data
      */
@@ -103,7 +111,7 @@ export default class BookOrderForm extends React.Component {
     }
 
     chooseGuest(data) {
-        this.setState({guest: data});
+        this.setState({guest: data, oneGuestChosen: true});
     }
 
     handlerSubmitBtn() {
@@ -148,10 +156,26 @@ export default class BookOrderForm extends React.Component {
         let room = null;
 
         if (typeof(this.props.guestInfo) === "undefined") {
-            guest = (
+            let guestsTable = (
                 <div>
+                    <h2>Guests:</h2>
                     <Guests isChild={this.chooseGuest.bind(this)}
                             orderBtnName="Add"/>
+                </div>
+            );
+
+            let chosenGuest = (
+                 <div>
+                     <h2>Guest:</h2>
+                     <Table TableData={this.state.tableGuestHeaders.concat(this.state.guest)}
+                            order={this.toggleHandler.bind(this, "oneGuestChosen")}
+                            orderBtnName="Remove"/>
+                 </div>
+             );
+
+            guest = (
+                <div>
+                    {this.state.oneGuestChosen ? chosenGuest : guestsTable}
                     <h2 onClick={this.toggleHandler.bind(this, "guest")}
                         className="page-header">Guest info:</h2>
                     {this.state.showGuest ? <DetailsTable Headers={this.state.detailsHeaders}

@@ -94,7 +94,7 @@ export default class Guests extends React.Component {
         this.setState({pending: true});
         evt.preventDefault();
 
-        if (this.state.current === "active") {
+        if (this.state.currentBefore) {
             this.fetchCurrentGuests(evt.target.value);
         }
         else {

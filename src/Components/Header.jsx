@@ -26,7 +26,7 @@ export default class Header extends React.Component {
             <div className="navbar navbar-inverse navbar-fixed-top" role="navigation">
                 <div className="container-fluid">
                     <div className="navbar-header">
-                        <a className="navbar-brand" href="#">Hotel-ISS</a>
+                        <a className="navbar-brand" href="#">Hotel-IIS</a>
                     </div>
 
                     <div className='btn-toolbar pull-right'>
