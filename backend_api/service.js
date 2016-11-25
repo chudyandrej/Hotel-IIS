@@ -1,7 +1,9 @@
 module.exports = function(app, db, _) {
 
     app.post('/addNewService', function(req, res) {
-        db.employees.findByToken(req.body.token).then((instanceEmplyee) => {
+        db.tokens.findToken(req.body.token).then(() => {
+            return db.employees.findByToken(req.body.token);
+        }).then((instanceEmplyee) => {
             return new Promise((resolve, reject) => {
                 if (instanceEmplyee.get('permissions') === 'root'){
                     resolve();
@@ -55,7 +57,9 @@ module.exports = function(app, db, _) {
     });
 
     app.post('/reserveService', function(req, res) {
-        db.employees.findByToken(req.body.token).then((instanceEmplyee) => {
+        db.tokens.findToken(req.body.token).then(() => {
+            return db.employees.findByToken(req.body.token)
+        }).then((instanceEmplyee) => {
             return db.services.createReservationService(instanceEmplyee.get('id'),req.body);
         }).then(() => {
             res.status(200).send();

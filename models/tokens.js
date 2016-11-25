@@ -34,7 +34,9 @@ module.exports = function(sequelize, DataTypes) {
             findToken(hashToken) {
                 return new Promise(function(resolve, reject) {
                     if (!_.isString(hashToken) || hashToken === '') {
-                        reject('Token is not string or token is empty');
+                        reject({
+                            errors:[{message: "Access denied. Token is not string or token is empty string"}]
+                        });
                     }
                     tokens.findOne({
                         where: {
@@ -52,7 +54,9 @@ module.exports = function(sequelize, DataTypes) {
                             });
 
                         }else{
-                            reject("Error: Token not found");
+                            reject({
+                                errors:[{message: "Access denied. Token expired"}]
+                            });
                         }
                     }, function(error) {
                         reject(error)
@@ -60,7 +64,7 @@ module.exports = function(sequelize, DataTypes) {
                 });
             },
 
-        
+
             /**
             * Filter all tokens whit expire time
             */

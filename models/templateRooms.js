@@ -43,7 +43,7 @@ module.exports = function(sequelize, DataTypes) {
                             reject({
                                 errors:[
                                     {
-                                        message: "Room whit this identifier not exist",
+                                        message: "Template of room with the identifier does not exist",
                                         path: "id",
                                         value: id
                                     }]

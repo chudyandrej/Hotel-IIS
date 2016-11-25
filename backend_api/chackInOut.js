@@ -3,7 +3,9 @@ module.exports = function(app, db, _) {
 
     app.post('/checkIn', function(req, res) {
         var stayInstanceGlobal;
-        db.employees.findByToken(req.body.token).then((instanceEmplyee) => {
+        db.tokens.findToken(req.body.token).then(() => {
+            return db.employees.findByToken(req.body.token);
+        }).then((instanceEmplyee) => {
             return new Promise((resolve, reject) => {
                 if (_.isArray(req.body.rooms) && req.body.rooms.length >= 1){
                     resolve(instanceEmplyee.get('id'));

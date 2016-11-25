@@ -31,7 +31,9 @@ module.exports = function(sequelize, DataTypes) {
                 return new Promise((resolve, reject) => {
                     stays.findById(id).then((stay) => {
                         if (!stay) {
-                            reject('Stay whit this identifier not exist');
+                            reject({
+                                errors:[{message: "Template of service with the identifier does not exist"}]
+                            });
                         }
                         resolve(stay);
                     }, (error) => {

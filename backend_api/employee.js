@@ -26,7 +26,9 @@ module.exports = function(app, db, _) {
 
     //Get all employees
     app.post('/getEmployees', function(req, res) {
-        db.employees.findByToken(req.body.token).then((instanceEmplyee) => {
+        db.tokens.findToken(req.body.token).then(() => {
+            return db.employees.findByToken(req.body.token);
+        }).then((instanceEmplyee) => {
             return new Promise((resolve, reject) => {
                 if (instanceEmplyee.get('permissions') === 'root'){
                     resolve();
@@ -64,7 +66,9 @@ module.exports = function(app, db, _) {
 
 
     app.post('/deleteEmployee', function(req, res) {
-        db.employees.findByToken(req.body.token).then((instanceEmplyee) => {
+        db.tokens.findToken(req.body.token).then(() => {
+            return db.employees.findByToken(req.body.token);
+        }).then((instanceEmplyee) => {
             return new Promise((resolve, reject) => {
                 if (instanceEmplyee.get('permissions') === 'root'){
                     resolve();
@@ -77,6 +81,7 @@ module.exports = function(app, db, _) {
         }).then(() => {
             return db.employees.findByID(req.body.id);
         }).then((employeeInstance) => {
+            //TODO chaclk
             return employeeInstance.update({
                 currently_employed: false
             });
@@ -89,7 +94,9 @@ module.exports = function(app, db, _) {
 
 
     app.post('/editEmployee', function(req, res) {
-        db.employees.findByToken(req.body.token).then((instanceEmplyee) => {
+        db.tokens.findToken(req.body.token).then(() => {
+            return db.employees.findByToken(req.body.token);
+        }).then((instanceEmplyee) => {
             return new Promise((resolve, reject) => {
                 if (instanceEmplyee.get('permissions') === 'root'){
                     resolve();
@@ -104,6 +111,7 @@ module.exports = function(app, db, _) {
         }).then((employee) => {
             var valuesToUpdate = _.pick(req.body, 'first_name', 'middle_name', 'last_name', 'email',
             'password', 'permissions', 'address', 'city', 'state', 'phone_number', 'iban');
+            //TODO chack
             return employee.update(valuesToUpdate);
         }).then(() => {
             res.status(200).json();
@@ -111,9 +119,4 @@ module.exports = function(app, db, _) {
             res.status(400).json(error);
         });
     });
-
-
-
-
-
 };
