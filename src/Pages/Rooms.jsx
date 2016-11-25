@@ -24,6 +24,7 @@ export default class Rooms extends React.Component {
             all: "default",
             availableBefore: true,
             subHeader: "Available Rooms",
+            isNotChild: typeof(this.props.isChild) === "undefined",
 
             tableHeaders: [{id: "Room Number:", actual_price: "Price:", tv: "TV:", internet: "Internet:", bar: "Bar:",
                 bathtub: "Bathtub:", kitchen: "Kitchen:", balcony: "Balcony:"}],
@@ -174,38 +175,35 @@ export default class Rooms extends React.Component {
         let mainContent = null;
         let title = <h1 className="page-header">{this.state.subHeader}</h1>;
 
+        let LeftBtnToolbar = (
+            <div className='btn-toolbar pull-left'>
+                <button type="button"
+                        className={clsBtn + this.state.available}
+                        onClick={this.handlerButtons.bind(this, "available")}>
+                    Available
+                </button>
+                <button type="button"
+                        className={clsBtn + this.state.all}
+                        onClick={this.handlerButtons.bind(this, "all")}>
+                    All
+                </button>
+            </div>
+        );
+
+        let calendar = (
+            <CalendarInput startDate={this.state.startDate}
+                           endDate={this.state.endDate}
+                           onChangeStart={this.handleDayChange.bind(this, "start")}
+                           onChangeEnd={this.handleDayChange.bind(this, "end")}/>
+        );
+
         if (this.state.showTable) {
-            let LeftBtnToolbar = (
-                <div className='btn-toolbar pull-left'>
-                    <button type="button"
-                            className={clsBtn + this.state.available}
-                            onClick={this.handlerButtons.bind(this, "available")}>
-                        Available
-                    </button>
-                    <button type="button"
-                            className={clsBtn + this.state.all}
-                            onClick={this.handlerButtons.bind(this, "all")}>
-                        All
-                    </button>
-                </div>
-            );
-
-            let calendar = (
-                <CalendarInput startDate={this.state.startDate}
-                               endDate={this.state.endDate}
-                               onChangeStart={this.handleDayChange.bind(this, "start")}
-                               onChangeEnd={this.handleDayChange.bind(this, "end")}/>
-            );
-
             mainContent = (
                 <div>
-                    {this.props.isChild == null ? title : null}
-                    {this.props.isChild == null ? LeftBtnToolbar : null}
-                    {this.state.all === "active" ? null : calendar}
-
                     <Table TableData={this.state.data}
                            Rooms={true}
-                           order={this.props.isChild || this.handlerBookRoomBtn.bind(this)}
+                           order={this.state.available === "active" ?
+                                  this.props.isChild || this.handlerBookRoomBtn.bind(this) : null}
                            showDetails={this.handleShowDetails.bind(this)}/>
                 </div>
             )
@@ -213,7 +211,7 @@ export default class Rooms extends React.Component {
         else if (this.state.showDetails) {
             mainContent = (
                 <div>
-                    {this.props.isChild == null ? title : null}
+                    {this.state.isNotChild ? title : null}
                     <BackBtn onClick={this.handlerButtons.bind(this, "cancel")}/>
                     <DetailsTable Headers={this.state.detailsHeaders}
                                   DetailsData={this.state.data}/>
@@ -235,8 +233,17 @@ export default class Rooms extends React.Component {
             )
         }
 
+        let upperToolbar = (
+            <div>
+                {this.state.isNotChild ? title : null}
+                {this.state.isNotChild ? LeftBtnToolbar : null}
+                {this.state.all === "active" ? null : calendar}
+            </div>
+        );
+
         return (
             <div>
+                {this.state.showTable ? upperToolbar : null}
                 {this.state.pending ? <Loading /> : mainContent}
             </div>
         );

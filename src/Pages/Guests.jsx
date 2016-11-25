@@ -1,12 +1,13 @@
 import React from 'react';
 import moment from 'moment';
 
+import AddBtn from '../Components/Buttons/AddBtn.jsx';
 import BackBtn from '../Components/Buttons/BackBtn.jsx';
 import BookRoomForm from '../Components/Forms/BookRoomForm.jsx';
 import DetailsTable from '../Components/DetailsTable.jsx';
 import GuestForm from '../Components/Forms/GuestForm.jsx'
 import Loading from '../Components/Loading.jsx';
-import AddBtn from '../Components/Buttons/AddBtn.jsx';
+import SearchBox from '../Components/SearchBox.jsx';
 import Table from '../Components/Table.jsx';
 
 import {sendRequest, downloadData} from '../Functions/HTTP-requests.js';
@@ -23,6 +24,7 @@ export default class Guests extends React.Component {
             all: "default",
             currentBefore: typeof(this.props.isChild) === "undefined",
             subHeader: "Current guests",
+            isNotChild: typeof(this.props.isChild) === "undefined",
             tableHeaders: [{
                 first_name: "First Name", last_name: "Family name",
                 type_of_guest: "Type", phone_number: "Phone number:"
@@ -43,6 +45,7 @@ export default class Guests extends React.Component {
             editData: null,
             historyData: null,
             data: [],
+
             pending: true,
             pendingHistory: false,
             sending: false,
@@ -51,18 +54,19 @@ export default class Guests extends React.Component {
     }
 
     componentWillMount() {
-        if (this.props.isChild == null) {
-            this.fetchCurrentGuests();
+        if (typeof(this.props.isChild) === "undefined") {
+            this.fetchCurrentGuests("");
         }
         else {
-            this.fetchAllGuests();
+            this.fetchAllGuests({});
             this.setState({subHeader: "Guests"});
         }
     }
 
-    fetchAllGuests() {
+    fetchAllGuests(data) {
         this.setState({pending: true});
-        downloadData("getGuests", {}).then((data) => {
+        downloadData("getGuests", data).then((data) => {
+            console.log(data);
             data = this.state.tableHeaders.concat(data);
             this.setState({pending: false, data: data});
         }, (err) => {
@@ -71,11 +75,12 @@ export default class Guests extends React.Component {
         });
     }
 
-    fetchCurrentGuests() {
+    fetchCurrentGuests(text) {
         this.setState({pending: true});
         let data = {
             from: moment().format('YYYY-MM-DD'),
-            to: moment().format('YYYY-MM-DD')
+            to: moment().format('YYYY-MM-DD'),
+            text: text
         };
         downloadData("getCurrentGuests", data).then((data) => {
             console.log(data);
@@ -91,6 +96,18 @@ export default class Guests extends React.Component {
         });
     }
 
+    searchOnChange(evt) {
+        this.setState({pending: true});
+        evt.preventDefault();
+
+        if (this.state.current === "active") {
+            this.fetchCurrentGuests(evt.target.value);
+        }
+        else {
+            this.fetchAllGuests({text: evt.target.value})
+        }
+    }
+
     handlerBtn(name) {
         switch (name) {
             case "current":
@@ -100,7 +117,7 @@ export default class Guests extends React.Component {
                     currentBefore: true,
                     subHeader: "Current guests"
                 });
-                this.fetchCurrentGuests();
+                this.fetchCurrentGuests("");
                 break;
             case "all":
                 this.setState({
@@ -109,7 +126,7 @@ export default class Guests extends React.Component {
                     currentBefore: false,
                     subHeader: "All guests"
                 });
-                this.fetchAllGuests();
+                this.fetchAllGuests({});
                 break;
             case "add":
                 this.setState({
@@ -173,7 +190,7 @@ export default class Guests extends React.Component {
         this.setState({sending: true, errorMsg: null});
         let url = null;
 
-        if (this.state.editData == null) {  //add a new guest
+        if (this.state.editData === null) {  //add a new guest
             url = 'https://young-cliffs-79659.herokuapp.com/addGuest';
         }
         else {  //edit the guest
@@ -227,29 +244,30 @@ export default class Guests extends React.Component {
         let content = null;
         let title = <h1 className="page-header">{this.state.subHeader}</h1>;
 
-        if (this.state.showTable) {
-            let LeftBtnToolbar = (
-                <div className='btn-toolbar pull-left'>
-                    <button type="button"
-                            className={clsBtn + this.state.current}
-                            onClick={this.handlerBtn.bind(this, "current")}>
-                        Current
-                    </button>
-                    <button type="button"
-                            className={clsBtn + this.state.all}
-                            onClick={this.handlerBtn.bind(this, "all")}>
-                        All
-                    </button>
-                </div>
-            );
+        let searchInput = (
+            <SearchBox onChange={this.searchOnChange.bind(this)} placeholder="Search Guests" />
+        );
 
+        let LeftBtnToolbar = (
+            <div className='btn-toolbar pull-left'>
+                <button type="button"
+                        className={clsBtn + this.state.current}
+                        onClick={this.handlerBtn.bind(this, "current")}>
+                    Current
+                </button>
+                <button type="button"
+                        className={clsBtn + this.state.all}
+                        onClick={this.handlerBtn.bind(this, "all")}>
+                    All
+                </button>
+            </div>
+        );
+
+        if (this.state.showTable) {
             content = (
                 <div>
-                    {this.props.isChild == null ? title: null}
-                    {this.props.isChild == null ? LeftBtnToolbar : null}
-                    {this.props.isChild == null ? <AddBtn Add={this.handlerBtn.bind(this, "add")}/> : null}
                     <Table TableData={this.state.data}
-                           onEdit={this.props.isChild == null ? this.handlerEditBtn.bind(this) : null}
+                           onEdit={this.state.isNotChild ? this.handlerEditBtn.bind(this) : null}
                            order={this.props.isChild || this.handlerBookRoomBtn.bind(this)}
                            orderBtnName={this.props.orderBtnName || "Book"}
                            showDetails={this.handleShowDetails.bind(this)}/>
@@ -262,7 +280,7 @@ export default class Guests extends React.Component {
             );
             content = (
                 <div>
-                    {this.props.isChild == null ? title: null}
+                    {this.state.isNotChild ? title : null}
                     <BackBtn onClick={this.handlerBtn.bind(this, "cancel")}/>
                     <DetailsTable Headers={this.state.detailsHeaders}
                                   DetailsData={this.state.data}/>
@@ -296,8 +314,18 @@ export default class Guests extends React.Component {
             )
         }
 
+        let upperToolbar = (
+            <div>
+                {this.state.isNotChild ? title : null}
+                {this.state.isNotChild ? LeftBtnToolbar : null}
+                {searchInput}
+                {this.state.isNotChild ? <AddBtn Add={this.handlerBtn.bind(this, "add")}/> : null}
+            </div>
+        );
+
         return (
             <div>
+                {this.state.showTable ? upperToolbar : null}
                 {this.state.pending ? <Loading /> : content}
             </div>
         );

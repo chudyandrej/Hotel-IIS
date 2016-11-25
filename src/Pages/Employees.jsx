@@ -1,10 +1,11 @@
 import React from 'react';
 
+import AddBtn from '../Components/Buttons/AddBtn.jsx';
 import BackBtn from '../Components/Buttons/BackBtn.jsx';
 import DetailsTable from '../Components/DetailsTable.jsx';
 import EmployeeForm from '../Components/Forms/EmployeeForm.jsx';
 import Loading from '../Components/Loading.jsx';
-import AddBtn from '../Components/Buttons/AddBtn.jsx';
+import SearchBox from '../Components/SearchBox.jsx';
 import Table from '../Components/Table.jsx';
 
 import {sendRequest} from '../Functions/HTTP-requests.js';
@@ -54,6 +55,14 @@ export default class Employees extends React.Component {
         }, (err) => {
             //TODO handle error
         });
+    }
+
+    searchOnChange(evt) {
+        evt.preventDefault();
+        this.fetchData({
+            currently_employed: this.state.employed === "active",
+            text: evt.target.value
+        })
     }
 
     handlerEmployedBtn() {
@@ -159,31 +168,42 @@ export default class Employees extends React.Component {
 
         let content = null;
 
-        if (this.state.showTable) {
-            let LeftBtnToolbar = (
-                <div className='btn-toolbar pull-left'>
-                    <button type="button"
-                            className={clsBtn + this.state.employed}
-                            onClick={this.handlerEmployedBtn.bind(this)}>
-                        Employed
-                    </button>
-                    <button type="button"
-                            className={clsBtn + this.state.former}
-                            onClick={this.handlerFormerBtn.bind(this)}>
-                        Former
-                    </button>
-                </div>
-            );
+        let LeftBtnToolbar = (
+            <div className='btn-toolbar pull-left'>
+                <button type="button"
+                        className={clsBtn + this.state.employed}
+                        onClick={this.handlerEmployedBtn.bind(this)}>
+                    Employed
+                </button>
+                <button type="button"
+                        className={clsBtn + this.state.former}
+                        onClick={this.handlerFormerBtn.bind(this)}>
+                    Former
+                </button>
+            </div>
+        );
 
-            let RightToolbar = (
-                <AddBtn Add={this.handlerAddBtn.bind(this)}
-                        AddState={this.state.addBtnClicked}/>
-            );
+        let RightToolbar = (
+            <AddBtn Add={this.handlerAddBtn.bind(this)}
+                    AddState={this.state.addBtnClicked}/>
+        );
+        let searchInput = (
+            <SearchBox onChange={this.searchOnChange.bind(this)} placeholder="Search Guests" />
+        );
+
+        let upperToolbar = (
+            <div>
+                {LeftBtnToolbar}
+                {searchInput}
+                {this.state.former == "default" ? RightToolbar : null}
+            </div>
+        );
+
+        if (this.state.showTable) {
+
 
             content = (
                 <div>
-                    {LeftBtnToolbar}
-                    {this.state.former == "default" ? RightToolbar : null}
                     <Table TableData={this.state.data}
                            onEdit={this.state.former == "default" ? this.handlerEditBtn.bind(this) : null}
                            onRemove={this.state.former == "default" ? this.handlerRemove.bind(this) : null}
@@ -213,7 +233,7 @@ export default class Employees extends React.Component {
         return (
             <div>
                 <h2 className="page-header">{this.state.subHeader}</h2>
-
+                {this.state.showTable ? upperToolbar : null}
                 {this.state.pending ? <Loading /> : content}
             </div>
         );

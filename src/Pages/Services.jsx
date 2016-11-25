@@ -18,10 +18,11 @@ export default class Services extends React.Component {
         super(props, context);
 
         this.state = {
-            root: cookie.load('permissions') == "root",
+            root: cookie.load('permissions') === "root",
             available: "active",
             unavailable: "default",
             subHeader: "Services",
+            isNotChild: typeof(this.props.isChild) === "undefined",
             tableHeaders: [{name: "Name", actual_price: "Price", duration: "Duration"}],
             detailsHeaders: {
                 name: "Name:", actual_price: "Price:", description: "Description:",
@@ -141,7 +142,7 @@ export default class Services extends React.Component {
         this.setState({sending: true, errorMsg: null});
         let url = null;
 
-        if (this.state.editData == null) {  //add a new service
+        if (this.state.editData === null) {  //add a new service
             url = 'https://young-cliffs-79659.herokuapp.com/addNewService';
         }
         else {  //edit the service
@@ -184,23 +185,24 @@ export default class Services extends React.Component {
 
         let content = null;
         let title =  <h1 className="page-header">{this.state.subHeader}</h1>;
+        let addBtn = <AddBtn Add={this.handlerBtn.bind(this, "add")}/>;
+
+        let LeftBtnToolbar = (
+            <div className='btn-toolbar pull-left'>
+                <button type="button"
+                        className={clsBtn + this.state.available}
+                        onClick={this.handlerBtn.bind(this, "available")}>
+                    Available
+                </button>
+                <button type="button"
+                        className={clsBtn + this.state.unavailable}
+                        onClick={this.handlerBtn.bind(this, "unavailable")}>
+                    Unavailable
+                </button>
+            </div>
+        );
 
         if (this.state.showTable) {
-            let LeftBtnToolbar = (
-                <div className='btn-toolbar pull-left'>
-                    <button type="button"
-                            className={clsBtn + this.state.available}
-                            onClick={this.handlerBtn.bind(this, "available")}>
-                        Available
-                    </button>
-                    <button type="button"
-                            className={clsBtn + this.state.unavailable}
-                            onClick={this.handlerBtn.bind(this, "unavailable")}>
-                        Unavailable
-                    </button>
-                </div>
-            );
-
             let availableTable = (
                 <Table TableData={this.state.data}
                        onEdit={this.state.root ? this.handlerEditBtn.bind(this) : null}
@@ -209,22 +211,16 @@ export default class Services extends React.Component {
                        onRemove={this.state.root ? this.handlerRemove.bind(this) : null}/>
             );
 
-            let addBtn = <AddBtn Add={this.handlerBtn.bind(this, "add")}/>;
-
             content = (
                 <div>
-                    {this.props.isChild == null ? title: null}
-                    {this.props.isChild == null ? LeftBtnToolbar : null}
-                    {this.props.isChild == null && this.state.root ? addBtn : null}
-
-                    {this.state.available == "active" ? availableTable : <Table TableData={this.state.data} /> }
+                    {this.state.available === "active" ? availableTable : <Table TableData={this.state.data} /> }
                 </div>
             )
         }
         else if (this.state.showDetails) {
             content = (
                 <div>
-                    {this.props.isChild == null ? title : null}
+                    {this.state.isNotChild ? title : null}
                     <BackBtn onClick={this.handlerBtn.bind(this, "cancel")}/>
                     <DetailsTable Headers={this.state.detailsHeaders}
                                   DetailsData={this.state.data}/>
@@ -258,8 +254,17 @@ export default class Services extends React.Component {
             )
         }
 
+        let upperToolbar = (
+            <div>
+                {this.state.isNotChild ? title : null}
+                {this.state.isNotChild ? LeftBtnToolbar : null}
+                {this.state.isNotChild && this.state.root ? addBtn : null}
+            </div>
+        );
+
         return (
             <div>
+                {this.state.showTable ? upperToolbar : null}
                 {this.state.pending ? <Loading /> : content}
             </div>
         );

@@ -23,7 +23,7 @@ export default class Stays extends React.Component {
             all: "default",
             availableBefore: true,
             subHeader: "Current Stays",
-
+            isNotChild: typeof(this.props.isChild) === "undefined",
             tableHeaders: [{
                 last_name: "Last Name", status: "Status", from: "From", to: "To", roomNumber: "Room"
             }],
@@ -179,7 +179,7 @@ export default class Stays extends React.Component {
         let stayDetails = null;
 
         this.state.data.forEach((stay) => {
-            if (stay.id == data.id) {
+            if (stay.id === data.id) {
                 stayDetails = stay;
             }
         });
@@ -222,46 +222,47 @@ export default class Stays extends React.Component {
         let title = <h1 className="page-header">{this.state.subHeader}</h1>;
         let content = null;
 
-        if (this.state.showTable) {
-            let LeftBtnToolbar = (
-                <div className='btn-toolbar pull-left'>
-                    <button type="button"
-                            className={clsBtn + this.state.available}
-                            onClick={this.handlerButtons.bind(this, "available")}>
-                        Current
-                    </button>
-                    <button type="button"
-                            className={clsBtn + this.state.all}
-                            onClick={this.handlerButtons.bind(this, "all")}>
-                        All
-                    </button>
-                </div>
-            );
+        let calendarInput = (
+            <CalendarInput startDate={this.state.startDate}
+                           endDate={this.state.endDate}
+                           onChangeStart={this.handleDayChange.bind(this, "start")}
+                           onChangeEnd={this.handleDayChange.bind(this, "end")}/>
+        );
 
+        let filter = (
+            <div className='btn-toolbar pull-left' style={{marginLeft:10}}>
+                Status:
+                <select value={this.state.filter}
+                        onChange={this.handleFilter.bind(this)}>
+                    <option value="all">all</option>
+                    <option value="inProgress">inProgress</option>
+                    <option value="reservation">reservation</option>
+                    <option value="ended">ended</option>
+                    <option value="canceled">canceled</option>
+                </select>
+            </div>
+        );
+
+        let LeftBtnToolbar = (
+            <div className='btn-toolbar pull-left'>
+                <button type="button"
+                        className={clsBtn + this.state.available}
+                        onClick={this.handlerButtons.bind(this, "available")}>
+                    Current
+                </button>
+                <button type="button"
+                        className={clsBtn + this.state.all}
+                        onClick={this.handlerButtons.bind(this, "all")}>
+                    All
+                </button>
+            </div>
+        );
+
+        if (this.state.showTable) {
             content = (
                 <div>
-                    {this.props.isChild == null ? title : null}
-                    {this.props.isChild == null ? LeftBtnToolbar : null}
-                    {this.props.isChild == null ? <AddBtn Add={this.handlerButtons.bind(this, "add")}/> : null}
-
-                    <CalendarInput startDate={this.state.startDate}
-                                   endDate={this.state.endDate}
-                                   onChangeStart={this.handleDayChange.bind(this, "start")}
-                                   onChangeEnd={this.handleDayChange.bind(this, "end")}/>
-                    <div>
-                        Status:
-                        <select value={this.state.filter}
-                                onChange={this.handleFilter.bind(this)}>
-                            <option value="all">all</option>
-                            <option value="inProgress">inProgress</option>
-                            <option value="reservation">reservation</option>
-                            <option value="ended">ended</option>
-                            <option value="canceled">canceled</option>
-                        </select>
-                    </div>
-
                     <Table TableData={this.state.tableData}
-                           onEdit={this.props.isChild == null ? this.handlerEditBtn.bind(this) : null}
+                           onEdit={this.state.isNotChild ? this.handlerEditBtn.bind(this) : null}
                            order={this.props.isChild}
                            //onRemove={this.handlerRemove.bind(this)}
                            removeBtnName={"CheckOut"}
@@ -278,7 +279,7 @@ export default class Stays extends React.Component {
                     <DetailsTable Headers={this.state.stay}
                                   DetailsData={this.state.data}/>
                     <h3 className="page-header">Room:</h3>
-                    <Table TableData={this.state.data.rooms}/>
+
                     <h3 className="page-header">Guest:</h3>
                     <DetailsTable Headers={this.state.guest}
                                   DetailsData={this.state.data.guest}/>
@@ -306,8 +307,19 @@ export default class Stays extends React.Component {
             )
         }
 
+        let upperToolbar = (
+            <div>
+                {this.state.isNotChild ? title : null}
+                {this.state.isNotChild ? LeftBtnToolbar : null}
+                {calendarInput}
+                {filter}
+                {this.state.isNotChild ? <AddBtn Add={this.handlerButtons.bind(this, "add")}/> : null}
+            </div>
+        );
+
         return (
             <div>
+                {this.state.showTable ? upperToolbar : null}
                 {this.state.pending ? <Loading /> : content}
             </div>
         );
