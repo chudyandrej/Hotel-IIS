@@ -34,8 +34,9 @@ module.exports = function(app, db, _) {
                                      "FROM stays " +
                                      "INNER JOIN guests " +
                                      "ON stays.guestId=guests.id " +
-                                     "WHERE (stays.from <= '" + timeFrom + "' OR stays.to <= '" + timeTo + "') AND (stays.from >= '" + timeFrom + "' OR stays.to >= '" + timeTo + "') " +
-                                        "AND (concat_ws(' ', guests.first_name, guests.last_name, guests.name_company) LIKE '%" + text + "%' OR " +
+                                     "WHERE (stays.status = 'reservation' OR stays.status = 'inProgress') AND " +
+                                        "(stays.from <= '" + timeFrom + "' OR stays.to <= '" + timeTo + "') AND (stays.from >= '" + timeFrom + "' OR stays.to >= '" + timeTo + "') AND " +
+                                        "(concat_ws(' ', guests.first_name, guests.last_name, guests.name_company) LIKE '%" + text + "%' OR " +
                                         "concat_ws(' ', guests.first_name, guests.last_name, guests.name_company) LIKE '%" + text + "%') " +
                                      "GROUP BY guests.id", { type: db.sequelize.QueryTypes.SELECT});
         }).then((stayEmployeesInstances) => {
