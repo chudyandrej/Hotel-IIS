@@ -42,7 +42,7 @@ module.exports = function(app, db, _) {
             let currently_employed = _.isUndefined(req.body.currently_employed) ? true : req.body.currently_employed
             let text = _.isUndefined(req.body.text) ? '' : req.body.text
             return db.sequelize.query("select id, first_name, middle_name, last_name, email, permissions, phone_number, address, city, state " +
-                                      "from employees where " + currently_employed + " = true and" +
+                                      "from employees where currently_employed  = " +  currently_employed + " and" +
                                       " (concat_ws(' ', first_name, last_name) LIKE '%" + text + "%' OR" +
                                       " concat_ws(' ', last_name, first_name) LIKE '%"+ text + "%')", { type: db.sequelize.QueryTypes.SELECT});
         }).then((employeesInstances) => {
