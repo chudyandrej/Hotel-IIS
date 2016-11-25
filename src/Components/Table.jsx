@@ -13,7 +13,7 @@ export class TableHeader extends React.Component {
                 continue;
             }
             columns.push(
-                <th className={this.props.Rooms == null ? "col-md-3 text-center" : "col-md-1 text-center"}
+                <th className={typeof(this.props.Rooms) === "undefined" ? "col-md-3 text-center" : "col-md-1 text-center"}
                     key={columns.length}>
                     {this.props.Headers[key]}
                 </th>
@@ -42,7 +42,11 @@ class TableRow extends React.Component {
             columns: [],
             remove: false,
             hover: false,
-            backgroundColor: ""
+            backgroundColor: "",
+
+            NotEditBtn: typeof(this.props.onEdit) === "undefined",
+            NotOrderBtn: typeof(this.props.order) === "undefined",
+            NotRemoveBtn: typeof(this.props.onRemove) === "undefined"
         };
         let value = null;
 
@@ -83,7 +87,7 @@ class TableRow extends React.Component {
 
     handlerOrderBtn(data) {
         this.props.order(data);
-        if (this.state.backgroundColor == "") {
+        if (this.state.backgroundColor === "") {
             this.setState({backgroundColor: "#C3F7D3"})
         }
         else {
@@ -124,9 +128,9 @@ class TableRow extends React.Component {
 
         let buttons = (
             <div>
-                {this.props.onEdit == null ? null : editBtn}
-                {this.props.order == null ? null : orderBtn}
-                {this.props.onRemove == null ? null : removeBtn}
+                {this.state.NotEditBtn ? null : editBtn}
+                {this.state.NotOrderBtn ? null : orderBtn}
+                {this.state.NotRemoveBtn ? null : removeBtn}
             </div>
         );
 

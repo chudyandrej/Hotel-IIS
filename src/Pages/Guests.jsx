@@ -11,7 +11,7 @@ import SearchBox from '../Components/SearchBox.jsx';
 import Table from '../Components/Table.jsx';
 
 import {sendRequest, downloadData} from '../Functions/HTTP-requests.js';
-import {formatHistoryDates, getGuests} from '../Functions/dataParsing.js';
+import {formatHistoryDates} from '../Functions/dataParsing.js';
 
 
 export default class Guests extends React.Component {
@@ -66,7 +66,6 @@ export default class Guests extends React.Component {
     fetchAllGuests(data) {
         this.setState({pending: true});
         downloadData("getGuests", data).then((data) => {
-            console.log(data);
             data = this.state.tableHeaders.concat(data);
             this.setState({pending: false, data: data});
         }, (err) => {
@@ -83,13 +82,8 @@ export default class Guests extends React.Component {
             text: text
         };
         downloadData("getCurrentGuests", data).then((data) => {
-            console.log(data);
-            getGuests(data).then((data) => {
-                data = this.state.tableHeaders.concat(data);
-                this.setState({pending: false, data: data});
-            }, (err) => {
-                //TODO handle error
-            });
+            data = this.state.tableHeaders.concat(data);
+            this.setState({pending: false, data: data});
         }, (err) => {
             console.log(err);
             //TODO handle error
