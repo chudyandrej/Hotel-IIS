@@ -6,7 +6,6 @@ import FormButtons from '../Buttons/FormButtons.jsx';
 import Guests from '../../Pages/Guests.jsx';
 import InputLabelForm from './InputLabelForm.jsx';
 import Rooms from '../../Pages/Rooms.jsx';
-import {TableHeader} from '../Table.jsx';
 
 
 export default class BookOrderForm extends React.Component {
@@ -24,7 +23,7 @@ export default class BookOrderForm extends React.Component {
             },
 
             startDate: moment(),
-            endDate: moment(),
+            endDate: moment().add(1, "day"),
             pending: false,
 
             showGuest: false,
@@ -86,7 +85,8 @@ export default class BookOrderForm extends React.Component {
     orderRoom(data) {
         let newOrder = [];
         let removeOrderFlag = false;
-        this.state.ordered.forEach(function (item) {
+        this.state.ordered.forEach((item) => {
+            console.log(item);
             if (item == data) {
                 console.log("remove order");
                 removeOrderFlag = true;
@@ -95,6 +95,7 @@ export default class BookOrderForm extends React.Component {
                 newOrder.push(item)
             }
         });
+        console.log(newOrder);
         if (!removeOrderFlag) {
             newOrder.push(data);
         }
@@ -107,12 +108,22 @@ export default class BookOrderForm extends React.Component {
 
     handlerSubmitBtn() {
         let rooms = [];
-        this.state.ordered.forEach(function (room) {
+
+        if (typeof(this.props.roomInfo) === "undefined") {
+            this.state.ordered.forEach((room) => {
+                console.log(room);
+                rooms.push({
+                    templateRoomId: room.id,
+                    price_room: room.actual_price
+                })
+            });
+        }
+        else {
             rooms.push({
-                templateRoomId: room.id,
-                price_room: room.actual_price
-            })
-        }.bind(this));
+                templateRoomId: this.props.roomData.id,
+                price_room: this.props.roomData.actual_price
+            });
+        }
 
         let data = {
             from: this.state.startDate.format('YYYY-MM-DD'),
@@ -122,6 +133,7 @@ export default class BookOrderForm extends React.Component {
             guestId: this.state.guest.id,
             rooms: rooms
         };
+        console.log("sending these data");
         console.log(data);
         this.props.Submit(data);
     }
@@ -135,7 +147,19 @@ export default class BookOrderForm extends React.Component {
         let guest = null;
         let room = null;
 
-        if (this.props.guestInfo != null) {
+        if (typeof(this.props.guestInfo) === "undefined") {
+            guest = (
+                <div>
+                    <Guests isChild={this.chooseGuest.bind(this)}
+                            orderBtnName="Add"/>
+                    <h2 onClick={this.toggleHandler.bind(this, "guest")}
+                        className="page-header">Guest info:</h2>
+                    {this.state.showGuest ? <DetailsTable Headers={this.state.detailsHeaders}
+                                                          DetailsData={this.state.guest}/> : null}
+                </div>
+            )
+        }
+        else {
             guest = (
                 <div>
                     <h2 onClick={this.toggleHandler.bind(this, "guest")}
@@ -144,29 +168,8 @@ export default class BookOrderForm extends React.Component {
                 </div>
             )
         }
-        else {
-            guest = (
-                <div>
-                    <Guests isChild={this.chooseGuest.bind(this)}
-                            orderBtnName={"Add"}/>
-                    <h2 onClick={this.toggleHandler.bind(this, "guest")}
-                        className="page-header">Guest info:</h2>
-                    {this.state.showGuest ? <DetailsTable Headers={this.state.detailsHeaders}
-                                                          DetailsData={this.state.guest}/> : null}
-                </div>
-            )
-        }
 
-        if (this.props.roomInfo != null) {
-            room = (
-                <div>
-                    <h2 onClick={this.toggleHandler.bind(this, "room")}
-                        className="page-header">Room info:</h2>
-                    {this.state.showRoomInfo ? this.props.roomInfo : null}
-                </div>
-            )
-        }
-        else {
+        if (typeof(this.props.roomInfo) === "undefined") {
             room = (
                 <div>
                     <h2 onClick={this.toggleHandler.bind(this, "freeRooms")}
@@ -189,6 +192,15 @@ export default class BookOrderForm extends React.Component {
                     <InputLabelForm label="Note"
                                     type="text"
                                     onChange={this.handleChange.bind(this, "note")}/>
+                </div>
+            )
+        }
+        else {
+            room = (
+                <div>
+                    <h2 onClick={this.toggleHandler.bind(this, "room")}
+                        className="page-header">Room info:</h2>
+                    {this.state.showRoomInfo ? this.props.roomInfo : null}
                 </div>
             )
         }

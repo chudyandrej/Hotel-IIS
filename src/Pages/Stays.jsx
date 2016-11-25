@@ -6,10 +6,10 @@ import BookRoomForm from '../Components/Forms/BookRoomForm.jsx';
 import CalendarInput from '../Components/CalendarInput.jsx';
 import DetailsTable from '../Components/DetailsTable.jsx';
 import Loading from '../Components/Loading.jsx';
-import RightBtnToolbar from '../Components/Buttons/RightBtnToolbar.jsx';
+import AddBtn from '../Components/Buttons/AddBtn.jsx';
 import Table from '../Components/Table.jsx';
 
-import {sendRequest} from '../Functions/HTTP-requests.js';
+import {downloadData, sendRequest} from '../Functions/HTTP-requests.js';
 import {parseStaysData} from '../Functions/dataParsing.js';
 
 
@@ -25,7 +25,7 @@ export default class Stays extends React.Component {
             subHeader: "Current Stays",
 
             tableHeaders: [{
-                last_name: "Last Name", status: "Status", from: "From", to: "To", id: "Room"
+                last_name: "Last Name", status: "Status", from: "From", to: "To", roomNumber: "Room"
             }],
             stay: {
                 status: "Status:", from: "From:", to: "To:", note: "Note:"
@@ -41,14 +41,12 @@ export default class Stays extends React.Component {
             },
             employee: {
                 first_name: "First Name:", middle_name: "Middle Name:", last_name: "Family name:",
-                permissions: "Permissions:", password: "Password:", email: "Email:", phone_number: "Phone number:",
-                iban: "IBAN:", address: "Address:", city: "City:", state: "State:"
+                permissions: "Permissions:", email: "Email:", phone_number: "Phone number:"
             },
 
             showTable: true,
             showAddForm: false,
             showDetails: false,
-            addBtnClicked: false,
 
             startDate: moment(),
             endDate: moment().add(1, "day"),
@@ -77,15 +75,13 @@ export default class Stays extends React.Component {
         }
         else {
             toSend = {
-                from: moment("20000101", "YYYYMMDD"),
-                to: moment("23000101", "YYYYMMDD")
+                from: moment("20140101", "YYYYMMDD"),
+                to: moment("20200101", "YYYYMMDD")
             };
             this.setState({startDate: toSend.from, endDate: toSend.to});
         }
 
-        sendRequest('https://young-cliffs-79659.herokuapp.com/getStays', toSend).then((data) => {
-            data = JSON.parse(data.text);
-
+        downloadData('getStays', toSend).then((data) => {
             parseStaysData(data, "all").then((tableData) => {
                 data = this.state.tableHeaders.concat(data);
                 tableData = this.state.tableHeaders.concat(tableData);
@@ -107,6 +103,10 @@ export default class Stays extends React.Component {
                     all: "default",
                     availableBefore: true
                 });
+                this.setState({
+                    startDate: moment(),
+                    endDate: moment().add(1, "day")
+                });
                 this.fetchData(true);
                 break;
             case "all":
@@ -122,9 +122,7 @@ export default class Stays extends React.Component {
                 this.setState({
                     subHeader: "Add a new stay",
                     showTable: false,
-                    showAddForm: true,
-                    addBtnClicked: true,
-
+                    showAddForm: true
                 });
                 break;
             case "back":
@@ -172,15 +170,15 @@ export default class Stays extends React.Component {
             subHeader: "Edit the stay",
             showTable: false,
             showAddForm: false,
-            addBtnClicked: false,
             editData: data
         });
+        console.log(data);
     }
 
     handleShowDetails(data) {
         let stayDetails = null;
 
-        this.state.data.forEach(function (stay) {
+        this.state.data.forEach((stay) => {
             if (stay.id == data.id) {
                 stayDetails = stay;
             }
@@ -201,8 +199,8 @@ export default class Stays extends React.Component {
         this.setState({sending: true});
         let url = null;
 
-        if (this.state.editData == null) {  //add a new stay
-            url = 'https://young-cliffs-79659.herokuapp.com/addNewStay';
+        if (this.state.editData === null) {  //add a new stay
+            url = 'https://young-cliffs-79659.herokuapp.com/checkIn';
         }
         else {  //edit the stay
             url = 'https://young-cliffs-79659.herokuapp.com/editStay';
@@ -213,7 +211,7 @@ export default class Stays extends React.Component {
             .then(() => {
                 console.log("data sent successfully");
                 this.setState({sending: false});
-                this.handlerCancelBtn();
+                this.handlerButtons("back");
             }, (err) => {
                 //TODO handle error
             });
@@ -242,10 +240,9 @@ export default class Stays extends React.Component {
 
             content = (
                 <div>
-                    {title}
-                    {LeftBtnToolbar}
-                    <RightBtnToolbar Add={this.handlerButtons.bind(this, "add")}
-                                     AddState={this.state.addBtnClicked}/>
+                    {this.props.isChild == null ? title : null}
+                    {this.props.isChild == null ? LeftBtnToolbar : null}
+                    {this.props.isChild == null ? <AddBtn Add={this.handlerButtons.bind(this, "add")}/> : null}
 
                     <CalendarInput startDate={this.state.startDate}
                                    endDate={this.state.endDate}
@@ -264,8 +261,9 @@ export default class Stays extends React.Component {
                     </div>
 
                     <Table TableData={this.state.tableData}
-                           onEdit={this.handlerEditBtn.bind(this)}
-                        //onRemove={this.handlerRemove.bind(this)}
+                           onEdit={this.props.isChild == null ? this.handlerEditBtn.bind(this) : null}
+                           order={this.props.isChild}
+                           //onRemove={this.handlerRemove.bind(this)}
                            removeBtnName={"CheckOut"}
                            showDetails={this.handleShowDetails.bind(this)}/>
                 </div>
@@ -280,8 +278,7 @@ export default class Stays extends React.Component {
                     <DetailsTable Headers={this.state.stay}
                                   DetailsData={this.state.data}/>
                     <h3 className="page-header">Room:</h3>
-                    <DetailsTable Headers={this.state.rooms}
-                                  DetailsData={this.state.data.rooms}/>
+                    <Table TableData={this.state.data.rooms}/>
                     <h3 className="page-header">Guest:</h3>
                     <DetailsTable Headers={this.state.guest}
                                   DetailsData={this.state.data.guest}/>

@@ -17,23 +17,18 @@ export const parseStaysData = function(data, filter) {
             rooms = [];
 
             row.rooms.forEach(function (room) {
-                rooms.push(room.templateRoom.roomNumber);
-
+                rooms.push(room.templateRoom.id);
             });
-            rooms = rooms.toString();
+
+            row['last_name'] = row.guest.last_name;
+            row['from'] =  moment(row.from).format('YYYY-MM-DD');
+            row['to'] = moment(row.to).format('YYYY-MM-DD');
+            row['roomNumber'] = rooms.toString();
+
             tableData.push(
-                {
-                    id: row.id,
-                    last_name: row.guest.last_name,
-                    status: row.status,
-                    //convert string date to object and change its format
-                    from: moment(row.from).format('YYYY-MM-DD'),
-                    to: moment(row.to).format('YYYY-MM-DD'),
-                    roomNumber: rooms
-                }
+               row
             );
         });
-
         //filter data if filter is not set to 'all'
         if (filter != "all") {
             let filteredData = [];

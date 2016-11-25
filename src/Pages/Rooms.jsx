@@ -64,32 +64,48 @@ export default class Rooms extends React.Component {
         });
     }
 
-    handlerAvailableBtn() {
-        this.setState({
-            available: "active",
-            all: "default",
-            availableBefore: true,
-            subHeader: "Available Rooms"
-        });
-        this.fetchData();
-    }
 
-    handlerAllBtn() {
-        this.setState({
-            available: "default",
-            all: "active",
-            availableBefore: false,
-            subHeader: "All Rooms"
-        });
-        this.setState({pending: true});
-        downloadData('getRooms', {}).then((data) => {
-            data = this.state.tableHeaders.concat(data);
-            this.setState({pending: false, data: data});
-        }, (err) => {
-            //TODO handle error
-            console.log("error");
-            console.log(err);
-        });
+    handlerButtons(name) {
+        switch(name) {
+            case "available":
+                this.setState({
+                    available: "active",
+                    all: "default",
+                    availableBefore: true,
+                    subHeader: "Available Rooms"
+                });
+                this.fetchData();
+                break;
+            case "all":
+                this.setState({
+                    available: "default",
+                    all: "active",
+                    availableBefore: false,
+                    subHeader: "All Rooms"
+                });
+                this.setState({pending: true});
+                downloadData('getRooms', {}).then((data) => {
+                    data = this.state.tableHeaders.concat(data);
+                    this.setState({pending: false, data: data});
+                }, (err) => {
+                    //TODO handle error
+                    console.log("error");
+                    console.log(err);
+                });
+                break;
+            case "cancel":
+                console.log("beforeFML^2");
+                this.setState({
+                    subHeader: "Available Rooms",
+                    available: "active",
+                    all: "default",
+                    showTable: true,
+                    showDetails: false
+                });
+                console.log("after FML^2");
+                this.state.availableBefore ? this.handlerButtons("available") : this.handlerButtons("all");
+                break;
+        }
     }
 
     handleDayChange(name, date) {
@@ -126,7 +142,7 @@ export default class Rooms extends React.Component {
             showTable: false,
             showDetails: true,
             data: data
-        })
+        });
     }
 
     handlerBookRoomBtn(data) {
@@ -137,27 +153,14 @@ export default class Rooms extends React.Component {
         });
     }
 
-    handlerCancelBtn() {
-        this.setState({
-            subHeader: "Available Rooms",
-            available: "active",
-            all: "default",
-            showTable: true,
-            showAddForm: false,
-            showDetails: false,
-            addBtnClicked: false
-        });
-        this.state.availableBefore ? this.handlerAvailableBtn() : this.handlerAllBtn();
-    }
-
     handlerBookRoom(data) {
         this.setState({sending: true});
-        //TODO CORRECT TYPO IN BACKEND
-        sendRequest('https://young-cliffs-79659.herokuapp.com/chackIn', data)
+        console.log(data);
+        sendRequest('https://young-cliffs-79659.herokuapp.com/checkIn', data)
             .then(() => {
                 console.log("data sent successfully");
                 this.setState({sending: false});
-                this.handlerBtn.bind(this, "cancel");
+                this.handlerButtons("cancel");
             }, (err) => {
                 this.setState({
                     sending: false,
@@ -169,19 +172,19 @@ export default class Rooms extends React.Component {
     render() {
         let clsBtn = "btn btn-info ";
         let mainContent = null;
-        let title = (<h1 className="page-header">{this.state.subHeader}</h1>);
+        let title = <h1 className="page-header">{this.state.subHeader}</h1>;
 
         if (this.state.showTable) {
             let LeftBtnToolbar = (
                 <div className='btn-toolbar pull-left'>
                     <button type="button"
                             className={clsBtn + this.state.available}
-                            onClick={this.handlerAvailableBtn.bind(this)}>
+                            onClick={this.handlerButtons.bind(this, "available")}>
                         Available
                     </button>
                     <button type="button"
                             className={clsBtn + this.state.all}
-                            onClick={this.handlerAllBtn.bind(this)}>
+                            onClick={this.handlerButtons.bind(this, "all")}>
                         All
                     </button>
                 </div>
@@ -198,7 +201,7 @@ export default class Rooms extends React.Component {
                 <div>
                     {this.props.isChild == null ? title : null}
                     {this.props.isChild == null ? LeftBtnToolbar : null}
-                    {this.state.all == "active" ? null : calendar}
+                    {this.state.all === "active" ? null : calendar}
 
                     <Table TableData={this.state.data}
                            Rooms={true}
@@ -211,7 +214,7 @@ export default class Rooms extends React.Component {
             mainContent = (
                 <div>
                     {this.props.isChild == null ? title : null}
-                    <BackBtn onClick={this.handlerCancelBtn.bind(this)}/>
+                    <BackBtn onClick={this.handlerButtons.bind(this, "cancel")}/>
                     <DetailsTable Headers={this.state.detailsHeaders}
                                   DetailsData={this.state.data}/>
                 </div>
@@ -220,8 +223,9 @@ export default class Rooms extends React.Component {
         else {  //order form
             mainContent = (
                 <div>
-                    <BookRoomForm Cancel={this.handlerCancelBtn.bind(this)}
+                    <BookRoomForm Cancel={this.handlerButtons.bind(this, "cancel")}
                                   Submit={this.handlerBookRoom.bind(this)}
+                                  roomData={this.state.data}
                                   roomInfo={
                                       <DetailsTable Headers={this.state.detailsHeaders}
                                                     DetailsData={this.state.data}/>

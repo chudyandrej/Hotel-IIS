@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-export default class RightBtnToolbar extends React.Component {
+export default class AddBtn extends React.Component {
     constructor(props, context) {
         super(props, context);
     }
@@ -11,17 +11,13 @@ export default class RightBtnToolbar extends React.Component {
     }
 
     render() {
-        let AddBtn = (
-            <button type="button"
-                    className="btn btn-info"
-                    onClick={this.handlerClick.bind(this)}>
-                Add
-            </button>
-        );
-
         return (
             <div className='btn-toolbar pull-right'>
-                {AddBtn}
+                <button type="button"
+                        className="btn btn-info"
+                        onClick={this.handlerClick.bind(this)}>
+                    Add
+                </button>
             </div>
         )
     }

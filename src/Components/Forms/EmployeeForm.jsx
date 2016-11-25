@@ -126,7 +126,7 @@ export default class EmployeeFormForm extends React.Component {
             }
         }
         this.props.Submit(data);
-        this.props.editData = null;
+        //this.props.editData = null;
     }
 
     render() {

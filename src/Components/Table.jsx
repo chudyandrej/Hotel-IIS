@@ -175,7 +175,7 @@ export default class Table extends React.Component {
             clear: "both"
         };
 
-        this.props.TableData.slice(1,).forEach(function (row) {
+        this.props.TableData.slice(1,).forEach((row) => {
             rows.push(<TableRow key={row.id}
                                 Row={row}
                                 onEdit={this.props.onEdit}
@@ -184,7 +184,7 @@ export default class Table extends React.Component {
                                 orderBtnName={this.props.orderBtnName}
                                 onRemove={this.props.onRemove}
                                 removeBtnName={this.props.removeBtnName}/>);
-        }.bind(this));
+        });
 
         return (
             <div className="table-responsive" style={tableStyle}>

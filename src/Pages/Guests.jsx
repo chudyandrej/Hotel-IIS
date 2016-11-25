@@ -6,7 +6,7 @@ import BookRoomForm from '../Components/Forms/BookRoomForm.jsx';
 import DetailsTable from '../Components/DetailsTable.jsx';
 import GuestForm from '../Components/Forms/GuestForm.jsx'
 import Loading from '../Components/Loading.jsx';
-import RightBtnToolbar from '../Components/Buttons/RightBtnToolbar.jsx';
+import AddBtn from '../Components/Buttons/AddBtn.jsx';
 import Table from '../Components/Table.jsx';
 
 import {sendRequest, downloadData} from '../Functions/HTTP-requests.js';
@@ -21,7 +21,7 @@ export default class Guests extends React.Component {
         this.state = {
             current: "active",
             all: "default",
-            currentBefore: this.props.isChild == null,
+            currentBefore: typeof(this.props.isChild) === "undefined",
             subHeader: "Current guests",
             tableHeaders: [{
                 first_name: "First Name", last_name: "Family name",
@@ -39,7 +39,6 @@ export default class Guests extends React.Component {
             showAddForm: false,
             showDetails: false,
             bookRoom: false,
-            addBtnClicked: false,
 
             editData: null,
             historyData: null,
@@ -116,8 +115,7 @@ export default class Guests extends React.Component {
                 this.setState({
                     showTable: false,
                     showAddForm: true,
-                    subHeader: "Add a new guest",
-                    addBtnClicked: true
+                    subHeader: "Add a new guest"
                 });
                 break;
             case "cancel":
@@ -127,8 +125,9 @@ export default class Guests extends React.Component {
                     showDetails: false,
                     bookRoom: false,
                     subHeader: "Current Guests",
-                    addBtnClicked: false
+                    editData: null
                 });
+                console.log("after cancel in guests");
                 if (this.state.currentBefore) {
                     this.handlerBtn("current");
                 }
@@ -145,7 +144,6 @@ export default class Guests extends React.Component {
             showTable: false,
             showAddForm: false,
             subHeader: "Edit the guest",
-            addBtnClicked: true,
 
             editData: data
         });
@@ -181,13 +179,14 @@ export default class Guests extends React.Component {
         else {  //edit the guest
             url = 'https://young-cliffs-79659.herokuapp.com/editGuest';
             data['id'] = this.state.editData.id;
+            this.setState({editData: null});
         }
 
         sendRequest(url, data)
             .then(() => {
                 console.log("data sent successfully");
                 this.setState({sending: false});
-                this.handlerCancelBtn();
+                this.handlerBtn("cancel");
             }, (err) => {
                 this.setState({
                     sending: false,
@@ -206,13 +205,14 @@ export default class Guests extends React.Component {
     }
 
     handlerBookRoom(data) {
-        this.setState({sending: true});
-        //TODO CORRECT TYPO IN BACKEND
-        sendRequest('https://young-cliffs-79659.herokuapp.com/chackIn', data)
+        console.log("got data");
+        console.log(data);
+        this.setState({sending: true, errorMsg: null});
+        sendRequest('https://young-cliffs-79659.herokuapp.com/checkIn', data)
             .then(() => {
                 console.log("data sent successfully");
                 this.setState({sending: false});
-                this.handlerBtn.bind(this, "cancel");
+                this.handlerBtn("cancel");
             }, (err) => {
                 this.setState({
                     sending: false,
@@ -243,16 +243,11 @@ export default class Guests extends React.Component {
                 </div>
             );
 
-            let RightToolbar = (
-                <RightBtnToolbar Add={this.handlerBtn.bind(this, "add")}
-                                 AddState={this.state.addBtnClicked}/>
-            );
-
             content = (
                 <div>
                     {this.props.isChild == null ? title: null}
                     {this.props.isChild == null ? LeftBtnToolbar : null}
-                    {this.props.isChild == null ? RightToolbar : null}
+                    {this.props.isChild == null ? <AddBtn Add={this.handlerBtn.bind(this, "add")}/> : null}
                     <Table TableData={this.state.data}
                            onEdit={this.props.isChild == null ? this.handlerEditBtn.bind(this) : null}
                            order={this.props.isChild || this.handlerBookRoomBtn.bind(this)}
@@ -280,7 +275,7 @@ export default class Guests extends React.Component {
             content = (
                 <BookRoomForm Cancel={this.handlerBtn.bind(this, "cancel")}
                               Submit={this.handlerBookRoom.bind(this)}
-                              guestID={this.state.data}
+                              guest={this.state.data}
                               guestInfo={
                                   <DetailsTable Headers={this.state.detailsHeaders}
                                                 DetailsData={this.state.data}/>

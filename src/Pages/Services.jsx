@@ -3,7 +3,8 @@ import React from 'react';
 import BackBtn from '../Components/Buttons/BackBtn.jsx';
 import DetailsTable from '../Components/DetailsTable.jsx';
 import Loading from '../Components/Loading.jsx';
-import RightBtnToolbar from '../Components/Buttons/RightBtnToolbar.jsx';
+import OrderService from '../Components/Forms/OrderService.jsx';
+import AddBtn from '../Components/Buttons/AddBtn.jsx';
 import ServiceForm from '../Components/Forms/ServiceForm.jsx';
 import Table from '../Components/Table.jsx';
 
@@ -18,7 +19,7 @@ export default class Services extends React.Component {
         this.state = {
             available: "active",
             unavailable: "default",
-            subHeader: "Available Services",
+            subHeader: "Services",
             tableHeaders: [{name: "Name", actual_price: "Price", duration: "Duration"}],
             detailsHeaders: {
                 name: "Name:", actual_price: "Price:", description: "Description:",
@@ -28,7 +29,6 @@ export default class Services extends React.Component {
             showTable: true,
             showAddForm: false,
             showDetails: false,
-            addBtnClicked: false,
 
             editData: null,
             data: [],
@@ -44,7 +44,7 @@ export default class Services extends React.Component {
 
     fetchData(data) {
         this.setState({pending: true});
-        sendRequest('https://young-cliffs-79659.herokuapp.com/getServices', {data}).then((data)=> {
+        sendRequest('https://young-cliffs-79659.herokuapp.com/getServices', data).then((data)=> {
             data = this.state.tableHeaders.concat(JSON.parse(data.text));
             this.setState({pending: false, data: data});
         }, (err)=> {
@@ -52,22 +52,56 @@ export default class Services extends React.Component {
         });
     }
 
-    handlerAvailableBtn() {
-        this.setState({
-            available: "active",
-            unavailable: "default",
-            subHeader: "Available Services"
-        });
-        this.fetchData({available:true});
+    handlerBtn(name) {
+        switch(name) {
+            case "available":
+                this.setState({
+                    available: "active",
+                    unavailable: "default",
+                    subHeader: "Available Services"
+                });
+                this.fetchData({available:true});
+                break;
+            case "unavailable":
+                this.setState({
+                    available: "default",
+                    unavailable: "active",
+                    subHeader: "Unavailable Services"
+                });
+                this.fetchData({available:false});
+                break;
+            case "add":
+                this.setState({
+                    subHeader: "Add a new service",
+                    showTable: false,
+                    showAddForm: true
+                });
+                break;
+            case "cancel":
+                console.log("before FML");
+                console.log(this.handlerBtn.bind(this));
+                this.setState({
+                    subHeader: "Services",
+                    showTable: true,
+                    showAddForm: false,
+                    showDetails: false,
+                    editData: null
+                });
+                console.log("after FML");
+                this.fetchData({available:true});
+                break;
+        }
     }
 
-    handlerUnAvailableBtn() {
+    handlerOrderBtn(data) {
         this.setState({
-            available: "default",
-            unavailable: "active",
-            subHeader: "Unavailable Services"
+            showTable: false,
+            showDetails: false,
+            showAddForm: false,
+            data: data
         });
-        this.fetchData({available:false});
+        console.log("order data");
+        console.log(data);
     }
 
     handlerEditBtn(data) {
@@ -75,19 +109,9 @@ export default class Services extends React.Component {
         this.setState({
             subHeader: "Edit the service",
             showTable: false,
-            showAddForm: false,
-            addBtnClicked: false,
+            showAddForm: true,
 
             editData: data
-        });
-    }
-
-    handlerAddBtn() {
-        this.setState({
-            subHeader: "Add a new service",
-            showTable: false,
-            showAddForm: true,
-            addBtnClicked: true,
         });
     }
 
@@ -101,23 +125,14 @@ export default class Services extends React.Component {
             });
     }
 
-    handlerCancelBtn() {
-        this.setState({
-            subHeader: "Services",
-            showTable: true,
-            showAddForm: false,
-            showDetails: false,
-            addBtnClicked: false
-        });
-        this.fetchData({available:true});
-    }
-
     handleShowDetails(data) {
         this.setState({
             showTable: false,
             showDetails: true,
             data: data
-        })
+        });
+        console.log("details data");
+        console.log(data);
     }
 
     handlerSubmitBtn(data) {
@@ -130,13 +145,14 @@ export default class Services extends React.Component {
         else {  //edit the service
             url = 'https://young-cliffs-79659.herokuapp.com/editService';
             data['id'] = this.state.editData.id;
+            this.setState({editData: null});
         }
 
         sendRequest(url, data)
             .then(()=> {
                 console.log("data sent successfully");
                 this.setState({sending: false});
-                this.handlerCancelBtn();
+                this.handlerBtn("cancel");
             }, (err)=> {
                 console.log(err);
                 console.log(JSON.parse(err.text).message);
@@ -146,26 +162,38 @@ export default class Services extends React.Component {
             });
     }
 
-    handlerOrderBtn(data) {
-        //TODO
+    handlerOrderService(data) {
+        this.setState({sending: true});
+        sendRequest('https://young-cliffs-79659.herokuapp.com/reserveService', data)
+            .then(() => {
+                console.log("data sent successfully");
+                this.setState({sending: false});
+                this.handlerBtn("cancel");
+            }, (err) => {
+                this.setState({
+                    sending: false,
+                    errorMsg: JSON.parse(err.text).message
+                });
+            });
     }
 
     render() {
         let clsBtn = "btn btn-info ";
 
         let content = null;
+        let title =  <h1 className="page-header">{this.state.subHeader}</h1>;
 
         if (this.state.showTable) {
             let LeftBtnToolbar = (
                 <div className='btn-toolbar pull-left'>
                     <button type="button"
                             className={clsBtn + this.state.available}
-                            onClick={this.handlerAvailableBtn.bind(this)}>
+                            onClick={this.handlerBtn.bind(this, "available")}>
                         Available
                     </button>
                     <button type="button"
                             className={clsBtn + this.state.unavailable}
-                            onClick={this.handlerUnAvailableBtn.bind(this)}>
+                            onClick={this.handlerBtn.bind(this, "unavailable")}>
                         Unavailable
                     </button>
                 </div>
@@ -173,41 +201,57 @@ export default class Services extends React.Component {
 
             content = (
                 <div>
+                    {this.props.isChild == null ? title: null}
                     {this.props.isChild == null ? LeftBtnToolbar : null}
-                    <Table TableData={this.state.data}
+                    {this.props.isChild == null ? <AddBtn Add={this.handlerBtn.bind(this, "add")}/> : null}
+
+                    {this.state.available == "active" ? <Table TableData={this.state.data}
                            onEdit={this.handlerEditBtn.bind(this)}
                            showDetails={this.handleShowDetails.bind(this)}
                            order={this.handlerOrderBtn.bind(this)}
-                           onRemove={this.handlerRemove.bind(this)}/>
+                           onRemove={this.handlerRemove.bind(this)}/> :  <Table TableData={this.state.data} /> }
                 </div>
             )
         }
         else if (this.state.showDetails) {
             content = (
                 <div>
-                    <BackBtn onClick={this.handlerCancelBtn.bind(this)}/>
+                    {this.props.isChild == null ? title : null}
+                    <BackBtn onClick={this.handlerBtn.bind(this, "cancel")}/>
                     <DetailsTable Headers={this.state.detailsHeaders}
                                   DetailsData={this.state.data}/>
                 </div>
             )
         }
+
+        else if (this.state.showAddForm) {    //add or edit form
+            content = (
+                <div>
+                    {title}
+                    <ServiceForm Submit={this.handlerSubmitBtn.bind(this)}
+                                 Cancel={this.handlerBtn.bind(this, "cancel")}
+                                 editData={this.state.editData}
+                                 errorMsg={this.state.errorMsg}
+                                 pending={this.state.sending}/>
+                </div>
+            )
+        }
         else {
             content = (
-                <ServiceForm Submit={this.handlerSubmitBtn.bind(this)}
-                             Cancel={this.handlerCancelBtn.bind(this)}
-                             editData={this.state.editData}
-                             errorMsg={this.state.errorMsg}
-                             pending={this.state.sending}/>
+                <OrderService Cancel={this.handlerBtn.bind(this, "cancel")}
+                              Order={this.handlerOrderService.bind(this)}
+                              service={this.state.data}
+                              serviceInfo={
+                                  <DetailsTable Headers={this.state.detailsHeaders}
+                                                DetailsData={this.state.data}/>
+                              }
+                              pending={this.state.sending}>
+                </OrderService>
             )
         }
 
         return (
             <div>
-                <h1 className="page-header">{this.state.subHeader}</h1>
-
-                {this.state.showDetails ? null : <RightBtnToolbar Add={this.handlerAddBtn.bind(this)}
-                                                                  AddState={this.state.addBtnClicked}/>}
-
                 {this.state.pending ? <Loading /> : content}
             </div>
         );
