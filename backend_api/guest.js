@@ -13,20 +13,6 @@ module.exports = function(app, db, _) {
         });
     });
 
-    app.post('/getGuests', function(req, res) {
-        db.tokens.findToken(req.body.token).then(() => {
-            return db.guests.findAll({});
-        }).then((guestsInstances) => {
-            let result = [];
-            guestsInstances.forEach((employee) => {
-                result.push(employee.toPublicJSON());
-            });
-            res.status(200).json(result);
-        }).catch((error) => {
-            res.status(400).json(error);
-        });
-    });
-
     app.post('/getCurrentGuests', function(req, res) {
         var timeFrom = req.body.from;
         var timeTo = req.body.to;
@@ -42,26 +28,18 @@ module.exports = function(app, db, _) {
                 }
             });
         }).then(() => {
-            return db.stays.findAll({
-                where: {
-                    from: {
-                        $or:[{$lte: timeFrom},{$lte: timeTo}]
-                    },
-                    to: {
-                        $or:[{$gte: timeFrom},{$gte: timeTo}]
-                    },
-                    status: {
-                        $in: ['reservation', 'inProgress']
-                    }
-                },
-                include: [db.guests]
-            });
+            let text = (_.isUndefined(req.body.text)) ? "" : req.body.text;
+            return db.sequelize.query("SELECT guests.id, guests.first_name, guests.middle_name, guests.last_name, guests.idcard_number, guests.email, guests.phone_number, " +
+                                     "guests.type_of_guest, guests.ico, guests.dic, guests.address, guests.city, guests.state " +
+                                     "FROM stays " +
+                                     "INNER JOIN guests " +
+                                     "ON stays.guestId=guests.id " +
+                                     "WHERE (stays.from <= '" + timeFrom + "' OR stays.to <= '" + timeTo + "') AND (stays.from >= '" + timeFrom + "' OR stays.to >= '" + timeTo + "') " +
+                                        "AND (concat_ws(' ', guests.first_name, guests.last_name, guests.name_company) LIKE '%" + text + "%' OR " +
+                                        "concat_ws(' ', guests.first_name, guests.last_name, guests.name_company) LIKE '%" + text + "%') " +
+                                     "GROUP BY guests.id", { type: db.sequelize.QueryTypes.SELECT});
         }).then((stayEmployeesInstances) => {
-            let result = [];
-            stayEmployeesInstances.forEach((stayEmployee) => {
-                result.push(stayEmployee.toPublicJSON());
-            });
-            res.status(200).json(result);
+            res.status(200).json(stayEmployeesInstances);
         }).catch((error) => {
             res.status(400).json(error);
         });
@@ -113,10 +91,12 @@ module.exports = function(app, db, _) {
     });
 
 
-    app.post('/filterGuests', function(req, res) {
+    app.post('/getGuests', function(req, res) {
         db.tokens.findToken(req.body.token).then(() => {
-            return db.sequelize.query("select * from guests WHERE concat_ws(' ', first_name, last_name, name_company) LIKE '%" + req.body.text + "%' OR"
-                                      + " concat_ws(' ', last_name, first_name) LIKE '%" + req.body.text + "%'", { type: db.sequelize.QueryTypes.SELECT});
+            let text = (_.isUndefined(req.body.text)) ? "" : req.body.text;
+            return db.sequelize.query("select id, first_name, middle_name, last_name, idcard_number, email, phone_number, type_of_guest, name_company, " +
+                                      "ico, dic, address, city, state from guests WHERE concat_ws(' ', first_name, last_name, name_company) LIKE '%" + text + "%' OR"
+                                      + " concat_ws(' ', last_name, first_name) LIKE '%" + text + "%'", { type: db.sequelize.QueryTypes.SELECT});
         }).then((employeesInstances) => {
             res.status(200).json(employeesInstances);
         }).catch((error) => {

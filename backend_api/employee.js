@@ -39,24 +39,14 @@ module.exports = function(app, db, _) {
                 }
             });
         }).then(() => {
-            let currently_employed;
-
-            if (_.isUndefined(req.body.currently_employed)){
-                currently_employed = true
-            } else {
-                currently_employed = req.body.currently_employed;
-            }
-            return db.employees.findAll({
-                where: {
-                    currently_employed
-                }
-            });
+            let currently_employed = _.isUndefined(req.body.currently_employed) ? true : req.body.currently_employed
+            let text = _.isUndefined(req.body.text) ? '' : req.body.text
+            return db.sequelize.query("select id, first_name, middle_name, last_name, email, permissions, phone_number, address, city, state " +
+                                      "from employees where " + currently_employed + " = true and" +
+                                      " (concat_ws(' ', first_name, last_name) LIKE '%" + text + "%' OR" +
+                                      " concat_ws(' ', last_name, first_name) LIKE '%"+ text + "%')", { type: db.sequelize.QueryTypes.SELECT});
         }).then((employeesInstances) => {
-            let result = [];
-            employeesInstances.forEach((employee) => {
-                result.push(employee.toPublicJSON());
-            });
-            res.status(200).json(result);
+            res.status(200).json(employeesInstances);
         }).catch((error) => {
             res.status(400).json(error);
         });
