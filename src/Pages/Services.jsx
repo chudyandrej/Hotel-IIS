@@ -81,8 +81,7 @@ export default class Services extends React.Component {
                 });
                 break;
             case "cancel":
-                console.log("before FML");
-                console.log(this.handlerBtn.bind(this));
+                this.fetchData({available:true});
                 this.setState({
                     subHeader: "Services",
                     showTable: true,
@@ -90,8 +89,6 @@ export default class Services extends React.Component {
                     showDetails: false,
                     editData: null
                 });
-                console.log("after FML");
-                this.fetchData({available:true});
                 break;
         }
     }
@@ -103,7 +100,6 @@ export default class Services extends React.Component {
             showAddForm: false,
             data: data
         });
-        console.log("order data");
         console.log(data);
     }
 
@@ -134,7 +130,6 @@ export default class Services extends React.Component {
             showDetails: true,
             data: data
         });
-        console.log("details data");
         console.log(data);
     }
 

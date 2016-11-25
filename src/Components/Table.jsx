@@ -43,10 +43,6 @@ class TableRow extends React.Component {
             remove: false,
             hover: false,
             backgroundColor: "",
-
-            NotEditBtn: typeof(this.props.onEdit) === "undefined",
-            NotOrderBtn: typeof(this.props.order) === "undefined",
-            NotRemoveBtn: typeof(this.props.onRemove) === "undefined"
         };
         let value = null;
 
@@ -125,12 +121,12 @@ class TableRow extends React.Component {
                 {this.props.orderBtnName || "Order"}
             </button>
         );
-
+        console.log("magic" + this.state.notEditBtn+" "+this.props.onEdit);
         let buttons = (
             <div>
-                {this.state.NotEditBtn ? null : editBtn}
-                {this.state.NotOrderBtn ? null : orderBtn}
-                {this.state.NotRemoveBtn ? null : removeBtn}
+                {this.props.onEdit == null ? null : editBtn}
+                {this.props.order == null ? null : orderBtn}
+                {this.props.onRemove == null ? null : removeBtn}
             </div>
         );
 

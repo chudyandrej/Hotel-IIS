@@ -17,8 +17,13 @@ export const sendRequest = function(url, data) {
                     console.log("error in request");
                     console.log(res);  //debug
                     if(res.status == 400) {
-                        //console.log("Token has expired");
-                        //hashHistory.push('/');
+                        if(JSON.parse(res.text).errors[0].message === "Access denied. Token expired") {
+                            console.log("Token has expired");
+                            cookie.remove('token');
+                            cookie.remove('permissions');
+                            cookie.remove('loggedIn');
+                            hashHistory.push('/');
+                        }
                     }
                     reject(res);
                 } else {

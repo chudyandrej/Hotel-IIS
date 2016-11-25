@@ -53,7 +53,7 @@ export default class Guests extends React.Component {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         if (typeof(this.props.isChild) === "undefined") {
             this.fetchCurrentGuests("");
         }
@@ -130,6 +130,12 @@ export default class Guests extends React.Component {
                 });
                 break;
             case "cancel":
+                if (this.state.currentBefore) {
+                    this.handlerBtn("current");
+                }
+                else {
+                    this.handlerBtn("all");
+                }
                 this.setState({
                     showTable: true,
                     showAddForm: false,
@@ -138,13 +144,6 @@ export default class Guests extends React.Component {
                     subHeader: "Current Guests",
                     editData: null
                 });
-                console.log("after cancel in guests");
-                if (this.state.currentBefore) {
-                    this.handlerBtn("current");
-                }
-                else {
-                    this.handlerBtn("all");
-                }
                 break;
         }
     }

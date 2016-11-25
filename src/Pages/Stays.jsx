@@ -60,7 +60,7 @@ export default class Stays extends React.Component {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.fetchData(true);
     }
 
@@ -126,6 +126,12 @@ export default class Stays extends React.Component {
                 });
                 break;
             case "back":
+                if (this.state.availableBefore) {
+                    this.handlerButtons("available");
+                }
+                else {
+                    this.handlerButtons("all");
+                }
                 this.setState({
                     subHeader: "Current Stays",
                     available: "active",
@@ -133,12 +139,6 @@ export default class Stays extends React.Component {
                     showTable: true,
                     showDetails: false
                 });
-                if (this.state.availableBefore) {
-                    this.handlerButtons("available");
-                }
-                else {
-                    this.handlerButtons("all");
-                }
         }
     }
 

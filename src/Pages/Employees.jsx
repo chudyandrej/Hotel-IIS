@@ -98,13 +98,13 @@ export default class Employees extends React.Component {
         sendRequest('https://young-cliffs-79659.herokuapp.com/deleteEmployee', {id: id})
             .then((data) => {
                 console.log("data's deleted successfully");
-                this.setState({sending: false});
             }, (err) => {
                 //TODO handle error
             });
     }
 
     handlerCancelBtn() {
+        this.state.employedBefore ? this.handlerEmployedBtn() : this.handlerFormerBtn();
         this.setState({
             subHeader: "Employees",
             showTable: true,
@@ -113,7 +113,6 @@ export default class Employees extends React.Component {
             addBtnClicked: false,
             editData: null
         });
-        this.state.employedBefore ? this.handlerEmployedBtn() : this.handlerFormerBtn();
     }
 
     handleShowDetails(data) {
@@ -188,7 +187,7 @@ export default class Employees extends React.Component {
                     AddState={this.state.addBtnClicked}/>
         );
         let searchInput = (
-            <SearchBox onChange={this.searchOnChange.bind(this)} placeholder="Search Guests" />
+            <SearchBox onChange={this.searchOnChange.bind(this)} placeholder="Search Employees" />
         );
 
         let upperToolbar = (
@@ -200,8 +199,6 @@ export default class Employees extends React.Component {
         );
 
         if (this.state.showTable) {
-
-
             content = (
                 <div>
                     <Table TableData={this.state.data}

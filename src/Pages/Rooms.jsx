@@ -45,7 +45,7 @@ export default class Rooms extends React.Component {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.fetchData();
     }
 
@@ -95,7 +95,7 @@ export default class Rooms extends React.Component {
                 });
                 break;
             case "cancel":
-                console.log("beforeFML^2");
+                this.state.availableBefore ? this.handlerButtons("available") : this.handlerButtons("all");
                 this.setState({
                     subHeader: "Available Rooms",
                     available: "active",
@@ -103,8 +103,6 @@ export default class Rooms extends React.Component {
                     showTable: true,
                     showDetails: false
                 });
-                console.log("after FML^2");
-                this.state.availableBefore ? this.handlerButtons("available") : this.handlerButtons("all");
                 break;
         }
     }
