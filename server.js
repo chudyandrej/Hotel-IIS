@@ -6,6 +6,8 @@ var cors = require('cors');
 
 var PORT = process.env.PORT || 3000;
 var app = express();
+
+app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 app.use(cors());
 
@@ -19,10 +21,6 @@ require('./backend_api/stay.js')(app, db, _);
 require('./backend_api/chackInOut.js')(app, db, _);
 
 
-
-app.get('/', function(req, res) {
-    res.send('Todo API Roddddot');
-});
 
 
 setInterval(function() {
