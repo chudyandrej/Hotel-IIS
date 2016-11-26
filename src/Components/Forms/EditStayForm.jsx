@@ -18,7 +18,6 @@ export default class Services extends React.Component {
     handleChange(name, evt) {
         switch (name) {
             case "type":
-                //TODO if type == ended => show price for the stay
                 this.setState({type: evt.target.value});
                 break;
             case "note":
@@ -42,7 +41,6 @@ export default class Services extends React.Component {
             clear: "both",
             marginTop: 20
         };
-        //TODO show services ordered during the stay
         return (
             <div style={tableStyle}>
                 <h1 className="page-header">Change Status</h1>

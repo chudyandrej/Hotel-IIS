@@ -23,17 +23,12 @@ export default class StaySummaryTable extends React.Component {
 
     componentWillMount() {
         this.setState({pending: true});
-        console.log("stayID: "+this.props.stayId);
 
         downloadData("getStaySummary", {id: this.props.stayId}).then((data) => {
-            console.log(data);
-
             createSummaryTables(data)
                 .then((tables) => {
-                    console.log(tables);
                     createServicesPerRoomsTable(tables[0], tables[1])
                         .then((table) => {
-                            console.log(table);
                             this.setState({
                                 pending: false,
                                 roomsTable: tables[2],
