@@ -1,4 +1,5 @@
 import React from 'react';
+import ImageLoader from 'react-imageloader';
 
 
 let header = {};
@@ -48,7 +49,12 @@ class TableRow extends React.Component {
 
         for (let column in header) {
             if (typeof(this.props.Row[column]) === "boolean") {
-                value = this.props.Row[column] ? "YES" : "NO";
+                if (this.props.Row[column]) {
+                    value = <ImageLoader src="../../public/img/tick.png" />;
+                }
+                else {
+                    value = <ImageLoader src="../../public/img/cross.png" />;
+                }
             }
             else {
                 value = this.props.Row[column];

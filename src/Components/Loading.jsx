@@ -6,9 +6,9 @@ export default class Loading extends React.Component {
 
     render() {
 
-        var type = this.props.form || null;
+        let type = this.props.form || null;
 
-        var toRender = (
+        let toRender = (
             <div className="table-responsive" style={{ clear: "both", margin: "auto"}}>
                 <p style={{textAlign: "center", marginTop: 100}}>
                     <ImageLoader src="../../public/img/loading.gif" />
