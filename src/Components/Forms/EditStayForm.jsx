@@ -45,9 +45,10 @@ export default class Services extends React.Component {
         //TODO show services ordered during the stay
         return (
             <div style={tableStyle}>
-                <h1 className="page-header">Edit the Stay</h1>
+                <h1 className="page-header">Change Status</h1>
                 {this.props.details}
-
+                <br/>
+                <h3>Status:</h3>
                 <StayType type={this.state.type} onChange={this.handleChange.bind(this, "type")}/>
                 <InputLabelForm label="Note"
                                 type="text"

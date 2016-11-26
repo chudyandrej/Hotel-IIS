@@ -1,13 +1,14 @@
 import React from 'react';
 import moment from 'moment';
 
+import AddBtn from '../Components/Buttons/AddBtn.jsx';
 import BackBtn from '../Components/Buttons/BackBtn.jsx';
 import BookRoomForm from '../Components/Forms/BookRoomForm.jsx';
 import CalendarInput from '../Components/CalendarInput.jsx';
 import DetailsTable from '../Components/DetailsTable.jsx';
 import EditStayForm from '../Components/Forms/EditStayForm.jsx';
 import Loading from '../Components/Loading.jsx';
-import AddBtn from '../Components/Buttons/AddBtn.jsx';
+import StaySummaryTable from '../Components/StaySummaryTable.jsx';
 import Table from '../Components/Table.jsx';
 
 import {downloadData, sendRequest} from '../Functions/HTTP-requests.js';
@@ -281,14 +282,14 @@ export default class Stays extends React.Component {
                     <hr/>
                     <DetailsTable Headers={this.state.stay}
                                   DetailsData={this.state.data}/>
-                    <h3 className="page-header">Room:</h3>
-
                     <h3 className="page-header">Guest:</h3>
                     <DetailsTable Headers={this.state.guest}
                                   DetailsData={this.state.data.guest}/>
                     <h3 className="page-header">Employee:</h3>
                     <DetailsTable Headers={this.state.employee}
                                   DetailsData={this.state.data.employee}/>
+                    <br/>
+                    <StaySummaryTable stayId={this.state.data.id}/>
                 </div>
             )
         }
@@ -311,14 +312,13 @@ export default class Stays extends React.Component {
                                       <div>
                                           <DetailsTable Headers={this.state.stay}
                                                         DetailsData={this.state.editData}/>
-                                          <h3 className="page-header">Room:</h3>
-
                                           <h3 className="page-header">Guest:</h3>
                                           <DetailsTable Headers={this.state.guest}
                                                         DetailsData={this.state.editData.guest}/>
                                           <h3 className="page-header">Employee:</h3>
                                           <DetailsTable Headers={this.state.employee}
                                                         DetailsData={this.state.editData.employee}/>
+                                          <StaySummaryTable stayId={this.state.editData.id}/>
                                       </div>
                                   }/>
                 </div>

@@ -22,7 +22,7 @@ export default class DetailsTable extends React.Component {
                 //TODO show images instead of text ???
                 value = this.props.DetailsData[column] ? "YES" : "NO";
                 rows.push (
-                    <div key={rows.length} className={"form-group row"}>
+                    <div key={rows.length} className={"form-group"}>
                         <label className="col-xs-2 col-form-label">
                             {this.props.Headers[column]}
                         </label>
@@ -34,7 +34,7 @@ export default class DetailsTable extends React.Component {
             }
             else {
                 rows.push (
-                    <div key={rows.length} className={"form-group row"}>
+                    <div key={rows.length} className={"form-group"}>
                         <label className="col-xs-2 col-form-label">
                             {this.props.Headers[column]}
                         </label>
