@@ -9,32 +9,23 @@ import ImageLoader from 'react-imageloader';
  */
 export const createServicesPerRoomsTable = function(rooms, services) {
     return new Promise((resolve, reject) => {
-        console.log("whyyyyeye");
-        console.log(rooms);
-        console.log(services);
-        let columns = [];
+
         let header = [];
 
-        columns.push(
-            <th className="col-md-1 text-center" key={columns.length}>
+        header.push(
+            <th className="col-md-1 text-center" key={header.length}>
                 Service/Room
             </th>
         );
         rooms.forEach((room) => {
-            columns.push(
-                <th className="col-md-1 text-center" key={columns.length}>
+            header.push(
+                <th className="col-md-1 text-center" key={header.length}>
                     {room.templateRoom.id}
                 </th>
             );
         });
-        header.push(
-            <thead>
-            <tr>
-                {columns}
-            </tr>
-            </thead>
-        );
 
+        let columns = [];
         let rows = [];
 
         services.forEach((service) => {
@@ -66,16 +57,20 @@ export const createServicesPerRoomsTable = function(rooms, services) {
                 }
             });
             rows.push(
-                <tr>
+                <tr key={rows.length}>
                     {columns}
                 </tr>
             );
         });
         rows = (
             <table className="table table-striped table-hover">
-                {header}
+                <thead>
+                    <tr>
+                        {header}
+                    </tr>
+                </thead>
                 <tbody>
-                {rows}
+                    {rows}
                 </tbody>
             </table>
         );

@@ -3,6 +3,7 @@ import {hashHistory} from 'react-router';
 import request from 'superagent';
 import cookie from 'react-cookie';
 
+import ImageLoader from 'react-imageloader';
 import Loading from '../Components/Loading.jsx';
 
 
@@ -89,26 +90,25 @@ export default class LoginPage extends React.Component {
         let content = null;
         if (this.state.loginClicked && !this.state.pending) {
             content = (
-                <div className="formContainerLogin text-center">
+                <div className="jumbotron">
                     {this.state.error ? errorMsg : null}
-                    <div className="formLogin"
+                    <div className="container"
                          onMouseLeave={this.handleHover.bind(this, "down")}
                          onMouseEnter={this.handleHover.bind(this, "up")}>
-                        <input placeholder="email"
-                               type="text"
-                               value={this.state.username}
-                               onChange={this.handlerOnChange.bind(this, "name")}/>
-                        <input placeholder="password"
-                               type="password"
-                               value={this.state.password}
-                               onChange={this.handlerOnChange.bind(this, "password")}/>
-                        <div className='text-center'>
-                            <div className="btn-group" style={{marginTop: 5}}>
-                                <button type='button'
-                                        className='btn btn-primary'
-                                        onClick={this._login.bind(this)}>Login
-                                </button>
-                            </div>
+                        <h2 className="login">Login</h2>
+                        <div className="box">
+                            <input placeholder="email"
+                                   type="text"
+                                   value={this.state.username}
+                                   onChange={this.handlerOnChange.bind(this, "name")}/>
+                            <input placeholder="password"
+                                   type="password"
+                                   value={this.state.password}
+                                   onChange={this.handlerOnChange.bind(this, "password")}/>
+                                    <button  onClick={this._login.bind(this)}
+                                             className="btn btn-default full-width">
+                                        <ImageLoader src="../../public/img/login.png" />
+                                    </button>
                         </div>
                     </div>
                 </div>

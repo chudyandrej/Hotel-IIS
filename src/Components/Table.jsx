@@ -137,17 +137,13 @@ class TableRow extends React.Component {
         );
 
         let actionBtns = (
-            <td style={{color: "transparent"}} className='btn-toolbar'>
-                <td style={{color: "transparent"}} className='btn-toolbar col-md-4'>
-                </td>
-                <td style={{color: "transparent"}} className='btn-toolbar col-md-4'>
-                </td>
-                <td style={{color: "transparent"}}
-                    className='btn-toolbar col-md-4'
+            <td className='btn-toolbar'>
+                <div style={{float: "right"}}
+                    className='btn-toolbar'
                     onMouseEnter={this.hoverAction.bind(this)}
                     onMouseLeave={this.leaveAction.bind(this)}>
                     {buttons}
-                </td>
+                </div>
             </td>
         );
 

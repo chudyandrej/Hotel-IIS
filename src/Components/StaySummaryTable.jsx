@@ -5,6 +5,7 @@ import Loading from '../Components/Loading.jsx';
 import {downloadData} from '../Functions/HTTP-requests.js';
 import {createServicesPerRoomsTable, createSummaryTables} from '../Functions/createTable.js';
 
+
 export default class StaySummaryTable extends React.Component {
 
     constructor(props, context) {
@@ -17,7 +18,7 @@ export default class StaySummaryTable extends React.Component {
 
             roomsTable: null,
             servicesTable: null,
-            table: null
+            servicePerRoomTable: null
         }
     }
 
@@ -32,8 +33,8 @@ export default class StaySummaryTable extends React.Component {
                             this.setState({
                                 pending: false,
                                 roomsTable: tables[2],
-                                servicesTable: tables[3],
-                                table: table,
+                                servicesTable: tables[1].length > 0 ? tables[3] : null,
+                                servicePerRoomTable: tables[1].length > 0 ? table : null,
                                 totalPrice: data.sum
                             });
                         });
@@ -47,19 +48,27 @@ export default class StaySummaryTable extends React.Component {
             marginTop: 20
         };
 
+        let servicesTable = (
+            <form style={tableStyle}>
+                {this.state.servicesTable}
+            </form>
+        );
+
+        let servicePerRoomTable = (
+            <form style={tableStyle}>
+                <div className="table-responsive" style={tableStyle}>
+                    {this.state.servicePerRoomTable}
+                </div>
+            </form>
+        );
+
         let content = (
             <div>
                 <form style={tableStyle}>
                     {this.state.roomsTable}
                 </form>
-                <form style={tableStyle}>
-                    {this.state.servicesTable}
-                </form>
-                <form style={tableStyle}>
-                    <div className="table-responsive" style={tableStyle}>
-                        {this.state.table}
-                    </div>
-                </form>
+                {this.state.servicesTable != null ? servicesTable : null}
+                {this.state.servicePerRoomTable != null ? servicePerRoomTable : null}
                 <br/>
                 <h3>Total Price: {this.state.totalPrice}</h3>
             </div>
