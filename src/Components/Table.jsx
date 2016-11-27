@@ -105,10 +105,9 @@ class TableRow extends React.Component {
     render() {
 
         let removeBtn = (
-            <button type="button"
-                    className="btn btn-danger btn-sm"
+            <button className="btn btn-info btn-sm"
                     onClick={this.handlerRemove.bind(this, this.props.Row)}>
-                {this.props.removeBtnName || "Remove"}
+                <ImageLoader src="../../public/img/removeBtn.png" />
             </button>
         );
 
@@ -116,7 +115,7 @@ class TableRow extends React.Component {
             <button type="button"
                     className="btn btn-info btn-sm"
                     onClick={this.handlerEditBtn.bind(this, this.props.Row)}>
-                Edit
+                <ImageLoader src="../../public/img/editBtn.png" />
             </button>
         );
 
@@ -124,7 +123,10 @@ class TableRow extends React.Component {
             <button type="button"
                     className="btn btn-info btn-sm"
                     onClick={this.handlerOrderBtn.bind(this, this.props.Row)}>
-                {this.props.orderBtnName || "Order"}
+                {this.props.orderBtnName === "Remove" ?
+                <ImageLoader src="../../public/img/removeBtn.png" /> :
+                    <ImageLoader src="../../public/img/buyBtn.png" />}
+
             </button>
         );
 
