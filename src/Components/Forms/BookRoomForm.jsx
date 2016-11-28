@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import ImageLoader from 'react-imageloader';
 
 import DetailsTable from '../DetailsTable.jsx';
 import FormButtons from '../Buttons/FormButtons.jsx';
@@ -152,6 +153,25 @@ export default class BookOrderForm extends React.Component {
             clear: "both",
             marginTop: 20
         };
+        let headerContainerStyle = {
+            clear: "both",
+            cursor: "pointer"
+        };
+        let headerStyle = {
+            float: "left",
+            marginRight: 25
+        };
+
+        let plusSign = <ImageLoader src="../../../public/img/plus.png" />;
+        let minusSign = <ImageLoader src="../../../public/img/minus.png" />;
+
+        let guestHeader = (
+            <div style={headerContainerStyle}
+                                onClick={this.toggleHandler.bind(this, "guest")}>
+                <h2 style={headerStyle} className="page-header">Guest info:</h2>
+                {this.state.showGuest ? minusSign : plusSign}
+            </div>
+        );
 
         let guest = null;
         let room = null;
@@ -177,19 +197,19 @@ export default class BookOrderForm extends React.Component {
             guest = (
                 <div>
                     {this.state.oneGuestChosen ? chosenGuest : guestsTable}
-                    <h2 onClick={this.toggleHandler.bind(this, "guest")}
-                        className="page-header">Guest info:</h2>
+                    {guestHeader}
                     {this.state.showGuest ? <DetailsTable Headers={this.state.detailsHeaders}
                                                           DetailsData={this.state.guest}/> : null}
+                    <br/>
                 </div>
             )
         }
         else {
             guest = (
                 <div>
-                    <h2 onClick={this.toggleHandler.bind(this, "guest")}
-                        className="page-header">Guest info:</h2>
+                    {guestHeader}
                     {this.state.showGuest ? this.props.guestInfo : null}
+                    <br/>
                 </div>
             )
         }
@@ -197,27 +217,38 @@ export default class BookOrderForm extends React.Component {
         if (typeof(this.props.roomInfo) === "undefined") {
             room = (
                 <div>
-                    <h2 onClick={this.toggleHandler.bind(this, "freeRooms")}
-                        className="page-header">Choose a Room</h2>
+                    <div style={headerContainerStyle}
+                         onClick={this.toggleHandler.bind(this, "freeRooms")}>
+                        <h2 style={headerStyle} className="page-header">Choose a Room</h2>
+                        {this.state.showFreeRooms ? minusSign : plusSign}
+                    </div>
 
+                    <div style={{clear: "both"}}>
                     {this.state.showFreeRooms ? <Rooms isChild={this.orderRoom.bind(this)}
                                                        startDate={this.handleDate.bind(this, "startDate")}
                                                        endDate={this.handleDate.bind(this, "endDate")}/> : null}
-
-                    <StayType type={this.state.type}
-                              onChange={this.handleChange.bind(this, "type")}
-                              createStay={true}/>
-                    <InputLabelForm label="Note"
-                                    type="text"
-                                    onChange={this.handleChange.bind(this, "note")}/>
+                    </div>
+                    <br/>
+                    <div style={{clear: "both"}}>
+                        <StayType type={this.state.type}
+                                  onChange={this.handleChange.bind(this, "type")}
+                                  createStay={true}/>
+                        <InputLabelForm label="Note"
+                                        type="text"
+                                        onChange={this.handleChange.bind(this, "note")}/>
+                    </div>
                 </div>
             )
         }
         else {
             room = (
                 <div>
-                    <h2 onClick={this.toggleHandler.bind(this, "room")}
-                        className="page-header">Room info:</h2>
+                    <div style={headerContainerStyle}
+                         onClick={this.toggleHandler.bind(this, "room")}>
+                        <h2 style={headerStyle} className="page-header">Room info:</h2>
+                        {this.state.showRoomInfo ? minusSign : plusSign}
+                    </div>
+
                     {this.state.showRoomInfo ? this.props.roomInfo : null}
                 </div>
             )

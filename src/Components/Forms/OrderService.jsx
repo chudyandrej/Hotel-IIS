@@ -116,7 +116,7 @@ export default class OrderService extends React.Component {
                 <h1 className="page-header">Order Service</h1>
 
                 {this.props.serviceInfo}
-
+                <br/>
                 {this.state.chooseRoom ? chosenStay : chooseStay}
 
                 {this.state.chooseRoom ? checkButtons : null}
