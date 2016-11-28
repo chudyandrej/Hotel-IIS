@@ -4,11 +4,11 @@ import moment from 'moment';
 import AddBtn from '../Components/Buttons/AddBtn.jsx';
 import BackBtn from '../Components/Buttons/BackBtn.jsx';
 import BookRoomForm from '../Components/Forms/BookRoomForm.jsx';
-import DetailsTable from '../Components/DetailsTable.jsx';
+import DetailsTable from '../Components/Tables/DetailsTable.jsx';
 import GuestForm from '../Components/Forms/GuestForm.jsx'
 import Loading from '../Components/Loading.jsx';
 import SearchBox from '../Components/SearchBox.jsx';
-import Table from '../Components/Table.jsx';
+import Table from '../Components/Tables/Table.jsx';
 
 import {sendRequest, downloadData} from '../Functions/HTTP-requests.js';
 import {formatHistoryDates} from '../Functions/dataParsing.js';

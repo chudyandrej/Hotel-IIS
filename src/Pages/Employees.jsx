@@ -2,11 +2,11 @@ import React from 'react';
 
 import AddBtn from '../Components/Buttons/AddBtn.jsx';
 import BackBtn from '../Components/Buttons/BackBtn.jsx';
-import DetailsTable from '../Components/DetailsTable.jsx';
+import DetailsTable from '../Components/Tables/DetailsTable.jsx';
 import EmployeeForm from '../Components/Forms/EmployeeForm.jsx';
 import Loading from '../Components/Loading.jsx';
 import SearchBox from '../Components/SearchBox.jsx';
-import Table from '../Components/Table.jsx';
+import Table from '../Components/Tables/Table.jsx';
 
 import {sendRequest} from '../Functions/HTTP-requests.js';
 
@@ -150,11 +150,9 @@ export default class Employees extends React.Component {
 
         sendRequest(url, data)
             .then(() => {
-                console.log("data sent successfully");
                 this.setState({sending: false});
                 this.handlerCancelBtn();
             }, (err) => {
-                console.log(err);
                 this.setState({
                     sending: false,
                     errorMsg: JSON.parse(err.text).errors[0].message

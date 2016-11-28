@@ -8,7 +8,7 @@ import DatePicker from 'react-datepicker';
 export default class CalendarInput extends React.Component {
     render() {
 
-        var style = {
+        let style = {
           marginLeft: 20
         };
 

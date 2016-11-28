@@ -67,8 +67,6 @@ export default class LoginPage extends React.Component {
             .send({email: this.state.username, password: this.state.password})
             .end((err, res)=>{
                 if (err != null || !res.ok) {
-                    console.log('Oh no! error');  //DEBUG
-                    console.log(res);
                     this.setState({username: "", password: ""});
                     this.setState({error: true, pending: false});
                 } else {

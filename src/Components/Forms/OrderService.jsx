@@ -2,7 +2,7 @@ import React from 'react';
 
 import FormButtons from '../Buttons/FormButtons.jsx';
 import Stays from '../../Pages/Stays.jsx';
-import Table from '../Table.jsx';
+import Table from '../Tables/Table.jsx';
 
 import {parseStaysData} from '../../Functions/dataParsing.js';
 

@@ -6,7 +6,7 @@ import Loading from '../Loading.jsx';
 export default class FormButtons extends  React.Component {
     render(){
 
-        var errorMsg = null;
+        let errorMsg = null;
         if (this.props.errorMsg != null) {
             errorMsg = <strong className="form-text alert alert-danger"
                                style={{marginLeft:50}}>

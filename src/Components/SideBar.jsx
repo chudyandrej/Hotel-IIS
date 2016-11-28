@@ -58,14 +58,27 @@ export default class SideBar extends React.Component {
         });
     }
 
+    /*
+    // ----- Beyond the school project -------
+
+    // Link requires root permissions
+     <li className={this.state.analytics}>
+         <Link to="/dashboard/analytics" onClick={this.handlerBtn.bind(this, "analytics")}>
+            Analytics
+         </Link>
+     </li>
+
+     //link requires usual (user) permissions
+     <li className={this.state.search}>
+         <Link to="/dashboard/search" onClick={this.handlerBtn.bind(this, "search")}>
+            Search
+         </Link>
+     </li>
+     */
+
     render() {
         let highPermissionsPages = (
             <ul className="nav nav-sidebar">
-                <li className={this.state.analytics}>
-                    <Link to="/dashboard/analytics" onClick={this.handlerBtn.bind(this, "analytics")}>
-                        Analytics
-                    </Link>
-                </li>
                 <li className={this.state.employees}>
                     <Link to="/dashboard/employees" onClick={this.handlerBtn.bind(this, "employees")}>
                         Employees
@@ -80,11 +93,6 @@ export default class SideBar extends React.Component {
                     <li className={this.state.dashboard}>
                         <Link to="/dashboard" onClick={this.handlerBtn.bind(this, "dashboard")}>
                             Dashboard
-                        </Link>
-                    </li>
-                    <li className={this.state.search}>
-                        <Link to="/dashboard/search" onClick={this.handlerBtn.bind(this, "search")}>
-                            Search
                         </Link>
                     </li>
                     <li className={this.state.rooms}>

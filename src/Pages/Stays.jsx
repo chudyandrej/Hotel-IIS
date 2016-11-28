@@ -5,11 +5,11 @@ import AddBtn from '../Components/Buttons/AddBtn.jsx';
 import BackBtn from '../Components/Buttons/BackBtn.jsx';
 import BookRoomForm from '../Components/Forms/BookRoomForm.jsx';
 import CalendarInput from '../Components/CalendarInput.jsx';
-import DetailsTable from '../Components/DetailsTable.jsx';
+import DetailsTable from '../Components/Tables/DetailsTable.jsx';
 import EditStayForm from '../Components/Forms/EditStayForm.jsx';
 import Loading from '../Components/Loading.jsx';
-import StaySummaryTable from '../Components/StaySummaryTable.jsx';
-import Table from '../Components/Table.jsx';
+import StaySummaryTable from '../Components/Tables/StaySummaryTable.jsx';
+import Table from '../Components/Tables/Table.jsx';
 
 import {downloadData, sendRequest} from '../Functions/HTTP-requests.js';
 import {parseStaysData} from '../Functions/dataParsing.js';
@@ -213,7 +213,6 @@ export default class Stays extends React.Component {
 
         sendRequest(url, data)
             .then(() => {
-                console.log("data sent successfully");
                 this.setState({sending: false});
                 this.handlerButtons("back");
             }, (err) => {

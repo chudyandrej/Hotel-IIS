@@ -1,9 +1,9 @@
 import React from 'react';
 
-import Loading from '../Components/Loading.jsx';
+import Loading from '../Loading.jsx';
 
-import {downloadData} from '../Functions/HTTP-requests.js';
-import {createServicesPerRoomsTable, createSummaryTables} from '../Functions/createTable.js';
+import {downloadData} from '../../Functions/HTTP-requests.js';
+import {createServicesPerRoomsTable, createSummaryTables} from '../../Functions/createTable.js';
 
 
 export default class StaySummaryTable extends React.Component {

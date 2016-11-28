@@ -31,8 +31,6 @@ export default class Services extends React.Component {
         if (this.state.note != null){
             toEdit['note'] = this.state.note;
         }
-        console.log("submitting changes");
-        console.log(toEdit);
         this.props.Submit(toEdit);
     }
 

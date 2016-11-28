@@ -7,9 +7,9 @@ import moment from 'moment';
 import BackBtn from '../Components/Buttons/BackBtn.jsx';
 import BookRoomForm from '../Components/Forms/BookRoomForm.jsx';
 import CalendarInput from '../Components/CalendarInput.jsx';
-import DetailsTable from '../Components/DetailsTable.jsx';
+import DetailsTable from '../Components/Tables/DetailsTable.jsx';
 import Loading from '../Components/Loading.jsx';
-import Table from '../Components/Table.jsx';
+import Table from '../Components/Tables/Table.jsx';
 
 import {downloadData, sendRequest} from '../Functions/HTTP-requests.js';
 
@@ -111,7 +111,6 @@ export default class Rooms extends React.Component {
         switch (name) {
             case "start":
                 if (!date.isBefore(this.state.endDate)) {
-                    console.log("INVALID DATE");
                     this.setState({data: []});
                     return;
                 }
@@ -123,7 +122,6 @@ export default class Rooms extends React.Component {
                 break;
             case "end":
                 if (date.isBefore(this.state.startDate)) {
-                    console.log("INVALID DATE");
                     this.setState({data: []});
                     return;
                 }
@@ -154,10 +152,8 @@ export default class Rooms extends React.Component {
 
     handlerBookRoom(data) {
         this.setState({sending: true});
-        console.log(data);
         sendRequest('https://young-cliffs-79659.herokuapp.com/checkIn', data)
             .then(() => {
-                console.log("data sent successfully");
                 this.setState({sending: false});
                 this.handlerButtons("cancel");
             }, (err) => {

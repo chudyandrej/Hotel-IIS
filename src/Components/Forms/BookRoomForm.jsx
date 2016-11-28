@@ -2,13 +2,13 @@ import React from 'react';
 import moment from 'moment';
 import ImageLoader from 'react-imageloader';
 
-import DetailsTable from '../DetailsTable.jsx';
+import DetailsTable from '../Tables/DetailsTable.jsx';
 import FormButtons from '../Buttons/FormButtons.jsx';
 import Guests from '../../Pages/Guests.jsx';
 import InputLabelForm from './InputLabelForm.jsx';
 import Rooms from '../../Pages/Rooms.jsx';
 import StayType from './StayType.jsx';
-import Table from '../Table.jsx';
+import Table from '../Tables/Table.jsx';
 
 
 export default class BookOrderForm extends React.Component {

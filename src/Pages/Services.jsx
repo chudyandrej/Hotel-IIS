@@ -2,12 +2,12 @@ import cookie from 'react-cookie';
 import React from 'react';
 
 import BackBtn from '../Components/Buttons/BackBtn.jsx';
-import DetailsTable from '../Components/DetailsTable.jsx';
+import DetailsTable from '../Components/Tables/DetailsTable.jsx';
 import Loading from '../Components/Loading.jsx';
 import OrderService from '../Components/Forms/OrderService.jsx';
 import AddBtn from '../Components/Buttons/AddBtn.jsx';
 import ServiceForm from '../Components/Forms/ServiceForm.jsx';
-import Table from '../Components/Table.jsx';
+import Table from '../Components/Tables/Table.jsx';
 
 import {sendRequest} from '../Functions/HTTP-requests.js';
 
@@ -100,7 +100,6 @@ export default class Services extends React.Component {
             showAddForm: false,
             data: data
         });
-        console.log(data);
     }
 
     handlerEditBtn(data) {
@@ -117,7 +116,6 @@ export default class Services extends React.Component {
     handlerRemove(id) {
         sendRequest('https://young-cliffs-79659.herokuapp.com/editService', {available: false, id: id})
             .then((data)=> {
-                console.log("data's deleted successfully");
                 this.setState({sending: false});
             }, (err)=> {
                 //TODO handle error
@@ -130,7 +128,6 @@ export default class Services extends React.Component {
             showDetails: true,
             data: data
         });
-        console.log(data);
     }
 
     handlerSubmitBtn(data) {
@@ -148,15 +145,13 @@ export default class Services extends React.Component {
 
         sendRequest(url, data)
             .then(()=> {
-                console.log("data sent successfully");
                 this.setState({sending: false});
                 this.handlerBtn("cancel");
             }, (err)=> {
-                console.log(err);
-                console.log(JSON.parse(err.text).message);
                 this.setState({
                     sending: false,
-                    errorMsg: JSON.parse(err.text).message});
+                    errorMsg: JSON.parse(err.text).errors[0].message
+                });
             });
     }
 
@@ -164,13 +159,12 @@ export default class Services extends React.Component {
         this.setState({sending: true});
         sendRequest('https://young-cliffs-79659.herokuapp.com/reserveService', data)
             .then(() => {
-                console.log("data sent successfully");
                 this.setState({sending: false});
                 this.handlerBtn("cancel");
             }, (err) => {
                 this.setState({
                     sending: false,
-                    errorMsg: JSON.parse(err.text).message
+                    errorMsg: JSON.parse(err.text).errors[0].message
                 });
             });
     }
