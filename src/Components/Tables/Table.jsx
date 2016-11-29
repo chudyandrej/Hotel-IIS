@@ -50,10 +50,10 @@ class TableRow extends React.Component {
         for (let column in header) {
             if (typeof(this.props.Row[column]) === "boolean") {
                 if (this.props.Row[column]) {
-                    value = <ImageLoader src="../../public/img/tick.png" />;
+                    value = <ImageLoader src={require("../../../public/img/tick.png" )}/>;
                 }
                 else {
-                    value = <ImageLoader src="../../public/img/cross.png" />;
+                    value = <ImageLoader src={require("../../../public/img/cross.png" )} />;
                 }
             }
             else {
@@ -107,7 +107,7 @@ class TableRow extends React.Component {
         let removeBtn = (
             <button className="btn btn-info btn-sm"
                     onClick={this.handlerRemove.bind(this, this.props.Row)}>
-                <ImageLoader src="../../public/img/removeBtn.png" />
+                <ImageLoader src={require("../../../public/img/removeBtn.png")} />
             </button>
         );
 
@@ -115,7 +115,7 @@ class TableRow extends React.Component {
             <button type="button"
                     className="btn btn-info btn-sm"
                     onClick={this.handlerEditBtn.bind(this, this.props.Row)}>
-                <ImageLoader src="../../public/img/editBtn.png" />
+                <ImageLoader src={require("../../../public/img/editBtn.png")} />
             </button>
         );
 
@@ -124,8 +124,8 @@ class TableRow extends React.Component {
                     className="btn btn-info btn-sm"
                     onClick={this.handlerOrderBtn.bind(this, this.props.Row)}>
                 {this.props.orderBtnName === "Remove" ?
-                <ImageLoader src="../../public/img/removeBtn.png" /> :
-                    <ImageLoader src="../../public/img/buyBtn.png" />}
+                <ImageLoader src={require("../../../public/img/removeBtn.png")} /> :
+                    <ImageLoader src={require("../../../public/img/buyBtn.png")} />}
 
             </button>
         );

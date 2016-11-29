@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack-dev-server --hot --progress --colors",
     "build": "NODE_ENV=production webpack -p",
-    "start" : "npm run build && node server.js"
+    "start": "npm run build && node server.js"
   },
   "repository": {
     "type": "git",
@@ -40,6 +40,7 @@
     "react-imageloader": "^2.1.0",
     "react-redux": "^4.4.5",
     "react-router": "^2.8.1",
+    "react-skylight": "^0.4.1",
     "redux": "^2.0.0",
     "superagent": "^2.3.0"
   },
@@ -58,6 +59,7 @@
     "react-hot-loader": "^3.0.0-beta.5",
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.16.2"
   }

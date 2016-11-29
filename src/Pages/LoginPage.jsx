@@ -105,7 +105,7 @@ export default class LoginPage extends React.Component {
                                    onChange={this.handlerOnChange.bind(this, "password")}/>
                                     <button  onClick={this._login.bind(this)}
                                              className="btn btn-default full-width">
-                                        <ImageLoader src="../../public/img/login.png" />
+                                        <ImageLoader src={require("../../public/img/login.png")} />
                                     </button>
                         </div>
                     </div>

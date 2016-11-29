@@ -162,8 +162,8 @@ export default class BookOrderForm extends React.Component {
             marginRight: 25
         };
 
-        let plusSign = <ImageLoader src="../../../public/img/plus.png" />;
-        let minusSign = <ImageLoader src="../../../public/img/minus.png" />;
+        let plusSign = <ImageLoader src={require("../../../public/img/plus.png")} />;
+        let minusSign = <ImageLoader src={require("../../../public/img/minus.png")} />;
 
         let guestHeader = (
             <div style={headerContainerStyle}

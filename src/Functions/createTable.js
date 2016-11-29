@@ -43,7 +43,7 @@ export const createServicesPerRoomsTable = function(rooms, services) {
                         NoneOfServices = false;
                         columns.push(
                             <td key={columns.length} className="text-center">
-                                <ImageLoader src="../../public/img/tick.png" />
+                                <ImageLoader src={require("../../public/img/tick.png")} />
                             </td>
                         );
                     }
@@ -51,7 +51,7 @@ export const createServicesPerRoomsTable = function(rooms, services) {
                 if (NoneOfServices){
                     columns.push(
                         <td key={columns.length} className="text-center">
-                            <ImageLoader src="../../public/img/cross.png" />
+                            <ImageLoader src={require("../../public/img/cross.png")} />
                         </td>
                     );
                 }

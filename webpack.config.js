@@ -1,3 +1,6 @@
+var webpack = require('webpack');
+
+
 function getEntrySources(sources) {
     if (process.env.NODE_ENV !== 'production') {
         sources.push('webpack-dev-server/client?http://localhost:8080');
@@ -15,7 +18,7 @@ module.exports = {
         ])
     },
     output: {
-        publicPath: 'http://localhost:8080/',
+        publicPath: './public/',
         filename: 'public/index.js'
     },
     module: {
@@ -24,6 +27,10 @@ module.exports = {
                 test: /\.jsx?$/,
                 loaders: ['babel'],
                 exclude: /node_modules/
+            },
+            {
+                test: /\.png$|\.gif$/,
+                loader: "url-loader?mimetype=image/png"
             },
             {
                 test: /\.scss$/,
