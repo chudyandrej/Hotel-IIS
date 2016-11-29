@@ -32,9 +32,6 @@ export default class Stays extends React.Component {
             stay: {
                 status: "Status:", from: "From:", to: "To:", note: "Note:"
             },
-            rooms: {
-                id: "Room:", price_room: "Price:" //TODO more info about room
-            },
             guest: {
                 first_name: "First Name:", middle_name: "Middle Name:", last_name: "Last Name:",
                 idcard_number: "Card Number:", email: "Email:", phone_number: "Phone number:",
@@ -58,7 +55,9 @@ export default class Stays extends React.Component {
             tableData: [],
             data: [],
             pending: true,
-            sending: false
+            sending: false,
+
+            errorNotification: null
         };
     }
 
@@ -91,9 +90,7 @@ export default class Stays extends React.Component {
                 this.setState({pending: false, data: data, tableData: tableData});
             });
         }, (err) => {
-            //TODO handle error
-            console.log("error");
-            console.log(err);
+            this.setState({errorNotification: err, pending: false});
         });
     }
 
@@ -148,13 +145,20 @@ export default class Stays extends React.Component {
     handleDayChange(name, date) {
         switch (name) {
             case "start":
+                if (!date.isBefore(this.state.endDate)) {
+                    this.setState({data: []});
+                    return;
+                }
                 this.setState({startDate: date});
                 break;
             case "end":
+                if (date.isBefore(this.state.startDate)) {
+                    this.setState({data: []});
+                    return;
+                }
                 this.setState({endDate: date});
                 break;
         }
-        //TODO check validity of date
         this.fetchData(true);
     }
 
@@ -216,7 +220,9 @@ export default class Stays extends React.Component {
                 this.setState({sending: false});
                 this.handlerButtons("back");
             }, (err) => {
-                //TODO handle error
+                //close form and show notification
+                this.handlerCancelBtn();
+                this.setState({sending: false, errorNotification: err});
             });
     }
 
@@ -333,6 +339,10 @@ export default class Stays extends React.Component {
                 {this.state.isNotChild ? <AddBtn Add={this.handlerButtons.bind(this, "add")}/> : null}
             </div>
         );
+
+        if(this.state.errorNotification != null) {
+            content = this.state.errorNotification;
+        }
 
         return (
             <div>

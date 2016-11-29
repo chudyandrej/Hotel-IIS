@@ -1,7 +1,7 @@
+import cookie from 'react-cookie'
 import React from 'react';
 import request from 'superagent';
-import cookie from 'react-cookie';
-import {hashHistory} from 'react-router';
+import PopupNotif from '../Components/PopupNotif.jsx';
 
 
 export const sendRequest = function(url, data) {
@@ -18,14 +18,14 @@ export const sendRequest = function(url, data) {
                     console.log(res);  //debug
                     if(res.status == 400) {
                         if(JSON.parse(res.text).errors[0].message === "Access denied. Token expired") {
-                            console.log("Token has expired");
-                            cookie.remove('token');
-                            cookie.remove('permissions');
-                            cookie.remove('loggedIn');
-                            hashHistory.push('/');
+                            let body = "Token has expired. You're going to be redirected to the login page.";
+                            reject(<PopupNotif title="Token has expired"
+                                               body={body}
+                                               logout={true}/>);
                         }
                     }
                     reject(res);
+                    //reject(<PopupNotif title="Something went wrong"/>);
                 } else {
                     console.log("success");
                     console.log(res);
@@ -36,7 +36,7 @@ export const sendRequest = function(url, data) {
 };
 
 /**
- * Function downloads data from server and parses and returns text object
+ * Function downloads data from server, parses and returns object in text attribute
  * @param url - url of api of server
  * @param data -
  * @returns {Promise}

@@ -41,7 +41,9 @@ export default class Rooms extends React.Component {
 
             data: [],
             pending: true,
-            sending: false
+            sending: false,
+
+            errorNotification: null
         };
     }
 
@@ -59,9 +61,7 @@ export default class Rooms extends React.Component {
             data = this.state.tableHeaders.concat(data);
             this.setState({pending: false, data: data});
         }, (err) => {
-            //TODO handle error
-            console.log("error");
-            console.log(err);
+            this.setState({errorNotification: err, pending: false});
         });
     }
 
@@ -89,9 +89,7 @@ export default class Rooms extends React.Component {
                     data = this.state.tableHeaders.concat(data);
                     this.setState({pending: false, data: data});
                 }, (err) => {
-                    //TODO handle error
-                    console.log("error");
-                    console.log(err);
+                    this.setState({errorNotification: err, pending: false});
                 });
                 break;
             case "cancel":
@@ -157,10 +155,9 @@ export default class Rooms extends React.Component {
                 this.setState({sending: false});
                 this.handlerButtons("cancel");
             }, (err) => {
-                this.setState({
-                    sending: false,
-                    errorMsg: JSON.parse(err.text).message
-                });
+                //close form and show notification
+                this.handlerCancelBtn();
+                this.setState({sending: false, errorNotification: err});
             });
     }
 
@@ -234,6 +231,10 @@ export default class Rooms extends React.Component {
                 {this.state.all === "active" ? null : calendar}
             </div>
         );
+
+        if(this.state.errorNotification != null) {
+            mainContent = this.state.errorNotification;
+        }
 
         return (
             <div>

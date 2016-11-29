@@ -37,7 +37,9 @@ export default class Services extends React.Component {
             data: [],
             pending: true,
             sending: false,
-            errorMsg: null
+            errorMsg: null,
+
+            errorNotification: null
         };
     }
 
@@ -51,7 +53,7 @@ export default class Services extends React.Component {
             data = this.state.tableHeaders.concat(JSON.parse(data.text));
             this.setState({pending: false, data: data});
         }, (err)=> {
-            //TODO handle error
+            this.setState({errorNotification: err, pending: false});
         });
     }
 
@@ -115,10 +117,10 @@ export default class Services extends React.Component {
 
     handlerRemove(id) {
         sendRequest('https://young-cliffs-79659.herokuapp.com/editService', {available: false, id: id})
-            .then((data)=> {
-                this.setState({sending: false});
+            .then(()=> {
+                console.log("data's deleted successfully");
             }, (err)=> {
-                //TODO handle error
+                this.setState({errorNotification: err});
             });
     }
 
@@ -148,9 +150,16 @@ export default class Services extends React.Component {
                 this.setState({sending: false});
                 this.handlerBtn("cancel");
             }, (err)=> {
-                this.setState({
-                    sending: false,
-                    errorMsg: JSON.parse(err.text).errors[0].message
+                let errorMsg = null;
+                try {
+                    //it may be popUp component (token's expired)
+                    errorMsg = JSON.parse(err.text).errors[0].message
+                } catch(err) {
+                    //close form and show notification
+                    this.setState({errorNotification: err});
+                    this.handlerCancelBtn();
+                }
+                this.setState({sending: false, errorMsg: errorMsg
                 });
             });
     }
@@ -162,10 +171,9 @@ export default class Services extends React.Component {
                 this.setState({sending: false});
                 this.handlerBtn("cancel");
             }, (err) => {
-                this.setState({
-                    sending: false,
-                    errorMsg: JSON.parse(err.text).errors[0].message
-                });
+                //close form and show notification
+                this.handlerCancelBtn();
+                this.setState({sending: false, errorNotification: err});
             });
     }
 
@@ -250,6 +258,10 @@ export default class Services extends React.Component {
                 {this.state.isNotChild && this.state.root ? addBtn : null}
             </div>
         );
+
+        if(this.state.errorNotification != null) {
+            content = this.state.errorNotification;
+        }
 
         return (
             <div>

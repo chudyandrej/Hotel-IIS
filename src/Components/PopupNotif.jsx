@@ -1,5 +1,8 @@
+import cookie from 'react-cookie';
 import React from 'react';
 import SkyLight from 'react-skylight';
+
+import {hashHistory} from 'react-router';
 
 
 export default class PopupNotif extends React.Component {
@@ -8,42 +11,27 @@ export default class PopupNotif extends React.Component {
         super(props);
     }
 
-    _executeBeforeModalOpen(){
-        alert('Executed before open');
-    }
-
-    _executeAfterModalOpen(){
-        alert('Executed after open');
-    }
-
-    _executeBeforeModalClose(){
-        alert('Executed before close');
+    componentDidMount() {
+        this.refs.dialogWithCallBacks.show();
     }
 
     _executeAfterModalClose(){
-        alert('Executed after close');
-    }
-
-    _executeOnOverlayClicked(){
-        alert('Overlay clicked!');
+        //alert('Executed after close');
+        console.log("Token has expired");
+        cookie.remove('token');
+        cookie.remove('permissions');
+        cookie.remove('loggedIn');
+        hashHistory.push('/');
     }
 
     render() {
         return (
             <div>
-                <section>
-                    <h1>React SkyLight</h1>
-                    <button onClick={() => this.refs.dialogWithCallBacks.show()}>Open Modal</button>
-                </section>
                 <SkyLight
-                    afterClose={this._executeAfterModalClose}
-                    afterOpen={this._executeAfterModalOpen}
-                    beforeClose={this._executeBeforeModalClose}
-                    beforeOpen={this._executeBeforeModalOpen}
-                    onOverlayClicked={this._executeOnOverlayClicked}
+                    afterClose={this.props.logout == null ? null : this._executeAfterModalClose}
                     ref="dialogWithCallBacks"
-                    title="Hello!, I'm a modal with callbacks!">
-                    I have callbacks!
+                    title={this.props.title}>
+                    {this.props.body}
                 </SkyLight>
             </div>
         );
