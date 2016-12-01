@@ -19,7 +19,6 @@ export default class GuestForm extends React.Component {
                 city: "",
                 state: "",
                 phone_number: "",
-                iban: "",
                 idcard_number: "",
                 type_of_guest: "person",
                 name_company: "",
@@ -45,7 +44,6 @@ export default class GuestForm extends React.Component {
                 city: this.props.editData.city,
                 state: this.props.editData.state,
                 phone_number: this.props.editData.phone_number,
-                iban: this.props.editData.iban,
                 idcard_number: this.props.editData.idcard_number,
                 type_of_guest: this.props.editData.type_of_guest,
                 name_company: this.props.editData.name_company,
@@ -90,7 +88,6 @@ export default class GuestForm extends React.Component {
             city: this.state.city,
             state: this.state.state,
             phone_number: this.state.phone_number,
-            iban: this.state.iban,
             idcard_number: this.state.idcard_number,
             type_of_guest: this.state.type_of_guest,
             name_company: this.state.name_company,
@@ -195,11 +192,6 @@ export default class GuestForm extends React.Component {
                                     onBlur={this.checkValidity.bind(this, "phone_number")}
                                     onChange={this.handlerOnChange.bind(this, "phone_number")}
                                     errorMsg={this.state.phone_numberRequired == null ? null : required}/>
-
-                    <InputLabelForm label="IBAN"
-                                    type="text"
-                                    placeholder={this.state.iban}
-                                    onChange={this.handlerOnChange.bind(this, "iban")}/>
 
                     <InputLabelForm label="ID Card Number"
                                     type="text"

@@ -29,9 +29,7 @@ export default class ServiceForm extends React.Component {
                 duration: this.props.editData.duration,
 
                 nameRequired: null,
-                descriptionRequired: null,
-                priceRequired: null,
-                durationRequired: null
+                priceRequired: null
             };
         }
     }
@@ -87,11 +85,7 @@ export default class ServiceForm extends React.Component {
                     <InputLabelForm label="Description"
                                     placeholder={this.state.description}
                                     type="text"
-                                    required={true}
-                                    validity={this.state.descriptionRequired}
-                                    onBlur={this.checkValidity.bind(this, "description")}
-                                    onChange={this.handlerOnChange.bind(this, "description")}
-                                    errorMsg={this.state.descriptionRequired == null ? null : required}/>
+                                    onChange={this.handlerOnChange.bind(this, "description")}/>
 
                     <InputLabelForm label="Price"
                                     placeholder={this.state.price}
@@ -105,11 +99,7 @@ export default class ServiceForm extends React.Component {
                     <InputLabelForm label="Duration (min)"
                                     placeholder={this.state.duration}
                                     type="text"
-                                    required={true}
-                                    validity={this.state.durationRequired}
-                                    onBlur={this.checkValidity.bind(this, "duration")}
-                                    onChange={this.handlerOnChange.bind(this, "duration")}
-                                    errorMsg={this.state.durationRequired == null ? null : required}/>
+                                    onChange={this.handlerOnChange.bind(this, "duration")}/>
                 </form>
 
                 <FormButtons Submit={this.handlerSubmitBtn.bind(this)}

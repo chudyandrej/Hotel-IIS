@@ -21,6 +21,7 @@ export default class Services extends React.Component {
             root: cookie.load('permissions') === "root",
             available: "active",
             unavailable: "default",
+            availableBefore: true,
             subHeader: "Services",
             isNotChild: typeof(this.props.isChild) === "undefined",
             tableHeaders: [{name: "Name", actual_price: "Price", duration: "Duration"}],
@@ -63,6 +64,7 @@ export default class Services extends React.Component {
                 this.setState({
                     available: "active",
                     unavailable: "default",
+                    availableBefore: true,
                     subHeader: "Available Services"
                 });
                 this.fetchData({available:true});
@@ -71,6 +73,7 @@ export default class Services extends React.Component {
                 this.setState({
                     available: "default",
                     unavailable: "active",
+                    availableBefore: false,
                     subHeader: "Unavailable Services"
                 });
                 this.fetchData({available:false});
@@ -83,9 +86,8 @@ export default class Services extends React.Component {
                 });
                 break;
             case "cancel":
-                this.fetchData({available:true});
+                this.state.availableBefore ? this.handlerBtn("available") : this.handlerBtn("unavailable");
                 this.setState({
-                    subHeader: "Services",
                     showTable: true,
                     showAddForm: false,
                     showDetails: false,
@@ -154,13 +156,17 @@ export default class Services extends React.Component {
                 try {
                     //it may be popUp component (token's expired)
                     errorMsg = JSON.parse(err.text).errors[0].message
-                } catch(err) {
+                } catch(error) {
                     //close form and show notification
-                    this.setState({errorNotification: err});
-                    this.handlerCancelBtn();
+                    console.log(err);
+                    this.setState({errorNotification: err.text});
+                    console.log("aft");
+                    this.handlerBtn("cancel");
+                    console.log("ar");
                 }
-                this.setState({sending: false, errorMsg: errorMsg
-                });
+                console.log("skdjdfa");
+                this.setState({sending: false, errorMsg: errorMsg});
+                console.log("after");
             });
     }
 
@@ -208,9 +214,14 @@ export default class Services extends React.Component {
                        onRemove={this.state.root ? this.handlerRemove.bind(this) : null}/>
             );
 
+            let unavailableTable = (
+                <Table TableData={this.state.data}
+                       showDetails={this.handleShowDetails.bind(this)} />
+            );
+
             content = (
                 <div>
-                    {this.state.available === "active" ? availableTable : <Table TableData={this.state.data} /> }
+                    {this.state.available === "active" ? availableTable : unavailableTable}
                 </div>
             )
         }

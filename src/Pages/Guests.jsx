@@ -141,7 +141,6 @@ export default class Guests extends React.Component {
                     showAddForm: false,
                     showDetails: false,
                     bookRoom: false,
-                    subHeader: "Current Guests",
                     editData: null
                 });
                 break;

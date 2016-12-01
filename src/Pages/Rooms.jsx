@@ -95,9 +95,6 @@ export default class Rooms extends React.Component {
             case "cancel":
                 this.state.availableBefore ? this.handlerButtons("available") : this.handlerButtons("all");
                 this.setState({
-                    subHeader: "Available Rooms",
-                    available: "active",
-                    all: "default",
                     showTable: true,
                     showDetails: false
                 });

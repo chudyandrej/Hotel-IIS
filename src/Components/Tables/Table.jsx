@@ -148,10 +148,13 @@ class TableRow extends React.Component {
                 </div>
             </td>
         );
+        let style={backgroundColor: this.state.backgroundColor};
+        if(this.props.onEdit != null || this.props.order != null || this.props.onRemove != null) {
+            style['cursor'] = "pointer";
+        }
 
         let Row = (
-            <tr onClick={this.handlerClick.bind(this, this.props.Row)}
-                style={{cursor: "pointer", backgroundColor: this.state.backgroundColor}}>
+            <tr onClick={this.handlerClick.bind(this, this.props.Row)} style={style}>
                 {this.state.columns}
                 {actionBtns}
             </tr>

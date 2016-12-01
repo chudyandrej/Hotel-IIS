@@ -97,11 +97,13 @@ export default class Stays extends React.Component {
     handlerButtons(name) {
         switch (name) {
             case "available":
+                console.log("not here");
                 this.setState({
                     subHeader: "Current Stays",
                     available: "active",
                     all: "default",
-                    availableBefore: true
+                    availableBefore: true,
+                    filter: "all"
                 });
                 this.setState({
                     startDate: moment(),
@@ -110,11 +112,13 @@ export default class Stays extends React.Component {
                 this.fetchData(true);
                 break;
             case "all":
+                console.log("are you sure?");
                 this.setState({
                     subHeader: "All Stays",
                     available: "default",
                     all: "active",
-                    availableBefore: false
+                    availableBefore: false,
+                    filter: "all"
                 });
                 this.fetchData(false);
                 break;
@@ -133,9 +137,6 @@ export default class Stays extends React.Component {
                     this.handlerButtons("all");
                 }
                 this.setState({
-                    subHeader: "Current Stays",
-                    available: "active",
-                    all: "default",
                     showTable: true,
                     showDetails: false
                 });
@@ -313,6 +314,8 @@ export default class Stays extends React.Component {
                     <EditStayForm Cancel={this.handlerButtons.bind(this, "back")}
                                   Submit={this.handlerSubmitBtn.bind(this)}
                                   pending={this.state.sending}
+                                  status={this.state.editData.status}
+                                  note={this.state.editData.note}
                                   details={
                                       <div>
                                           <DetailsTable Headers={this.state.stay}

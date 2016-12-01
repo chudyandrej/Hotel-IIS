@@ -108,7 +108,6 @@ export default class Employees extends React.Component {
     handlerCancelBtn() {
         this.state.employedBefore ? this.handlerEmployedBtn() : this.handlerFormerBtn();
         this.setState({
-            subHeader: "Employees",
             showTable: true,
             showDetails: false,
             showAddForm: false,
