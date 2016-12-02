@@ -9,6 +9,12 @@ module.exports = function(app, db, _) {
         }).then((guest) => {
             res.status(200).send();
         }).catch((error) => {
+            if (!_.isUndefined(error.errors[0].message)){
+                error =  {
+                    message : error.errors[0].message + " -> " + error.errors[0].path
+                };
+            }
+
             res.status(400).json(error);
         });
     });
@@ -20,7 +26,7 @@ module.exports = function(app, db, _) {
             return new Promise((resolve, reject) => {
                 if ((!_.isString(timeFrom) || !_.isString(timeTo)) || (moment(timeFrom) > moment(timeTo))){
                     reject({
-                        errors:[{message: "Bad format of request"}]
+                        message: "Bad format of request"
                     });
                 }
                 else{
@@ -51,7 +57,7 @@ module.exports = function(app, db, _) {
             return new Promise((resolve, reject) => {
                 if (_.isUndefined(req.body.id)){
                     reject({
-                        errors:[{message: "Bad format of request"}]
+                        message: "Bad format of request"
                     });
                 } else {
                     resolve();
@@ -87,6 +93,17 @@ module.exports = function(app, db, _) {
         }).then(() => {
             res.status(200).json();
         }).catch((error) => {
+            if (!_.isUndefined(error.errors[0].message)){
+                error =  {
+                    message : error.errors[0].message + " -> " + error.errors[0].path
+                };
+            }
+            if (!_.isUndefined(error.errors[0].message)){
+                error =  {
+                    message : error.errors[0].message + " -> " + error.errors[0].path
+                };
+            }
+
             res.status(400).json(error);
         });
     });
@@ -104,12 +121,5 @@ module.exports = function(app, db, _) {
             res.status(400).json(error);
         });
     });
-
-
-
-
-
-
-
 
 }

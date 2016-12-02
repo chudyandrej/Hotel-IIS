@@ -32,7 +32,7 @@ module.exports = function(sequelize, DataTypes) {
                     stays.findById(id).then((stay) => {
                         if (!stay) {
                             reject({
-                                errors:[{message: "Template of service with the identifier does not exist"}]
+                                message: "Template of service with the identifier does not exist"
                             });
                         }
                         resolve(stay);
@@ -50,12 +50,8 @@ module.exports = function(sequelize, DataTypes) {
                     }
                     if(moment(fromTime) > moment(toTime)){
                         reject({
-                            errors:[
-                                {
-                                    message: "'To' can't be bigger as 'From' ",
-                                    path: "trom, to",
-                                    value: fromTime.concat("  ").concat(toTime)
-                                }]
+                            message: "Time FROM (" + fromTime + ") can't be bigger as time TO (" + toTime + ")"
+
                         });
                     }
                     stays.findAll({
@@ -90,17 +86,14 @@ module.exports = function(sequelize, DataTypes) {
             findTotalStaysByTime(employeesObj, guestsObj,roomsObj, templateRoomsObj, fromTime, toTime, statuses){
                 return new Promise(function(resolve, reject) {
                     if (!_.isString(fromTime) || !_.isString(toTime) ){
-                        reject("Undefined times 'from' and 'to'");
+                        reject({
+                            message: "Undefined times FROM or TO"
+                        });
                     }
 
                     if(moment(fromTime) > moment(toTime)){
                         reject({
-                            errors:[
-                                {
-                                    message: "'To' can't be bigger as 'From' ",
-                                    path: "trom, to",
-                                    value: fromTime.concat("  ").concat(toTime)
-                                }]
+                            message: "Time FROM (" + fromTime + ") can't be bigger as time TO (" + toTime + ")"
                         });
 
                     }

@@ -98,8 +98,9 @@ module.exports = function(sequelize, DataTypes) {
                 return new Promise((resolve, reject) => {
                     try {
                         if (!_.isString(type)) {
-                            reject('Data type of token is not string');
-
+                            reject({
+                                message: "Data type of token is not string"
+                            });
                         }
 
                         let tokenData = JSON.stringify({
@@ -129,7 +130,7 @@ module.exports = function(sequelize, DataTypes) {
                     try {
                         if (!token){
                             reject({
-                                errors:[{message: "Token not found"}]
+                                message: "Token not found"
                             });
                         }
                         let decodeJwt = jwt.verify(token, 'qwery09856');
@@ -138,7 +139,7 @@ module.exports = function(sequelize, DataTypes) {
                         employees.findById(tokenData.id).then((employee) => {
                             if (!employee){
                                 reject({
-                                    errors:[{message: "Emply with the identifier does not exist. Problem whit token"}]
+                                    message: "Emply with the identifier does not exist. Problem whit token"
                                 });
                             } else {
                                 resolve(employee);
@@ -155,7 +156,7 @@ module.exports = function(sequelize, DataTypes) {
                 return new Promise(function(resolve, reject) {
                     if (!_.isString(emailPass.email) || !_.isString(emailPass.password)) {
                         reject({
-                            errors:[{message: "Email or password are not valid"}]
+                            message: "Email or password are not valid"
                         });
                     }
                     employees.findOne({
@@ -167,7 +168,7 @@ module.exports = function(sequelize, DataTypes) {
                             resolve(employee);
                         } else {
                             reject({
-                                errors:[{message: "Wrong password or unexisting email"}]
+                                message: "Wrong password or unexisting email"
                             });
                         }
                     }, (error) => {
@@ -180,7 +181,7 @@ module.exports = function(sequelize, DataTypes) {
                     employees.findById(id).then((employee) => {
                         if (!employee) {
                             reject({
-                                errors:[{message: "Employee with the identifier does not exist."}]
+                                message: "Employee with the identifier does not exist."
                             });
                         }
                         resolve(employee);

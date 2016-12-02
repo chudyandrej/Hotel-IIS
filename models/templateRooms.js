@@ -41,12 +41,7 @@ module.exports = function(sequelize, DataTypes) {
                     templateRooms.fundById(id).then((templateRoomInstance) => {
                         if(!templateRoomInstance){
                             reject({
-                                errors:[
-                                    {
-                                        message: "Template of room with the identifier does not exist",
-                                        path: "id",
-                                        value: id
-                                    }]
+                                message: "Template of room with identifier '"+ id +" does not exist"
                             });
                         }
                         resolve(templateRoomInstance);

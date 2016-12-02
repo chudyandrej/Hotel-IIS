@@ -37,7 +37,7 @@ module.exports = function(sequelize, DataTypes) {
                     services.findById(id).then((service) => {
                         if (!service) {
                             reject({
-                                errors:[{message: "Template of service with the identifier does not exist"}]
+                                message: "Template of service with identifier '"+ id +"' does not exist"
                             });
                         }
                         resolve(service);

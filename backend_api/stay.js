@@ -7,6 +7,7 @@ module.exports = function(app, db, _) {
         }).then((stateInstance) => {
             res.status(200).send();
         }, (error) => {
+
             res.status(400).json(error);
         });
     });

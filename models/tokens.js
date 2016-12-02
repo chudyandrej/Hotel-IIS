@@ -35,7 +35,8 @@ module.exports = function(sequelize, DataTypes) {
                 return new Promise(function(resolve, reject) {
                     if (!_.isString(hashToken) || hashToken === '') {
                         reject({
-                            errors:[{message: "Access denied. Token is not string or token is empty string"}]
+                            message: "Access denied. Token is not string or token is empty string",
+                            code: 400
                         });
                     }
                     tokens.findOne({
@@ -55,7 +56,8 @@ module.exports = function(sequelize, DataTypes) {
 
                         }else{
                             reject({
-                                errors:[{message: "Access denied. Token expired"}]
+                                message: "Access denied. Token expired",
+                                code: 420
                             });
                         }
                     }, function(error) {

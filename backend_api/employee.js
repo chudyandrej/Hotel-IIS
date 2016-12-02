@@ -19,7 +19,13 @@ module.exports = function(app, db, _) {
         db.employees.create(body).then((user) => {
             res.status(200).send();
         }, (error) => {
-            res.status(400).json(error);
+            errorMsg = error.errors[0].message + " -> " + error.errors[0].path;
+            if (!error.errors[0].message || !error.errors[0].path) {
+                errorMsg = error;
+            }
+            res.status(400).json({
+                message : errorMsg
+            });
         });
     });
 
@@ -34,7 +40,7 @@ module.exports = function(app, db, _) {
                     resolve();
                 } else {
                     reject({
-                        errors:[{message: "Access denied! "}]
+                        message: "Access denied!"
                     });
                 }
             });
@@ -64,7 +70,7 @@ module.exports = function(app, db, _) {
                     resolve();
                 } else {
                     reject({
-                        errors:[{message: "Access denied! "}]
+                        message: "Access denied!"
                     });
                 }
             });
@@ -92,7 +98,7 @@ module.exports = function(app, db, _) {
                     resolve();
                 } else {
                     reject({
-                        errors:[{message: "Access denied! "}]
+                        message: "Access denied!"
                     });
                 }
             });
@@ -106,6 +112,11 @@ module.exports = function(app, db, _) {
         }).then(() => {
             res.status(200).json();
         }).catch((error) => {
+            if (!_.isUndefined(error.errors[0].message)){
+                error =  {
+                    message : error.errors[0].message + " -> " + error.errors[0].path
+                };
+            }
             res.status(400).json(error);
         });
     });

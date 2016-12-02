@@ -78,7 +78,7 @@ module.exports = function(sequelize, DataTypes) {
                     guests.findById(id).then((guestInstance) => {
                         if (!guestInstance) {
                             reject({
-                                errors:[{message: "Guest with the identifier does not exist"}]
+                                message: "Guest with the identifier does not exist"
                             });
                         }
                         resolve(guestInstance);

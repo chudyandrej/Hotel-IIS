@@ -11,7 +11,7 @@ module.exports = function(app, db, _) {
                     resolve(instanceEmplyee.get('id'));
                 } else {
                     reject({
-                        errors:[{message: "Error: Rooms not existing ! "}]
+                        message: "Error: Rooms not existing ! "
                     });
                 }
             });
