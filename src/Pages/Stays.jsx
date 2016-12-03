@@ -138,7 +138,8 @@ export default class Stays extends React.Component {
                 }
                 this.setState({
                     showTable: true,
-                    showDetails: false
+                    showDetails: false,
+                    editData: null
                 });
         }
     }

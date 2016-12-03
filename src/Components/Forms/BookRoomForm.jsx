@@ -38,12 +38,14 @@ export default class BookOrderForm extends React.Component {
             showFreeRooms: false,
             status: "reservation",
             note: null,
-            guest: this.props.guest,
+            guest: this.props.guest || null,
             oneGuestChosen: false,
 
             newOrder: false,
             ordered: [],
-            Rows: []
+            Rows: [],
+
+            errorMsg: null
         }
     }
 
@@ -130,6 +132,17 @@ export default class BookOrderForm extends React.Component {
             });
         }
 
+        //check required values
+        if (this.state.guest === null) {
+            this.setState({errorMsg: "Choose a guest!"});
+            return;
+        }
+        if (rooms.length === 0) {
+            this.setState({errorMsg: "Choose a room!"});
+            return;
+        }
+
+        //send data
         let data = {
             from: this.state.startDate.format('YYYY-MM-DD'),
             to: this.state.endDate.format('YYYY-MM-DD'),
@@ -256,6 +269,7 @@ export default class BookOrderForm extends React.Component {
 
                 <FormButtons Submit={this.handlerSubmitBtn.bind(this)}
                              Cancel={this.props.Cancel}
+                             errorMsg={this.state.errorMsg}
                              pending={this.props.pending}/>
             </div>
         );
