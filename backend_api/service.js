@@ -14,7 +14,8 @@ module.exports = function(app, db, _) {
                 }
             });
         }).then(() => {
-            var body = _.pick(req.body, 'name', 'actual_price', 'description', 'available', 'duration');
+            var body = _.pick(req.body, 'name', 'actual_price', 'description',
+            'available', 'duration', 'isDaily');
             return db.templateServices.create(body);
         }).then((serviceInstance) => {
             res.status(200).send();
