@@ -55,14 +55,13 @@ module.exports = function(app, db, _) {
                     resolve([]);
                 }
                 instances.forEach((room) => {
-                    sum += room.price_room;
+                    sum += room.price_room * countOfDays;
                     console.log(room.id);
                     db.services.sumPriceForRoom(room.id, db.templateServices).then((result) => {
                         room.services = result.services
                         sum += result.sum
                         i++;
                         if (instances.length == i){
-                            sum = sum * countOfDays;
                             resolve({
                                 rooms : instances,
                                 sum
