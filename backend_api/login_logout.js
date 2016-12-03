@@ -5,6 +5,16 @@ module.exports = function(app, db, _) {
         let body = _.pick(req.body, 'email', 'password');
         let permissions;
         db.employees.authenticate(body).then((employee) => {
+            return new Promise((resolve, reject) => {
+                if (employee.get('currently_employed')){
+                    resolve(employee);
+                } else {
+                    reject({
+                        message: "Access denied!"
+                    });
+                }
+            });
+        }).then((employee) => {
             permissions = employee.get('permissions');
             return employee.generateToken('authentication');
         }).then((token) => {
