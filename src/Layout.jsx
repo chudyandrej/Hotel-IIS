@@ -8,9 +8,9 @@ import SideBar from './Components/SideBar.jsx';
 
 export default class Layout extends React.Component {
 
-    componentWillMount(){
+    componentWillMount() {
         console.log("checking if user is still signed in: " + cookie.load('loggedIn'));  //DEBUG
-        if (!cookie.load('loggedIn')){
+        if (!cookie.load('loggedIn')) {
             hashHistory.push('/');
         }
     }
@@ -21,7 +21,7 @@ export default class Layout extends React.Component {
                 <Header />
                 <div className="container-fluid">
                     <div className="row row-offcanvas row-offcanvas-left">
-                        <SideBar activeLocation={this.props.location.pathname} />
+                        <SideBar activeLocation={this.props.location.pathname}/>
                         <div className="col-sm-9 col-md-10 main">
                             {this.props.children}
                         </div>

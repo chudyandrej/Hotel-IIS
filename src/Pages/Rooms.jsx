@@ -26,8 +26,10 @@ export default class Rooms extends React.Component {
             subHeader: "Available Rooms",
             isNotChild: typeof(this.props.isChild) === "undefined",
 
-            tableHeaders: [{id: "Room Number:", actual_price: "Price:", tv: "TV:", internet: "Internet:", bar: "Bar:",
-                bathtub: "Bathtub:", kitchen: "Kitchen:", balcony: "Balcony:"}],
+            tableHeaders: [{
+                id: "Room Number:", actual_price: "Price:", tv: "TV:", internet: "Internet:", bar: "Bar:",
+                bathtub: "Bathtub:", kitchen: "Kitchen:", balcony: "Balcony:"
+            }],
             detailsHeaders: {
                 id: "Room Number:", actual_price: "Price:", tv: "TV:", internet: "Internet:", bar: "Bar:",
                 bathtub: "Bathtub:", kitchen: "Kitchen:", balcony: "Balcony:"
@@ -61,13 +63,13 @@ export default class Rooms extends React.Component {
             data = this.state.tableHeaders.concat(data);
             this.setState({pending: false, data: data});
         }, (err) => {
-            this.setState({errorNotification: err, pending: false});
+            this.setState({errorNotification: err.popup, pending: false});
         });
     }
 
 
     handlerButtons(name) {
-        switch(name) {
+        switch (name) {
             case "available":
                 this.setState({
                     available: "active",
@@ -89,15 +91,12 @@ export default class Rooms extends React.Component {
                     data = this.state.tableHeaders.concat(data);
                     this.setState({pending: false, data: data});
                 }, (err) => {
-                    this.setState({errorNotification: err, pending: false});
+                    this.setState({errorNotification: err.popup, pending: false});
                 });
                 break;
             case "cancel":
                 this.state.availableBefore ? this.handlerButtons("available") : this.handlerButtons("all");
                 this.setState({
-                    subHeader: "Available Rooms",
-                    available: "active",
-                    all: "default",
                     showTable: true,
                     showDetails: false
                 });
@@ -157,7 +156,7 @@ export default class Rooms extends React.Component {
             }, (err) => {
                 //close form and show notification
                 this.handlerCancelBtn();
-                this.setState({sending: false, errorNotification: err});
+                this.setState({sending: false, errorNotification: err.popup});
             });
     }
 
@@ -194,7 +193,7 @@ export default class Rooms extends React.Component {
                     <Table TableData={this.state.data}
                            Rooms={true}
                            order={this.state.available === "active" ?
-                                  this.props.isChild || this.handlerBookRoomBtn.bind(this) : null}
+                           this.props.isChild || this.handlerBookRoomBtn.bind(this) : null}
                            showDetails={this.handleShowDetails.bind(this)}/>
                 </div>
             )
@@ -232,7 +231,7 @@ export default class Rooms extends React.Component {
             </div>
         );
 
-        if(this.state.errorNotification != null) {
+        if (this.state.errorNotification != null) {
             mainContent = this.state.errorNotification;
         }
 

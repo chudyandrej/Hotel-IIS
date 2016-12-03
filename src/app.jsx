@@ -21,15 +21,15 @@ ReactDOM.render(
         <Route path="/" component={PreLoginLayout}>
             <IndexRoute component={LoginPage}/>
             <Route path="/dashboard" component={Layout}>
-                <IndexRoute component={Dashboard} />
-                <Route path="/dashboard/search" component={Search} />
+                <IndexRoute component={Dashboard}/>
+                <Route path="/dashboard/search" component={Search}/>
                 <Route path="/dashboard/rooms" component={Rooms}/>
-                <Route path="/dashboard/services" component={Services} />
-                <Route path="/dashboard/analytics" component={Analytics} />
-                <Route path="/dashboard/employees" component={Employees} />
-                <Route path="/dashboard/guests" component={Guests} />
-                <Route path="/dashboard/stays" component={Stays} />
-                <Route path="*" component={NotFound} />
+                <Route path="/dashboard/services" component={Services}/>
+                <Route path="/dashboard/analytics" component={Analytics}/>
+                <Route path="/dashboard/employees" component={Employees}/>
+                <Route path="/dashboard/guests" component={Guests}/>
+                <Route path="/dashboard/stays" component={Stays}/>
+                <Route path="*" component={NotFound}/>
             </Route>
         </Route>
     </Router>,

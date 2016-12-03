@@ -16,9 +16,7 @@ export default class ServiceForm extends React.Component {
                 duration: "",
 
                 nameRequired: null,
-                descriptionRequired: null,
                 priceRequired: null,
-                durationRequired: null
             };
         }
         else {
@@ -29,9 +27,7 @@ export default class ServiceForm extends React.Component {
                 duration: this.props.editData.duration,
 
                 nameRequired: null,
-                descriptionRequired: null,
-                priceRequired: null,
-                durationRequired: null
+                priceRequired: null
             };
         }
     }
@@ -44,23 +40,34 @@ export default class ServiceForm extends React.Component {
 
     checkValidity(name) {
         let state = {};
-        if (this.state[name] == ""){
-            state[name+"Required"] = "has-error";
+        if (this.state[name] === "") {
+            state[name + "Required"] = "has-error";
+            this.setState(state);
+            return false;
         }
-        if (this.state[name] != "" && this.state[name+"Required"] != null){
-            state[name+"Required"] = null;
+        if (this.state[name] != "" && this.state[name + "Required"] != null) {
+            state[name + "Required"] = null;
+            this.setState(state);
         }
-        this.setState(state);
+       return true;
+    }
+
+    checkRequired() {
+        let retCode = true;
+        retCode = retCode === false ? false : this.checkValidity("name");
+        retCode = retCode === false ? false : this.checkValidity("price");
+        return retCode;
     }
 
     handlerSubmitBtn() {
-        let data = {
-            name: this.state.name,
-            description: this.state.description,
-            actual_price: this.state.price,
-            duration: this.state.duration,
-            available: true
-        };
+        if (!this.checkRequired()) {
+            return;
+        }
+        let data = {available: true};
+        this.state.name != "" ? data['name'] = this.state.name : null;
+        this.state.description != "" ? data['description'] = this.state.description : null;
+        this.state.price != "" ? data['actual_price'] = this.state.price : null;
+        data['duration'] = this.state.duration != "" ? 0 : this.state.duration;
 
         this.props.Submit(data);
     }
@@ -87,11 +94,7 @@ export default class ServiceForm extends React.Component {
                     <InputLabelForm label="Description"
                                     placeholder={this.state.description}
                                     type="text"
-                                    required={true}
-                                    validity={this.state.descriptionRequired}
-                                    onBlur={this.checkValidity.bind(this, "description")}
-                                    onChange={this.handlerOnChange.bind(this, "description")}
-                                    errorMsg={this.state.descriptionRequired == null ? null : required}/>
+                                    onChange={this.handlerOnChange.bind(this, "description")}/>
 
                     <InputLabelForm label="Price"
                                     placeholder={this.state.price}
@@ -105,11 +108,7 @@ export default class ServiceForm extends React.Component {
                     <InputLabelForm label="Duration (min)"
                                     placeholder={this.state.duration}
                                     type="text"
-                                    required={true}
-                                    validity={this.state.durationRequired}
-                                    onBlur={this.checkValidity.bind(this, "duration")}
-                                    onChange={this.handlerOnChange.bind(this, "duration")}
-                                    errorMsg={this.state.durationRequired == null ? null : required}/>
+                                    onChange={this.handlerOnChange.bind(this, "duration")}/>
                 </form>
 
                 <FormButtons Submit={this.handlerSubmitBtn.bind(this)}

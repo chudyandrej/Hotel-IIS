@@ -7,7 +7,7 @@ import moment from 'moment';
  * @param filter - filter based on status of Stay (reservation, inProgress,..)
  * @returns {Promise}
  */
-export const parseStaysData = function(data, filter) {
+export const parseStaysData = function (data, filter) {
     let tableData = [];
     let rooms = [];
 
@@ -21,12 +21,12 @@ export const parseStaysData = function(data, filter) {
             });
 
             row['last_name'] = row.guest.last_name;
-            row['from'] =  moment(row.from).format('YYYY-MM-DD');
+            row['from'] = moment(row.from).format('YYYY-MM-DD');
             row['to'] = moment(row.to).format('YYYY-MM-DD');
             row['roomNumber'] = rooms.toString();
 
             tableData.push(
-               row
+                row
             );
         });
         //filter data if filter is not set to 'all'
@@ -49,7 +49,7 @@ export const parseStaysData = function(data, filter) {
  * @param data - list objects of objects - [{guest:{}}, {guest:{}},..]
  * @returns {Promise} - list of objects
  * */
-export const getGuests = function(data) {
+export const getGuests = function (data) {
 
     let guests = [];
 
@@ -67,7 +67,7 @@ export const getGuests = function(data) {
  * @param data - [{..from:Obj, to:Obj,...},{},{},..]
  * @returns {Promise} - list of objects with formatted moments objects
  */
-export const formatHistoryDates = function(data) {
+export const formatHistoryDates = function (data) {
 
     let history = [];
 

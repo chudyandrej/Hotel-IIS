@@ -65,7 +65,7 @@ export default class LoginPage extends React.Component {
             .set('Accept', 'application/json')
             //.send({ email: 'jerdna11@gmail.com', password: '123456789' })  //for debug
             .send({email: this.state.username, password: this.state.password})
-            .end((err, res)=>{
+            .end((err, res) => {
                 if (err != null || !res.ok) {
                     this.setState({username: "", password: ""});
                     this.setState({error: true, pending: false});
@@ -83,6 +83,12 @@ export default class LoginPage extends React.Component {
             });
     }
 
+    _handleKeyPress(e) {
+        if (e.key === 'Enter') {
+            this._login(e);
+        }
+    }
+
     render() {
         let errorMsg = <strong className="alert alert-danger">Wrong username or password!</strong>;
         let content = null;
@@ -98,21 +104,23 @@ export default class LoginPage extends React.Component {
                             <input placeholder="email"
                                    type="text"
                                    value={this.state.username}
+                                   onKeyPress={this._handleKeyPress.bind(this)}
                                    onChange={this.handlerOnChange.bind(this, "name")}/>
                             <input placeholder="password"
                                    type="password"
                                    value={this.state.password}
+                                   onKeyPress={this._handleKeyPress.bind(this)}
                                    onChange={this.handlerOnChange.bind(this, "password")}/>
-                                    <button  onClick={this._login.bind(this)}
-                                             className="btn btn-default full-width">
-                                        <ImageLoader src={require("../../public/img/login.png")} />
-                                    </button>
+                            <button onClick={this._login.bind(this)}
+                                    className="btn btn-default full-width">
+                                <ImageLoader src={require("../../public/img/login.png")}/>
+                            </button>
                         </div>
                     </div>
                 </div>
             )
         }
-        else if(this.state.pending) {
+        else if (this.state.pending) {
             content = (
                 <Loading  />
             )

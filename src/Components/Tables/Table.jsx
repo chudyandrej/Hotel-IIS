@@ -25,9 +25,9 @@ export class TableHeader extends React.Component {
 
         return (
             <thead>
-                <tr>
-                    {columns}
-                </tr>
+            <tr>
+                {columns}
+            </tr>
             </thead>
         )
     }
@@ -50,10 +50,10 @@ class TableRow extends React.Component {
         for (let column in header) {
             if (typeof(this.props.Row[column]) === "boolean") {
                 if (this.props.Row[column]) {
-                    value = <ImageLoader src={require("../../../public/img/tick.png" )}/>;
+                    value = <ImageLoader src={require("../../../public/img/tick.png")}/>;
                 }
                 else {
-                    value = <ImageLoader src={require("../../../public/img/cross.png" )} />;
+                    value = <ImageLoader src={require("../../../public/img/cross.png")}/>;
                 }
             }
             else {
@@ -107,7 +107,7 @@ class TableRow extends React.Component {
         let removeBtn = (
             <button className="btn btn-info btn-sm"
                     onClick={this.handlerRemove.bind(this, this.props.Row)}>
-                <ImageLoader src={require("../../../public/img/removeBtn.png")} />
+                <ImageLoader src={require("../../../public/img/removeBtn.png")}/>
             </button>
         );
 
@@ -115,7 +115,7 @@ class TableRow extends React.Component {
             <button type="button"
                     className="btn btn-info btn-sm"
                     onClick={this.handlerEditBtn.bind(this, this.props.Row)}>
-                <ImageLoader src={require("../../../public/img/editBtn.png")} />
+                <ImageLoader src={require("../../../public/img/editBtn.png")}/>
             </button>
         );
 
@@ -124,8 +124,8 @@ class TableRow extends React.Component {
                     className="btn btn-info btn-sm"
                     onClick={this.handlerOrderBtn.bind(this, this.props.Row)}>
                 {this.props.orderBtnName === "Remove" ?
-                <ImageLoader src={require("../../../public/img/removeBtn.png")} /> :
-                    <ImageLoader src={require("../../../public/img/buyBtn.png")} />}
+                    <ImageLoader src={require("../../../public/img/removeBtn.png")}/> :
+                    <ImageLoader src={require("../../../public/img/buyBtn.png")}/>}
 
             </button>
         );
@@ -141,17 +141,21 @@ class TableRow extends React.Component {
         let actionBtns = (
             <td className='btn-toolbar'>
                 <div style={{float: "right"}}
-                    className='btn-toolbar'
-                    onMouseEnter={this.hoverAction.bind(this)}
-                    onMouseLeave={this.leaveAction.bind(this)}>
+                     className='btn-toolbar'
+                     onMouseEnter={this.hoverAction.bind(this)}
+                     onMouseLeave={this.leaveAction.bind(this)}>
                     {buttons}
                 </div>
             </td>
         );
+        let style = {backgroundColor: this.state.backgroundColor};
+        if (this.props.onEdit != null || this.props.order != null ||
+            this.props.onRemove != null || this.props.showDetails != null) {
+            style['cursor'] = "pointer";
+        }
 
         let Row = (
-            <tr onClick={this.handlerClick.bind(this, this.props.Row)}
-                style={{cursor: "pointer", backgroundColor: this.state.backgroundColor}}>
+            <tr onClick={this.handlerClick.bind(this, this.props.Row)} style={style}>
                 {this.state.columns}
                 {actionBtns}
             </tr>
@@ -195,7 +199,7 @@ export default class Table extends React.Component {
                 <table className="table table-striped table-hover">
                     <TableHeader Headers={header} Rooms={this.props.Rooms}/>
                     <tbody>
-                        {rows}
+                    {rows}
                     </tbody>
                 </table>
             </div>

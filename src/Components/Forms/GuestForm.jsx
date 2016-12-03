@@ -19,7 +19,6 @@ export default class GuestForm extends React.Component {
                 city: "",
                 state: "",
                 phone_number: "",
-                iban: "",
                 idcard_number: "",
                 type_of_guest: "person",
                 name_company: "",
@@ -28,10 +27,6 @@ export default class GuestForm extends React.Component {
 
                 firstNameRequired: null,
                 lastNameRequired: null,
-                addressRequired: null,
-                cityRequired: null,
-                stateRequired: null,
-                phone_numberRequired: null,
                 idcard_numberRequired: null
             };
         }
@@ -45,7 +40,6 @@ export default class GuestForm extends React.Component {
                 city: this.props.editData.city,
                 state: this.props.editData.state,
                 phone_number: this.props.editData.phone_number,
-                iban: this.props.editData.iban,
                 idcard_number: this.props.editData.idcard_number,
                 type_of_guest: this.props.editData.type_of_guest,
                 name_company: this.props.editData.name_company,
@@ -54,10 +48,6 @@ export default class GuestForm extends React.Component {
 
                 firstNameRequired: null,
                 lastNameRequired: null,
-                addressRequired: null,
-                cityRequired: null,
-                stateRequired: null,
-                phoneNumberRequired: null,
                 idCardNumberRequired: null
             };
         }
@@ -71,32 +61,45 @@ export default class GuestForm extends React.Component {
 
     checkValidity(name) {
         let state = {};
-        if (this.state[name] == ""){
-            state[name+"Required"] = "has-error";
+        if (this.state[name] === "") {
+            state[name + "Required"] = "has-error";
+            this.setState(state);
+            return false;
         }
-        if (this.state[name] != "" && this.state[name+"Required"] != null){
-            state[name+"Required"] = null;
+        if (this.state[name] != "" && this.state[name + "Required"] != null) {
+            state[name + "Required"] = null;
+            this.setState(state);
         }
-        this.setState(state);
+        return true;
+    }
+
+    checkRequired() {
+        let retCode = true;
+        retCode = retCode === false ? false : this.checkValidity("firstName");
+        retCode = retCode === false ? false : this.checkValidity("lastName");
+        retCode = retCode === false ? false : this.checkValidity("idcard_number");
+        return retCode;
     }
 
     handlerSubmitBtn() {
+        if (!this.checkRequired()) {
+            return;
+        }
         let data = {
             first_name: this.state.firstName,
-            middle_name: this.state.middleName,
             last_name: this.state.lastName,
-            email: this.state.email,
-            address: this.state.address,
-            city: this.state.city,
-            state: this.state.state,
-            phone_number: this.state.phone_number,
-            iban: this.state.iban,
             idcard_number: this.state.idcard_number,
-            type_of_guest: this.state.type_of_guest,
-            name_company: this.state.name_company,
-            ico: this.state.ico,
-            dic: this.state.dic,
+            type_of_guest: this.state.type_of_guest
         };
+        this.state.middleName != "" ? data['middle_name'] = this.state.middleName : null;
+        this.state.email != "" ? data['email'] = this.state.email : null;
+        this.state.address != "" ? data['address'] = this.state.address : null;
+        this.state.city != "" ? data['city'] = this.state.city : null;
+        this.state.state != "" ? data['state'] = this.state.state : null;
+        this.state.phone_number != "" ? data['phone_number'] = this.state.phone_number : null;
+        this.state.name_company != "" ? data['name_company'] = this.state.name_company : null;
+        this.state.ico != "" ? data['ico'] = this.state.ico : null;
+        this.state.dic != "" ? data['dic'] = this.state.dic : null;
 
         this.props.Submit(data);
     }
@@ -163,43 +166,22 @@ export default class GuestForm extends React.Component {
                     <InputLabelForm label="Address"
                                     type="text"
                                     placeholder={this.state.address}
-                                    required={true}
-                                    validity={this.state.addressRequired}
-                                    onBlur={this.checkValidity.bind(this, "address")}
-                                    onChange={this.handlerOnChange.bind(this, "address")}
-                                    errorMsg={this.state.addressRequired == null ? null : required}/>
+                                    onChange={this.handlerOnChange.bind(this, "address")}/>
 
                     <InputLabelForm label="City"
                                     type="text"
                                     placeholder={this.state.city}
-                                    required={true}
-                                    validity={this.state.cityRequired}
-                                    onBlur={this.checkValidity.bind(this, "city")}
-                                    onChange={this.handlerOnChange.bind(this, "city")}
-                                    errorMsg={this.state.cityRequired == null ? null : required}/>
+                                    onChange={this.handlerOnChange.bind(this, "city")}/>
 
                     <InputLabelForm label="State"
                                     type="text"
                                     placeholder={this.state.state}
-                                    required={true}
-                                    validity={this.state.stateRequired}
-                                    onBlur={this.checkValidity.bind(this, "state")}
-                                    onChange={this.handlerOnChange.bind(this, "state")}
-                                    errorMsg={this.state.stateRequired == null ? null : required}/>
+                                    onChange={this.handlerOnChange.bind(this, "state")}/>
 
                     <InputLabelForm label="Phone Number"
                                     type="text"
                                     placeholder={this.state.phone_number}
-                                    required={true}
-                                    validity={this.state.phone_numberRequired}
-                                    onBlur={this.checkValidity.bind(this, "phone_number")}
-                                    onChange={this.handlerOnChange.bind(this, "phone_number")}
-                                    errorMsg={this.state.phone_numberRequired == null ? null : required}/>
-
-                    <InputLabelForm label="IBAN"
-                                    type="text"
-                                    placeholder={this.state.iban}
-                                    onChange={this.handlerOnChange.bind(this, "iban")}/>
+                                    onChange={this.handlerOnChange.bind(this, "phone_number")}/>
 
                     <InputLabelForm label="ID Card Number"
                                     type="text"

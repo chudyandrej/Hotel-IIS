@@ -10,15 +10,15 @@ export default class Services extends React.Component {
         super(props, context);
 
         this.state = {
-            type: this.props.type,
+            status: this.props.status,
             note: this.props.note
         }
     }
 
     handleChange(name, evt) {
         switch (name) {
-            case "type":
-                this.setState({type: evt.target.value});
+            case "status":
+                this.setState({status: evt.target.value});
                 break;
             case "note":
                 this.setState({note: evt.target.value});
@@ -27,8 +27,8 @@ export default class Services extends React.Component {
     }
 
     handlerSubmitBtn() {
-        let toEdit = {status: this.state.type};
-        if (this.state.note != null){
+        let toEdit = {status: this.state.status};
+        if (this.state.note != null) {
             toEdit['note'] = this.state.note;
         }
         this.props.Submit(toEdit);
@@ -45,7 +45,7 @@ export default class Services extends React.Component {
                 {this.props.details}
                 <br/>
                 <h3>Status:</h3>
-                <StayType type={this.state.type} onChange={this.handleChange.bind(this, "type")}/>
+                <StayType type={this.state.status} onChange={this.handleChange.bind(this, "status")}/>
                 <InputLabelForm label="Note"
                                 type="text"
                                 placeholder={this.state.note}

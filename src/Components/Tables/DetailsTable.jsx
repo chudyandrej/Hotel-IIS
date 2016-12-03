@@ -23,12 +23,12 @@ export default class DetailsTable extends React.Component {
             // if details are boolean values, show pictures, instead the values
             if (typeof(this.props.DetailsData[column]) === "boolean") {
                 if (this.props.DetailsData[column]) {
-                    value = <ImageLoader src={require("../../../public/img/tick.png")} />;
+                    value = <ImageLoader src={require("../../../public/img/tick.png")}/>;
                 }
                 else {
-                    value = <ImageLoader src={require("../../../public/img/cross.png")} />;
+                    value = <ImageLoader src={require("../../../public/img/cross.png")}/>;
                 }
-                rows.push (
+                rows.push(
                     <div key={rows.length} className={"form-group"}>
                         <label className="col-xs-2 col-form-label">
                             {this.props.Headers[column]}
@@ -40,7 +40,7 @@ export default class DetailsTable extends React.Component {
                 );
             }
             else {
-                rows.push (
+                rows.push(
                     <div key={rows.length} className={"form-group"}>
                         <label className="col-xs-2 col-form-label">
                             {this.props.Headers[column]}

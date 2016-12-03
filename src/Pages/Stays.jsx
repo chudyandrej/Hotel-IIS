@@ -69,10 +69,10 @@ export default class Stays extends React.Component {
         this.setState({pending: true});
         let toSend = null;
         if (current) {
-             toSend = {
-                 from: this.state.startDate.format('YYYY-MM-DD'),
-                 to: this.state.endDate.format('YYYY-MM-DD'),
-                 statuses: ["inProgress", "reservation"]
+            toSend = {
+                from: this.state.startDate.format('YYYY-MM-DD'),
+                to: this.state.endDate.format('YYYY-MM-DD'),
+                statuses: ["inProgress", "reservation"]
             };
         }
         else {
@@ -90,18 +90,20 @@ export default class Stays extends React.Component {
                 this.setState({pending: false, data: data, tableData: tableData});
             });
         }, (err) => {
-            this.setState({errorNotification: err, pending: false});
+            this.setState({errorNotification: err.popup, pending: false});
         });
     }
 
     handlerButtons(name) {
         switch (name) {
             case "available":
+                console.log("not here");
                 this.setState({
                     subHeader: "Current Stays",
                     available: "active",
                     all: "default",
-                    availableBefore: true
+                    availableBefore: true,
+                    filter: "all"
                 });
                 this.setState({
                     startDate: moment(),
@@ -110,11 +112,13 @@ export default class Stays extends React.Component {
                 this.fetchData(true);
                 break;
             case "all":
+                console.log("are you sure?");
                 this.setState({
                     subHeader: "All Stays",
                     available: "default",
                     all: "active",
-                    availableBefore: false
+                    availableBefore: false,
+                    filter: "all"
                 });
                 this.fetchData(false);
                 break;
@@ -133,9 +137,6 @@ export default class Stays extends React.Component {
                     this.handlerButtons("all");
                 }
                 this.setState({
-                    subHeader: "Current Stays",
-                    available: "active",
-                    all: "default",
                     showTable: true,
                     showDetails: false
                 });
@@ -222,7 +223,7 @@ export default class Stays extends React.Component {
             }, (err) => {
                 //close form and show notification
                 this.handlerCancelBtn();
-                this.setState({sending: false, errorNotification: err});
+                this.setState({sending: false, errorNotification: err.popup});
             });
     }
 
@@ -239,7 +240,7 @@ export default class Stays extends React.Component {
         );
 
         let filter = (
-            <div className='btn-toolbar pull-left' style={{marginLeft:10}}>
+            <div className='btn-toolbar pull-left' style={{marginLeft: 10}}>
                 Status:
                 <select value={this.state.filter}
                         onChange={this.handleFilter.bind(this)}>
@@ -273,7 +274,7 @@ export default class Stays extends React.Component {
                     <Table TableData={this.state.tableData}
                            onEdit={this.state.isNotChild ? this.handlerEditBtn.bind(this) : null}
                            order={this.props.isChild}
-                           //onRemove={this.handlerRemove.bind(this)}
+                        //onRemove={this.handlerRemove.bind(this)}
                            removeBtnName={"CheckOut"}
                            showDetails={this.handleShowDetails.bind(this)}/>
                 </div>
@@ -313,6 +314,8 @@ export default class Stays extends React.Component {
                     <EditStayForm Cancel={this.handlerButtons.bind(this, "back")}
                                   Submit={this.handlerSubmitBtn.bind(this)}
                                   pending={this.state.sending}
+                                  status={this.state.editData.status}
+                                  note={this.state.editData.note}
                                   details={
                                       <div>
                                           <DetailsTable Headers={this.state.stay}
@@ -340,7 +343,7 @@ export default class Stays extends React.Component {
             </div>
         );
 
-        if(this.state.errorNotification != null) {
+        if (this.state.errorNotification != null) {
             content = this.state.errorNotification;
         }
 

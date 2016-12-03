@@ -7,7 +7,7 @@ import {hashHistory} from 'react-router';
 
 export default class PopupNotif extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
     }
 
@@ -15,7 +15,7 @@ export default class PopupNotif extends React.Component {
         this.refs.dialogWithCallBacks.show();
     }
 
-    _executeAfterModalClose(){
+    _executeAfterModalClose() {
         //alert('Executed after close');
         console.log("Token has expired");
         cookie.remove('token');

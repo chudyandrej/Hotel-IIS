@@ -21,6 +21,7 @@ export default class Services extends React.Component {
             root: cookie.load('permissions') === "root",
             available: "active",
             unavailable: "default",
+            availableBefore: true,
             subHeader: "Services",
             isNotChild: typeof(this.props.isChild) === "undefined",
             tableHeaders: [{name: "Name", actual_price: "Price", duration: "Duration"}],
@@ -44,36 +45,39 @@ export default class Services extends React.Component {
     }
 
     componentWillMount() {
-        this.fetchData({available:true});
+        this.fetchData({available: true});
     }
 
     fetchData(data) {
         this.setState({pending: true});
-        sendRequest('https://young-cliffs-79659.herokuapp.com/getServices', data).then((data)=> {
+        sendRequest('https://young-cliffs-79659.herokuapp.com/getServices', data).then((data) => {
             data = this.state.tableHeaders.concat(JSON.parse(data.text));
             this.setState({pending: false, data: data});
-        }, (err)=> {
-            this.setState({errorNotification: err, pending: false});
+        }, (err) => {
+            console.log(err);
+            this.setState({errorNotification: err.popup, pending: false});
         });
     }
 
     handlerBtn(name) {
-        switch(name) {
+        switch (name) {
             case "available":
                 this.setState({
                     available: "active",
                     unavailable: "default",
+                    availableBefore: true,
                     subHeader: "Available Services"
                 });
-                this.fetchData({available:true});
+                this.fetchData({available: true});
                 break;
             case "unavailable":
                 this.setState({
                     available: "default",
                     unavailable: "active",
+                    availableBefore: false,
                     subHeader: "Unavailable Services"
                 });
-                this.fetchData({available:false});
+                this.fetchData({available: false});
                 break;
             case "add":
                 this.setState({
@@ -83,13 +87,13 @@ export default class Services extends React.Component {
                 });
                 break;
             case "cancel":
-                this.fetchData({available:true});
+                this.state.availableBefore ? this.handlerBtn("available") : this.handlerBtn("unavailable");
                 this.setState({
-                    subHeader: "Services",
                     showTable: true,
                     showAddForm: false,
                     showDetails: false,
-                    editData: null
+                    editData: null,
+                    errorMsg: null
                 });
                 break;
         }
@@ -117,10 +121,10 @@ export default class Services extends React.Component {
 
     handlerRemove(id) {
         sendRequest('https://young-cliffs-79659.herokuapp.com/editService', {available: false, id: id})
-            .then(()=> {
+            .then(() => {
                 console.log("data's deleted successfully");
-            }, (err)=> {
-                this.setState({errorNotification: err});
+            }, (err) => {
+                this.setState({errorNotification: err.popup});
             });
     }
 
@@ -146,21 +150,11 @@ export default class Services extends React.Component {
         }
 
         sendRequest(url, data)
-            .then(()=> {
+            .then(() => {
                 this.setState({sending: false});
                 this.handlerBtn("cancel");
-            }, (err)=> {
-                let errorMsg = null;
-                try {
-                    //it may be popUp component (token's expired)
-                    errorMsg = JSON.parse(err.text).errors[0].message
-                } catch(err) {
-                    //close form and show notification
-                    this.setState({errorNotification: err});
-                    this.handlerCancelBtn();
-                }
-                this.setState({sending: false, errorMsg: errorMsg
-                });
+            }, (err) => {
+                this.setState({sending: false, errorMsg: err.msg});
             });
     }
 
@@ -173,7 +167,7 @@ export default class Services extends React.Component {
             }, (err) => {
                 //close form and show notification
                 this.handlerCancelBtn();
-                this.setState({sending: false, errorNotification: err});
+                this.setState({sending: false, errorNotification: err.popup});
             });
     }
 
@@ -181,7 +175,7 @@ export default class Services extends React.Component {
         let clsBtn = "btn btn-info ";
 
         let content = null;
-        let title =  <h1 className="page-header">{this.state.subHeader}</h1>;
+        let title = <h1 className="page-header">{this.state.subHeader}</h1>;
         let addBtn = <AddBtn Add={this.handlerBtn.bind(this, "add")}/>;
 
         let LeftBtnToolbar = (
@@ -208,9 +202,14 @@ export default class Services extends React.Component {
                        onRemove={this.state.root ? this.handlerRemove.bind(this) : null}/>
             );
 
+            let unavailableTable = (
+                <Table TableData={this.state.data}
+                       showDetails={this.handleShowDetails.bind(this)}/>
+            );
+
             content = (
                 <div>
-                    {this.state.available === "active" ? availableTable : <Table TableData={this.state.data} /> }
+                    {this.state.available === "active" ? availableTable : unavailableTable}
                 </div>
             )
         }
@@ -259,7 +258,7 @@ export default class Services extends React.Component {
             </div>
         );
 
-        if(this.state.errorNotification != null) {
+        if (this.state.errorNotification != null) {
             content = this.state.errorNotification;
         }
 

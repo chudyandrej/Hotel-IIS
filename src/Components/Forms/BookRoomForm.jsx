@@ -36,7 +36,7 @@ export default class BookOrderForm extends React.Component {
             showGuest: false,
             showRoomInfo: false,
             showFreeRooms: false,
-            type: "reservation",
+            status: "reservation",
             note: null,
             guest: this.props.guest,
             oneGuestChosen: false,
@@ -65,8 +65,8 @@ export default class BookOrderForm extends React.Component {
 
     handleChange(name, evt) {
         switch (name) {
-            case "type":
-                this.setState({type: evt.target.value});
+            case "status":
+                this.setState({status: evt.target.value});
                 break;
             case "note":
                 this.setState({note: evt.target.value});
@@ -138,11 +138,12 @@ export default class BookOrderForm extends React.Component {
         let data = {
             from: this.state.startDate.format('YYYY-MM-DD'),
             to: this.state.endDate.format('YYYY-MM-DD'),
-            status: this.state.type,
-            note: this.state.note,
+            status: this.state.status,
             guestId: this.state.guest.id,
             rooms: rooms
         };
+        this.state.note != "" ? data['note'] = this.state.note : null;
+
         console.log("sending these data");
         console.log(data);
         this.props.Submit(data);
@@ -162,12 +163,12 @@ export default class BookOrderForm extends React.Component {
             marginRight: 25
         };
 
-        let plusSign = <ImageLoader src={require("../../../public/img/plus.png")} />;
-        let minusSign = <ImageLoader src={require("../../../public/img/minus.png")} />;
+        let plusSign = <ImageLoader src={require("../../../public/img/plus.png")}/>;
+        let minusSign = <ImageLoader src={require("../../../public/img/minus.png")}/>;
 
         let guestHeader = (
             <div style={headerContainerStyle}
-                                onClick={this.toggleHandler.bind(this, "guest")}>
+                 onClick={this.toggleHandler.bind(this, "guest")}>
                 <h2 style={headerStyle} className="page-header">Guest info:</h2>
                 {this.state.showGuest ? minusSign : plusSign}
             </div>
@@ -186,13 +187,13 @@ export default class BookOrderForm extends React.Component {
             );
 
             let chosenGuest = (
-                 <div>
-                     <h2>Guest:</h2>
-                     <Table TableData={this.state.tableGuestHeaders.concat(this.state.guest)}
-                            order={this.toggleHandler.bind(this, "oneGuestChosen")}
-                            orderBtnName="Remove"/>
-                 </div>
-             );
+                <div>
+                    <h2>Guest:</h2>
+                    <Table TableData={this.state.tableGuestHeaders.concat(this.state.guest)}
+                           order={this.toggleHandler.bind(this, "oneGuestChosen")}
+                           orderBtnName="Remove"/>
+                </div>
+            );
 
             guest = (
                 <div>
@@ -224,14 +225,14 @@ export default class BookOrderForm extends React.Component {
                     </div>
 
                     <div style={{clear: "both"}}>
-                    {this.state.showFreeRooms ? <Rooms isChild={this.orderRoom.bind(this)}
-                                                       startDate={this.handleDate.bind(this, "startDate")}
-                                                       endDate={this.handleDate.bind(this, "endDate")}/> : null}
+                        {this.state.showFreeRooms ? <Rooms isChild={this.orderRoom.bind(this)}
+                                                           startDate={this.handleDate.bind(this, "startDate")}
+                                                           endDate={this.handleDate.bind(this, "endDate")}/> : null}
                     </div>
                     <br/>
                     <div style={{clear: "both"}}>
-                        <StayType type={this.state.type}
-                                  onChange={this.handleChange.bind(this, "type")}
+                        <StayType status={this.state.status}
+                                  onChange={this.handleChange.bind(this, "status")}
                                   createStay={true}/>
                         <InputLabelForm label="Note"
                                         type="text"
