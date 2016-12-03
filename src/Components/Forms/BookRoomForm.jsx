@@ -80,6 +80,7 @@ export default class BookOrderForm extends React.Component {
                 this.setState({endDate: evt.target.value});
                 break;
         }
+        this.setState({ordered: null});
     }
 
     handleDate(name, date) {

@@ -24,9 +24,9 @@ export default class Services extends React.Component {
             availableBefore: true,
             subHeader: "Services",
             isNotChild: typeof(this.props.isChild) === "undefined",
-            tableHeaders: [{name: "Name", actual_price: "Price", duration: "Duration"}],
+            tableHeaders: [{name: "Name", actual_price: "Price (€)", duration: "Duration"}],
             detailsHeaders: {
-                name: "Name:", actual_price: "Price:", description: "Description:",
+                name: "Name:", actual_price: "Price (€):", description: "Description:",
                 duration: "Duration:"
             },
 

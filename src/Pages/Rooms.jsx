@@ -27,11 +27,11 @@ export default class Rooms extends React.Component {
             isNotChild: typeof(this.props.isChild) === "undefined",
 
             tableHeaders: [{
-                id: "Room Number:", actual_price: "Price:", capacity: "Capacity", tv: "TV:", internet: "Internet:",
+                id: "Room Number", actual_price: "Price (€)", capacity: "Capacity", tv: "TV:", internet: "Internet:",
                 bar: "Bar:", bathtub: "Bathtub:", kitchen: "Kitchen:", balcony: "Balcony:"
             }],
             detailsHeaders: {
-                id: "Room Number:", actual_price: "Price:", capacity: "Capacity", tv: "TV:", internet: "Internet:",
+                id: "Room Number:", actual_price: "Price (€):", capacity: "Capacity", tv: "TV:", internet: "Internet:",
                 bar: "Bar:", bathtub: "Bathtub:", kitchen: "Kitchen:", balcony: "Balcony:"
             },
 
@@ -108,27 +108,29 @@ export default class Rooms extends React.Component {
         switch (name) {
             case "start":
                 if (!date.isBefore(this.state.endDate)) {
-                    this.setState({data: []});
-                    return;
+                    this.setState({startDate: date, data: []});
+                } else {
+                    this.setState({startDate: date}, this.fetchData);
                 }
-                this.setState({startDate: date});
+                //if Rooms page is rendered inside f.e. BookRoomForm
+                //send date to the parent as well
                 if (this.props.startDate != null) {
                     this.props.startDate(date);
                 }
-
                 break;
             case "end":
                 if (date.isBefore(this.state.startDate)) {
-                    this.setState({data: []});
-                    return;
+                    this.setState({endDate: date, data: []});
+                } else {
+                    this.setState({endDate: date}, this.fetchData);
                 }
-                this.setState({endDate: date});
+                //if Rooms page is rendered inside f.e. BookRoomForm
+                //send date to the parent as well
                 if (this.props.endDate != null) {
                     this.props.endDate(date);
                 }
                 break;
         }
-        this.fetchData();
     }
 
     handleShowDetails(data) {

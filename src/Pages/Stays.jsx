@@ -148,20 +148,19 @@ export default class Stays extends React.Component {
         switch (name) {
             case "start":
                 if (!date.isBefore(this.state.endDate)) {
-                    this.setState({data: []});
-                    return;
+                    this.setState({startDate: date, data: []});
+                } else {
+                    this.setState({startDate: date}, this.fetchData);
                 }
-                this.setState({startDate: date});
                 break;
             case "end":
                 if (date.isBefore(this.state.startDate)) {
-                    this.setState({data: []});
-                    return;
+                    this.setState({endDate: date, data: []});
+                } else {
+                    this.setState({endDate: date}, this.fetchData);
                 }
-                this.setState({endDate: date});
                 break;
         }
-        this.fetchData(true);
     }
 
     handleFilter(evt) {
