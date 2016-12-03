@@ -74,7 +74,7 @@ module.exports = function(app, db, _) {
         }).then((instances) => {
             result = []
             instances.forEach((instance) => {
-                result.push(instance.toPublicJSON());
+                result.unshift(instance.toPublicJSON());
             });
             res.status(200).json(result);
         }).catch((error) => {
