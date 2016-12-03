@@ -16,7 +16,7 @@ module.exports = function(app, db, _) {
         db.tokens.findToken(req.body.token).then(() => {
             return db.stays.findByID(req.body.id);
         }).then((stayInstance) =>{
-            var body = _.pick(req.body, 'from', 'to', 'status', 'note', 'employeeId', 'guestId');
+            var body = _.pick(req.body, 'from', 'to', 'status', 'note');
             return stayInstance.update(body);
         }).then(() => {
             res.status(200).send();
