@@ -30,7 +30,6 @@ export const createServicesPerRoomsTable = function(rooms, services) {
 
         services.forEach((service) => {
             columns = [];
-            console.log(service.templateService.name);
             columns.push(
                 <td key={columns.length} className="text-center">
                     {service.templateService.name}

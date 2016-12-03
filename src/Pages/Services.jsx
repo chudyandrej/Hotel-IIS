@@ -54,7 +54,6 @@ export default class Services extends React.Component {
             data = this.state.tableHeaders.concat(JSON.parse(data.text));
             this.setState({pending: false, data: data});
         }, (err) => {
-            console.log(err);
             this.setState({errorNotification: err.popup, pending: false});
         });
     }

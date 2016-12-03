@@ -9,7 +9,6 @@ import SideBar from './Components/SideBar.jsx';
 export default class Layout extends React.Component {
 
     componentWillMount() {
-        console.log("checking if user is still signed in: " + cookie.load('loggedIn'));  //DEBUG
         if (!cookie.load('loggedIn')) {
             hashHistory.push('/');
         }

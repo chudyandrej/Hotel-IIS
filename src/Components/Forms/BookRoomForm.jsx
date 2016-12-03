@@ -84,7 +84,6 @@ export default class BookOrderForm extends React.Component {
         let state = {};
         state[name] = date;
         this.setState(state);
-        console.log(state);
     }
 
     /**
@@ -96,16 +95,13 @@ export default class BookOrderForm extends React.Component {
         let newOrder = [];
         let removeOrderFlag = false;
         this.state.ordered.forEach((item) => {
-            console.log(item);
             if (item == data) {
-                console.log("remove order");
                 removeOrderFlag = true;
             }
             else {
                 newOrder.push(item)
             }
         });
-        console.log(newOrder);
         if (!removeOrderFlag) {
             newOrder.push(data);
         }
@@ -121,7 +117,6 @@ export default class BookOrderForm extends React.Component {
 
         if (typeof(this.props.roomInfo) === "undefined") {
             this.state.ordered.forEach((room) => {
-                console.log(room);
                 rooms.push({
                     templateRoomId: room.id,
                     price_room: room.actual_price
@@ -144,8 +139,6 @@ export default class BookOrderForm extends React.Component {
         };
         this.state.note != "" ? data['note'] = this.state.note : null;
 
-        console.log("sending these data");
-        console.log(data);
         this.props.Submit(data);
     }
 

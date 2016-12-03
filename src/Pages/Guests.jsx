@@ -211,8 +211,6 @@ export default class Guests extends React.Component {
     }
 
     handlerBookRoom(data) {
-        console.log("got data");
-        console.log(data);
         this.setState({sending: true, errorMsg: null});
         sendRequest('https://hotel-iis.herokuapp.com/checkIn', data)
             .then(() => {

@@ -70,8 +70,8 @@ export default class Stays extends React.Component {
         let toSend = null;
         if (current) {
             toSend = {
-                from: this.state.startDate.format('YYYY-MM-DD'),
-                to: this.state.endDate.format('YYYY-MM-DD'),
+                from: moment().format('YYYY-MM-DD'),
+                to: moment().add(1, "day").format('YYYY-MM-DD'),
                 statuses: ["inProgress", "reservation"]
             };
         }
@@ -81,6 +81,8 @@ export default class Stays extends React.Component {
                 to: moment("20200101", "YYYYMMDD")
             };
             this.setState({startDate: toSend.from, endDate: toSend.to});
+            toSend['from'] = toSend.from.format('YYYY-MM-DD');
+            toSend['to'] = toSend.to.format('YYYY-MM-DD');
         }
 
         downloadData('getStays', toSend).then((data) => {
@@ -97,7 +99,6 @@ export default class Stays extends React.Component {
     handlerButtons(name) {
         switch (name) {
             case "available":
-                console.log("not here");
                 this.setState({
                     subHeader: "Current Stays",
                     available: "active",
@@ -112,7 +113,6 @@ export default class Stays extends React.Component {
                 this.fetchData(true);
                 break;
             case "all":
-                console.log("are you sure?");
                 this.setState({
                     subHeader: "All Stays",
                     available: "default",
@@ -180,8 +180,6 @@ export default class Stays extends React.Component {
             showAddForm: false,
             editData: data
         });
-        console.log("edit data");
-        console.log(data);
     }
 
     handleShowDetails(data) {
@@ -247,8 +245,9 @@ export default class Stays extends React.Component {
                     <option value="all">all</option>
                     <option value="inProgress">inProgress</option>
                     <option value="reservation">reservation</option>
-                    {this.state.isNotChild ? <option value="ended">ended</option> : null}
-                    {this.state.isNotChild ? <option value="canceled">canceled</option> : null}
+                    {this.state.isNotChild && this.state.all === "active" ? <option value="ended">ended</option> : null}
+                    {this.state.isNotChild && this.state.all === "active" ?
+                        <option value="canceled">canceled</option> : null}
                 </select>
             </div>
         );

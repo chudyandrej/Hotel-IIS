@@ -17,7 +17,6 @@ export default class PopupNotif extends React.Component {
 
     _executeAfterModalClose() {
         //alert('Executed after close');
-        console.log("Token has expired");
         cookie.remove('token');
         cookie.remove('permissions');
         cookie.remove('loggedIn');
