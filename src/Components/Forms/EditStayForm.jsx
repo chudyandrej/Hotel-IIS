@@ -28,7 +28,7 @@ export default class Services extends React.Component {
 
     handlerSubmitBtn() {
         let toEdit = {status: this.state.status};
-        if (this.state.note != null){
+        if (this.state.note != null) {
             toEdit['note'] = this.state.note;
         }
         this.props.Submit(toEdit);

@@ -184,7 +184,7 @@ export default class Employees extends React.Component {
                     AddState={this.state.addBtnClicked}/>
         );
         let searchInput = (
-            <SearchBox onChange={this.searchOnChange.bind(this)} placeholder="Search Employees" />
+            <SearchBox onChange={this.searchOnChange.bind(this)} placeholder="Search Employees"/>
         );
 
         let upperToolbar = (
@@ -224,7 +224,7 @@ export default class Employees extends React.Component {
             )
         }
 
-        if(this.state.errorNotification != null) {
+        if (this.state.errorNotification != null) {
             content = this.state.errorNotification;
         }
 

@@ -77,9 +77,11 @@ export default class EmployeeFormForm extends React.Component {
     }
 
     checkValidity(name) {
+        let retCode = true;
         let state = {};
         if (this.state[name] == "") {
             state[name + "Required"] = "has-error";
+            retCode = false;
         }
         if (this.state[name] != "" && this.state[name + "Required"] != null) {
             state[name + "Required"] = null;
@@ -90,20 +92,41 @@ export default class EmployeeFormForm extends React.Component {
             }
             else {
                 state["passwordMatch"] = "has-error";
+                retCode = false;
             }
         }
         this.setState(state);
+        return retCode;
+    }
+
+    checkRequired() {
+        let retCode = true;
+        retCode = retCode === false ? false : this.checkValidity("firstName");
+        retCode = retCode === false ? false : this.checkValidity("lastName");
+        retCode = retCode === false ? false : this.checkValidity("email");
+        if (this.state.permissions != "none") {
+            retCode = retCode === false ? false : this.checkValidity("password");
+        }
+        retCode = retCode === false ? false : this.checkValidity("address");
+        retCode = retCode === false ? false : this.checkValidity("city");
+        retCode = retCode === false ? false : this.checkValidity("state");
+        return retCode;
     }
 
     handlerSubmitBtn() {
-        let data = {permissions: this.state.permissions};
-        this.state.firstName != "" ? data['first_name'] = this.state.firstName : null;
+        if (!this.checkRequired()) {
+            return;
+        }
+        let data = {
+            first_name: this.state.firstName,
+            last_name: this.state.lastName,
+            email: this.state.email,
+            address: this.state.address,
+            city: this.state.city,
+            state: this.state.state,
+            permissions: this.state.permissions
+        };
         this.state.middleName != "" ? data['middle_name'] = this.state.middleName : null;
-        this.state.lastName != "" ? data['last_name'] = this.state.lastName : null;
-        this.state.email != "" ? data['email'] = this.state.email : null;
-        this.state.address != "" ? data['address'] = this.state.address : null;
-        this.state.city != "" ? data['city'] = this.state.city : null;
-        this.state.state != "" ? data['state'] = this.state.state : null;
         this.state.phoneNumber != "" ? data['phone_number'] = this.state.phoneNumber : null;
         this.state.iban != "" ? data['iban'] = this.state.iban : null;
 

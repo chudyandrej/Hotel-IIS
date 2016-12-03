@@ -26,8 +26,10 @@ export default class Rooms extends React.Component {
             subHeader: "Available Rooms",
             isNotChild: typeof(this.props.isChild) === "undefined",
 
-            tableHeaders: [{id: "Room Number:", actual_price: "Price:", tv: "TV:", internet: "Internet:", bar: "Bar:",
-                bathtub: "Bathtub:", kitchen: "Kitchen:", balcony: "Balcony:"}],
+            tableHeaders: [{
+                id: "Room Number:", actual_price: "Price:", tv: "TV:", internet: "Internet:", bar: "Bar:",
+                bathtub: "Bathtub:", kitchen: "Kitchen:", balcony: "Balcony:"
+            }],
             detailsHeaders: {
                 id: "Room Number:", actual_price: "Price:", tv: "TV:", internet: "Internet:", bar: "Bar:",
                 bathtub: "Bathtub:", kitchen: "Kitchen:", balcony: "Balcony:"
@@ -67,7 +69,7 @@ export default class Rooms extends React.Component {
 
 
     handlerButtons(name) {
-        switch(name) {
+        switch (name) {
             case "available":
                 this.setState({
                     available: "active",
@@ -191,7 +193,7 @@ export default class Rooms extends React.Component {
                     <Table TableData={this.state.data}
                            Rooms={true}
                            order={this.state.available === "active" ?
-                                  this.props.isChild || this.handlerBookRoomBtn.bind(this) : null}
+                           this.props.isChild || this.handlerBookRoomBtn.bind(this) : null}
                            showDetails={this.handleShowDetails.bind(this)}/>
                 </div>
             )
@@ -229,7 +231,7 @@ export default class Rooms extends React.Component {
             </div>
         );
 
-        if(this.state.errorNotification != null) {
+        if (this.state.errorNotification != null) {
             mainContent = this.state.errorNotification;
         }
 

@@ -163,12 +163,12 @@ export default class BookOrderForm extends React.Component {
             marginRight: 25
         };
 
-        let plusSign = <ImageLoader src={require("../../../public/img/plus.png")} />;
-        let minusSign = <ImageLoader src={require("../../../public/img/minus.png")} />;
+        let plusSign = <ImageLoader src={require("../../../public/img/plus.png")}/>;
+        let minusSign = <ImageLoader src={require("../../../public/img/minus.png")}/>;
 
         let guestHeader = (
             <div style={headerContainerStyle}
-                                onClick={this.toggleHandler.bind(this, "guest")}>
+                 onClick={this.toggleHandler.bind(this, "guest")}>
                 <h2 style={headerStyle} className="page-header">Guest info:</h2>
                 {this.state.showGuest ? minusSign : plusSign}
             </div>
@@ -187,13 +187,13 @@ export default class BookOrderForm extends React.Component {
             );
 
             let chosenGuest = (
-                 <div>
-                     <h2>Guest:</h2>
-                     <Table TableData={this.state.tableGuestHeaders.concat(this.state.guest)}
-                            order={this.toggleHandler.bind(this, "oneGuestChosen")}
-                            orderBtnName="Remove"/>
-                 </div>
-             );
+                <div>
+                    <h2>Guest:</h2>
+                    <Table TableData={this.state.tableGuestHeaders.concat(this.state.guest)}
+                           order={this.toggleHandler.bind(this, "oneGuestChosen")}
+                           orderBtnName="Remove"/>
+                </div>
+            );
 
             guest = (
                 <div>
@@ -225,9 +225,9 @@ export default class BookOrderForm extends React.Component {
                     </div>
 
                     <div style={{clear: "both"}}>
-                    {this.state.showFreeRooms ? <Rooms isChild={this.orderRoom.bind(this)}
-                                                       startDate={this.handleDate.bind(this, "startDate")}
-                                                       endDate={this.handleDate.bind(this, "endDate")}/> : null}
+                        {this.state.showFreeRooms ? <Rooms isChild={this.orderRoom.bind(this)}
+                                                           startDate={this.handleDate.bind(this, "startDate")}
+                                                           endDate={this.handleDate.bind(this, "endDate")}/> : null}
                     </div>
                     <br/>
                     <div style={{clear: "both"}}>

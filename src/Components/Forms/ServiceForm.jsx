@@ -16,9 +16,7 @@ export default class ServiceForm extends React.Component {
                 duration: "",
 
                 nameRequired: null,
-                descriptionRequired: null,
                 priceRequired: null,
-                durationRequired: null
             };
         }
         else {
@@ -42,16 +40,29 @@ export default class ServiceForm extends React.Component {
 
     checkValidity(name) {
         let state = {};
-        if (this.state[name] == "") {
+        if (this.state[name] === "") {
             state[name + "Required"] = "has-error";
+            this.setState(state);
+            return false;
         }
         if (this.state[name] != "" && this.state[name + "Required"] != null) {
             state[name + "Required"] = null;
+            this.setState(state);
         }
-        this.setState(state);
+       return true;
+    }
+
+    checkRequired() {
+        let retCode = true;
+        retCode = retCode === false ? false : this.checkValidity("name");
+        retCode = retCode === false ? false : this.checkValidity("price");
+        return retCode;
     }
 
     handlerSubmitBtn() {
+        if (!this.checkRequired()) {
+            return;
+        }
         let data = {available: true};
         this.state.name != "" ? data['name'] = this.state.name : null;
         this.state.description != "" ? data['description'] = this.state.description : null;

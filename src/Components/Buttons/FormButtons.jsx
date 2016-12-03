@@ -3,22 +3,22 @@ import React from 'react';
 import Loading from '../Loading.jsx';
 
 
-export default class FormButtons extends  React.Component {
-    render(){
+export default class FormButtons extends React.Component {
+    render() {
 
         let errorMsg = null;
         if (this.props.errorMsg != null) {
             errorMsg = <strong className="form-text alert alert-danger"
-                               style={{marginLeft:50}}>
+                               style={{marginLeft: 50}}>
                 {this.props.errorMsg}
             </strong>;
         }
 
         return (
-            <div className='btn-toolbar form-actions' style={{marginTop:35}}>
+            <div className='btn-toolbar form-actions' style={{marginTop: 35}}>
                 <button type="button" className="btn btn-secondary" onClick={this.props.Cancel}>Cancel</button>
                 <button type="button" className="btn btn-primary" onClick={this.props.Submit}>Submit</button>
-                {this.props.pending ? <Loading form={true} /> : null}
+                {this.props.pending ? <Loading form={true}/> : null}
                 {errorMsg}
             </div>
         )

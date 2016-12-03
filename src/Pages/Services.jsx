@@ -45,22 +45,22 @@ export default class Services extends React.Component {
     }
 
     componentWillMount() {
-        this.fetchData({available:true});
+        this.fetchData({available: true});
     }
 
     fetchData(data) {
         this.setState({pending: true});
-        sendRequest('https://young-cliffs-79659.herokuapp.com/getServices', data).then((data)=> {
+        sendRequest('https://young-cliffs-79659.herokuapp.com/getServices', data).then((data) => {
             data = this.state.tableHeaders.concat(JSON.parse(data.text));
             this.setState({pending: false, data: data});
-        }, (err)=> {
+        }, (err) => {
             console.log(err);
             this.setState({errorNotification: err.popup, pending: false});
         });
     }
 
     handlerBtn(name) {
-        switch(name) {
+        switch (name) {
             case "available":
                 this.setState({
                     available: "active",
@@ -68,7 +68,7 @@ export default class Services extends React.Component {
                     availableBefore: true,
                     subHeader: "Available Services"
                 });
-                this.fetchData({available:true});
+                this.fetchData({available: true});
                 break;
             case "unavailable":
                 this.setState({
@@ -77,7 +77,7 @@ export default class Services extends React.Component {
                     availableBefore: false,
                     subHeader: "Unavailable Services"
                 });
-                this.fetchData({available:false});
+                this.fetchData({available: false});
                 break;
             case "add":
                 this.setState({
@@ -121,9 +121,9 @@ export default class Services extends React.Component {
 
     handlerRemove(id) {
         sendRequest('https://young-cliffs-79659.herokuapp.com/editService', {available: false, id: id})
-            .then(()=> {
+            .then(() => {
                 console.log("data's deleted successfully");
-            }, (err)=> {
+            }, (err) => {
                 this.setState({errorNotification: err.popup});
             });
     }
@@ -150,10 +150,10 @@ export default class Services extends React.Component {
         }
 
         sendRequest(url, data)
-            .then(()=> {
+            .then(() => {
                 this.setState({sending: false});
                 this.handlerBtn("cancel");
-            }, (err)=> {
+            }, (err) => {
                 this.setState({sending: false, errorMsg: err.msg});
             });
     }
@@ -175,7 +175,7 @@ export default class Services extends React.Component {
         let clsBtn = "btn btn-info ";
 
         let content = null;
-        let title =  <h1 className="page-header">{this.state.subHeader}</h1>;
+        let title = <h1 className="page-header">{this.state.subHeader}</h1>;
         let addBtn = <AddBtn Add={this.handlerBtn.bind(this, "add")}/>;
 
         let LeftBtnToolbar = (
@@ -204,7 +204,7 @@ export default class Services extends React.Component {
 
             let unavailableTable = (
                 <Table TableData={this.state.data}
-                       showDetails={this.handleShowDetails.bind(this)} />
+                       showDetails={this.handleShowDetails.bind(this)}/>
             );
 
             content = (
@@ -258,7 +258,7 @@ export default class Services extends React.Component {
             </div>
         );
 
-        if(this.state.errorNotification != null) {
+        if (this.state.errorNotification != null) {
             content = this.state.errorNotification;
         }
 

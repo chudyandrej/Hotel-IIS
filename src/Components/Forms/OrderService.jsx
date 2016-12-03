@@ -42,7 +42,7 @@ export default class OrderService extends React.Component {
         this.setState({rooms: roomsTemp});
     }
 
-    handlerToggle(){
+    handlerToggle() {
         this.setState({chooseRoom: !this.state.chooseRoom});
     }
 
@@ -71,7 +71,7 @@ export default class OrderService extends React.Component {
         });
     }
 
-    handlerSubmitBtn(){
+    handlerSubmitBtn() {
 
         let toSend = {
             price_service: this.props.service.actual_price,
@@ -106,8 +106,8 @@ export default class OrderService extends React.Component {
             <div>
                 <h2>Stay:</h2>
                 <Table TableData={this.state.chosenRoom}
-                        order={this.handlerToggle.bind(this)}
-                        orderBtnName="Remove"/>
+                       order={this.handlerToggle.bind(this)}
+                       orderBtnName="Remove"/>
             </div>
         );
 

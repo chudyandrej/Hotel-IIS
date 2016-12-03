@@ -69,10 +69,10 @@ export default class Stays extends React.Component {
         this.setState({pending: true});
         let toSend = null;
         if (current) {
-             toSend = {
-                 from: this.state.startDate.format('YYYY-MM-DD'),
-                 to: this.state.endDate.format('YYYY-MM-DD'),
-                 statuses: ["inProgress", "reservation"]
+            toSend = {
+                from: this.state.startDate.format('YYYY-MM-DD'),
+                to: this.state.endDate.format('YYYY-MM-DD'),
+                statuses: ["inProgress", "reservation"]
             };
         }
         else {
@@ -240,7 +240,7 @@ export default class Stays extends React.Component {
         );
 
         let filter = (
-            <div className='btn-toolbar pull-left' style={{marginLeft:10}}>
+            <div className='btn-toolbar pull-left' style={{marginLeft: 10}}>
                 Status:
                 <select value={this.state.filter}
                         onChange={this.handleFilter.bind(this)}>
@@ -274,7 +274,7 @@ export default class Stays extends React.Component {
                     <Table TableData={this.state.tableData}
                            onEdit={this.state.isNotChild ? this.handlerEditBtn.bind(this) : null}
                            order={this.props.isChild}
-                           //onRemove={this.handlerRemove.bind(this)}
+                        //onRemove={this.handlerRemove.bind(this)}
                            removeBtnName={"CheckOut"}
                            showDetails={this.handleShowDetails.bind(this)}/>
                 </div>
@@ -343,7 +343,7 @@ export default class Stays extends React.Component {
             </div>
         );
 
-        if(this.state.errorNotification != null) {
+        if (this.state.errorNotification != null) {
             content = this.state.errorNotification;
         }
 

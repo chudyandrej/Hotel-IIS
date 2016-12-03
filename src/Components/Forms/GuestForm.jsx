@@ -61,26 +61,42 @@ export default class GuestForm extends React.Component {
 
     checkValidity(name) {
         let state = {};
-        if (this.state[name] == ""){
-            state[name+"Required"] = "has-error";
+        if (this.state[name] === "") {
+            state[name + "Required"] = "has-error";
+            this.setState(state);
+            return false;
         }
-        if (this.state[name] != "" && this.state[name+"Required"] != null){
-            state[name+"Required"] = null;
+        if (this.state[name] != "" && this.state[name + "Required"] != null) {
+            state[name + "Required"] = null;
+            this.setState(state);
         }
-        this.setState(state);
+        return true;
+    }
+
+    checkRequired() {
+        let retCode = true;
+        retCode = retCode === false ? false : this.checkValidity("firstName");
+        retCode = retCode === false ? false : this.checkValidity("lastName");
+        retCode = retCode === false ? false : this.checkValidity("idcard_number");
+        return retCode;
     }
 
     handlerSubmitBtn() {
-        let data = { type_of_guest: this.state.type_of_guest };
-        this.state.firstName != "" ? data['first_name'] = this.state.firstName : null;
+        if (!this.checkRequired()) {
+            return;
+        }
+        let data = {
+            first_name: this.state.firstName,
+            last_name: this.state.lastName,
+            idcard_number: this.state.idcard_number,
+            type_of_guest: this.state.type_of_guest
+        };
         this.state.middleName != "" ? data['middle_name'] = this.state.middleName : null;
-        this.state.lastName != "" ? data['last_name'] = this.state.lastName : null;
         this.state.email != "" ? data['email'] = this.state.email : null;
         this.state.address != "" ? data['address'] = this.state.address : null;
         this.state.city != "" ? data['city'] = this.state.city : null;
         this.state.state != "" ? data['state'] = this.state.state : null;
         this.state.phone_number != "" ? data['phone_number'] = this.state.phone_number : null;
-        this.state.idcard_number != "" ? data['idcard_number'] = this.state.idcard_number : null;
         this.state.name_company != "" ? data['name_company'] = this.state.name_company : null;
         this.state.ico != "" ? data['ico'] = this.state.ico : null;
         this.state.dic != "" ? data['dic'] = this.state.dic : null;

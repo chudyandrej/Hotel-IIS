@@ -232,7 +232,7 @@ export default class Guests extends React.Component {
         let title = <h1 className="page-header">{this.state.subHeader}</h1>;
 
         let searchInput = (
-            <SearchBox onChange={this.searchOnChange.bind(this)} placeholder="Search Guests" />
+            <SearchBox onChange={this.searchOnChange.bind(this)} placeholder="Search Guests"/>
         );
 
         let LeftBtnToolbar = (
@@ -310,7 +310,7 @@ export default class Guests extends React.Component {
             </div>
         );
 
-        if(this.state.errorNotification != null) {
+        if (this.state.errorNotification != null) {
             content = this.state.errorNotification;
         }
 

@@ -9,9 +9,9 @@ export default class Header extends React.Component {
 
     onClickLogout() {
 
-        sendRequest('https://young-cliffs-79659.herokuapp.com/logout', {}).then((data)=>{
+        sendRequest('https://young-cliffs-79659.herokuapp.com/logout', {}).then((data) => {
             console.log("logged out");
-        }, (err)=>{
+        }, (err) => {
             //TODO handle error
         });
 
@@ -25,7 +25,7 @@ export default class Header extends React.Component {
         return (
             <div className="navbar navbar-inverse navbar-fixed-top" role="navigation">
                 <div className="container-fluid">
-                    <div className="navbar-header">
+                    <div className="navbar-header pull-left">
                         <a className="navbar-brand" href="#">Hotel-IIS</a>
                     </div>
 

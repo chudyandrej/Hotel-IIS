@@ -24,12 +24,12 @@ export default class SideBar extends React.Component {
     }
 
     componentDidMount() {
-       this.setBtnActive(this.props.activeLocation);
-       this.setState({activeLocation: this.props.activeLocation});
+        this.setBtnActive(this.props.activeLocation);
+        this.setState({activeLocation: this.props.activeLocation});
     }
 
-    componentWillReceiveProps(nextProps){
-        if (this.props.activeLocation != nextProps.activeLocation){
+    componentWillReceiveProps(nextProps) {
+        if (this.props.activeLocation != nextProps.activeLocation) {
             this.setState({activeLocation: nextProps.activeLocation});
             this.setBtnActive(nextProps.activeLocation);
         }
@@ -46,7 +46,7 @@ export default class SideBar extends React.Component {
     }
 
     handlerBtn(type) {
-        this.setState ({
+        this.setState({
             dashboard: type == "dashboard" ? "active" : "default",
             rooms: type == "rooms" ? "active" : "default",
             search: type == "search" ? "active" : "default",
@@ -59,20 +59,20 @@ export default class SideBar extends React.Component {
     }
 
     /*
-    // ----- Beyond the school project -------
+     // ----- Beyond the school project -------
 
-    // Link requires root permissions
+     // Link requires root permissions
      <li className={this.state.analytics}>
-         <Link to="/dashboard/analytics" onClick={this.handlerBtn.bind(this, "analytics")}>
-            Analytics
-         </Link>
+     <Link to="/dashboard/analytics" onClick={this.handlerBtn.bind(this, "analytics")}>
+     Analytics
+     </Link>
      </li>
 
      //link requires usual (user) permissions
      <li className={this.state.search}>
-         <Link to="/dashboard/search" onClick={this.handlerBtn.bind(this, "search")}>
-            Search
-         </Link>
+     <Link to="/dashboard/search" onClick={this.handlerBtn.bind(this, "search")}>
+     Search
+     </Link>
      </li>
      */
 
