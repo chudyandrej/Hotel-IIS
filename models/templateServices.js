@@ -23,13 +23,16 @@ module.exports = function(sequelize, DataTypes) {
         },
         duration: {
             type: DataTypes.INTEGER,
+        },
+        isDaily:{
+            type: DataTypes.BOOLEAN
         }
     }, {
         instanceMethods:{
             toPublicJSON(){
-                return _.pick(this.toJSON(), 'id', 'name', 'actual_price','description', 'available', 'duration');
+                return _.pick(this.toJSON(), 'id', 'name', 'actual_price','description',
+                'available', 'duration','isDaily');
             }
-
         },
         classMethods: {
             findByID(id) {
