@@ -154,7 +154,8 @@ class TableRow extends React.Component {
         }
 
         let Row = (
-            <tr onClick={this.handlerClick.bind(this, this.props.Row)} style={style}>
+            <tr onClick={this.props.showDetails == null ? null : this.handlerClick.bind(this, this.props.Row)}
+                style={style}>
                 {this.state.columns}
                 {actionBtns}
             </tr>
