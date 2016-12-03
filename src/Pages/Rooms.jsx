@@ -149,7 +149,7 @@ export default class Rooms extends React.Component {
 
     handlerBookRoom(data) {
         this.setState({sending: true});
-        sendRequest('https://young-cliffs-79659.herokuapp.com/checkIn', data)
+        sendRequest('https://hotel-iis.herokuapp.com/checkIn', data)
             .then(() => {
                 this.setState({sending: false});
                 this.handlerButtons("cancel");

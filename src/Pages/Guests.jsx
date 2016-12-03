@@ -183,10 +183,10 @@ export default class Guests extends React.Component {
         let url = null;
 
         if (this.state.editData === null) {  //add a new guest
-            url = 'https://young-cliffs-79659.herokuapp.com/addGuest';
+            url = 'https://hotel-iis.herokuapp.com/addGuest';
         }
         else {  //edit the guest
-            url = 'https://young-cliffs-79659.herokuapp.com/editGuest';
+            url = 'https://hotel-iis.herokuapp.com/editGuest';
             data['id'] = this.state.editData.id;
             this.setState({editData: null});
         }
@@ -214,7 +214,7 @@ export default class Guests extends React.Component {
         console.log("got data");
         console.log(data);
         this.setState({sending: true, errorMsg: null});
-        sendRequest('https://young-cliffs-79659.herokuapp.com/checkIn', data)
+        sendRequest('https://hotel-iis.herokuapp.com/checkIn', data)
             .then(() => {
                 console.log("data sent successfully");
                 this.setState({sending: false});

@@ -51,7 +51,7 @@ export default class Employees extends React.Component {
 
     fetchData(flag) {
         this.setState({pending: true});
-        sendRequest('https://young-cliffs-79659.herokuapp.com/getEmployees', flag).then((data) => {
+        sendRequest('https://hotel-iis.herokuapp.com/getEmployees', flag).then((data) => {
             data = this.state.tableHeaders.concat(JSON.parse(data.text));
             this.setState({pending: false, data: data});
         }, (err) => {
@@ -97,7 +97,7 @@ export default class Employees extends React.Component {
     }
 
     handlerRemove(id) {
-        sendRequest('https://young-cliffs-79659.herokuapp.com/deleteEmployee', {id: id})
+        sendRequest('https://hotel-iis.herokuapp.com/deleteEmployee', {id: id})
             .then((data) => {
                 console.log("data's deleted successfully");
             }, (err) => {
@@ -142,10 +142,10 @@ export default class Employees extends React.Component {
         let url = null;
 
         if (this.state.editData == null) {  //add a new employee
-            url = 'https://young-cliffs-79659.herokuapp.com/registration';
+            url = 'https://hotel-iis.herokuapp.com/registration';
         }
         else {  //edit the employee
-            url = 'https://young-cliffs-79659.herokuapp.com/editEmployee';
+            url = 'https://hotel-iis.herokuapp.com/editEmployee';
             data['email'] = this.state.editData.email;
             this.setState({editData: null});
         }

@@ -209,10 +209,10 @@ export default class Stays extends React.Component {
         let url = null;
 
         if (this.state.editData === null) {  //add a new stay
-            url = 'https://young-cliffs-79659.herokuapp.com/checkIn';
+            url = 'https://hotel-iis.herokuapp.com/checkIn';
         }
         else {  //edit the stay
-            url = 'https://young-cliffs-79659.herokuapp.com/editStay';
+            url = 'https://hotel-iis.herokuapp.com/editStay';
             data['id'] = this.state.editData.id;
         }
 

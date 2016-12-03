@@ -50,7 +50,7 @@ export default class Services extends React.Component {
 
     fetchData(data) {
         this.setState({pending: true});
-        sendRequest('https://young-cliffs-79659.herokuapp.com/getServices', data).then((data) => {
+        sendRequest('https://hotel-iis.herokuapp.com/getServices', data).then((data) => {
             data = this.state.tableHeaders.concat(JSON.parse(data.text));
             this.setState({pending: false, data: data});
         }, (err) => {
@@ -120,7 +120,7 @@ export default class Services extends React.Component {
     }
 
     handlerRemove(id) {
-        sendRequest('https://young-cliffs-79659.herokuapp.com/editService', {available: false, id: id})
+        sendRequest('https://hotel-iis.herokuapp.com/editService', {available: false, id: id})
             .then(() => {
                 console.log("data's deleted successfully");
             }, (err) => {
@@ -141,10 +141,10 @@ export default class Services extends React.Component {
         let url = null;
 
         if (this.state.editData === null) {  //add a new service
-            url = 'https://young-cliffs-79659.herokuapp.com/addNewService';
+            url = 'https://hotel-iis.herokuapp.com/addNewService';
         }
         else {  //edit the service
-            url = 'https://young-cliffs-79659.herokuapp.com/editService';
+            url = 'https://hotel-iis.herokuapp.com/editService';
             data['id'] = this.state.editData.id;
             this.setState({editData: null});
         }
@@ -160,7 +160,7 @@ export default class Services extends React.Component {
 
     handlerOrderService(data) {
         this.setState({sending: true});
-        sendRequest('https://young-cliffs-79659.herokuapp.com/reserveService', data)
+        sendRequest('https://hotel-iis.herokuapp.com/reserveService', data)
             .then(() => {
                 this.setState({sending: false});
                 this.handlerBtn("cancel");

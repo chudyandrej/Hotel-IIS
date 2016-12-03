@@ -61,7 +61,7 @@ export default class LoginPage extends React.Component {
         e.preventDefault();
         this.setState({pending: true});
         request
-            .post('https://young-cliffs-79659.herokuapp.com/login')
+            .post('https://hotel-iis.herokuapp.com/login')
             .set('Accept', 'application/json')
             //.send({ email: 'jerdna11@gmail.com', password: '123456789' })  //for debug
             .send({email: this.state.username, password: this.state.password})

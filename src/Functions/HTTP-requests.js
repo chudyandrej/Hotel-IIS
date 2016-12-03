@@ -53,7 +53,7 @@ export const sendRequest = function (url, data) {
 export const downloadData = function (url, data) {
 
     return new Promise((resolve, reject) => {
-        sendRequest('https://young-cliffs-79659.herokuapp.com/' + url, data).then((data) => {
+        sendRequest('https://hotel-iis.herokuapp.com/' + url, data).then((data) => {
             data = JSON.parse(data.text);
             resolve(data);
         }, (err) => {

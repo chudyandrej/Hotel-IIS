@@ -9,7 +9,7 @@ export default class Header extends React.Component {
 
     onClickLogout() {
 
-        sendRequest('https://young-cliffs-79659.herokuapp.com/logout', {}).then((data) => {
+        sendRequest('https://hotel-iis.herokuapp.com/logout', {}).then((data) => {
             console.log("logged out");
         }, (err) => {
             //TODO handle error
