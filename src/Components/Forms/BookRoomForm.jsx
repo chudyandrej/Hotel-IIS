@@ -89,6 +89,14 @@ export default class BookOrderForm extends React.Component {
         this.setState(state);
     }
 
+    handleChangeRoomPrice(id, evt) {
+        this.state.ordered.forEach((room) => {
+            if (room.id == id) {
+                room['actual_price'] = evt.target.value;
+            }
+        });
+    }
+
     /**
      * Push data to the list of ordered rooms if data isn't already there
      * otherwise, pop them out
@@ -223,6 +231,18 @@ export default class BookOrderForm extends React.Component {
         }
 
         if (typeof(this.props.roomInfo) === "undefined") {
+            let priceInput = [];
+
+            this.state.ordered.forEach((room) => {
+                priceInput.push(
+                    <InputLabelForm label={"Room " + room.id}
+                                    placeholder={room.actual_price}
+                                    key={priceInput.length}
+                                    type="text"
+                                    onChange={this.handleChangeRoomPrice.bind(this, room.id)}/>
+                );
+            });
+
             room = (
                 <div>
                     <div style={headerContainerStyle}
@@ -244,6 +264,7 @@ export default class BookOrderForm extends React.Component {
                         <InputLabelForm label="Note"
                                         type="text"
                                         onChange={this.handleChange.bind(this, "note")}/>
+                        {priceInput}
                     </div>
                 </div>
             )

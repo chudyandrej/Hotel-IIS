@@ -7,7 +7,7 @@ import ImageLoader from 'react-imageloader';
  * @param services - array of services objects used during a stay
  * @returns {Promise}
  */
-export const createServicesPerRoomsTable = function(rooms, services) {
+export const createServicesPerRoomsTable = function (rooms, services) {
     return new Promise((resolve, reject) => {
 
         let header = [];
@@ -38,19 +38,19 @@ export const createServicesPerRoomsTable = function(rooms, services) {
             rooms.forEach((room) => {
                 let NoneOfServices = true;
                 room.services.forEach((serviceOnRoom) => {
-                    if (service.id === serviceOnRoom.id) {
+                    if (service.templateService.id === serviceOnRoom.templateService.id) {
                         NoneOfServices = false;
                         columns.push(
                             <td key={columns.length} className="text-center">
-                                <ImageLoader src={require("../../public/img/tick.png")} />
+                                <ImageLoader src={require("../../public/img/tick.png")}/>
                             </td>
                         );
                     }
                 });
-                if (NoneOfServices){
+                if (NoneOfServices) {
                     columns.push(
                         <td key={columns.length} className="text-center">
-                            <ImageLoader src={require("../../public/img/cross.png")} />
+                            <ImageLoader src={require("../../public/img/cross.png")}/>
                         </td>
                     );
                 }
@@ -64,12 +64,12 @@ export const createServicesPerRoomsTable = function(rooms, services) {
         rows = (
             <table className="table table-striped table-hover">
                 <thead>
-                    <tr>
-                        {header}
-                    </tr>
+                <tr>
+                    {header}
+                </tr>
                 </thead>
                 <tbody>
-                    {rows}
+                {rows}
                 </tbody>
             </table>
         );
@@ -84,7 +84,7 @@ export const createServicesPerRoomsTable = function(rooms, services) {
  *               services objects. [{rooms: [{roomInfo}, services: [{service info},..]],..},..]
  * @returns {Promise}
  */
-export const createSummaryTables = function(data) {
+export const createSummaryTables = function (data) {
     return new Promise((resolve, reject) => {
 
         let rooms = [];
@@ -113,15 +113,15 @@ export const createSummaryTables = function(data) {
                         {room.templateRoom.id}
                     </label>
                     <p>
-                        {room.price_room}
+                        {room.price_room} €
                     </p>
                 </div>
             );
 
             room.services.forEach((service) => {
                 let found = false;
-                for (let service2 in services) {
-                    if (service === service2){ //already have
+                for (let service2 of services) {
+                    if (service.templateService.id === service2.templateService.id) { //already have
                         found = true;
                         break;
                     }
@@ -148,7 +148,7 @@ export const createSummaryTables = function(data) {
                         {service.templateService.name}
                     </label>
                     <p>
-                        {service.price_service}
+                        {service.price_service} €
                     </p>
                 </div>
             );

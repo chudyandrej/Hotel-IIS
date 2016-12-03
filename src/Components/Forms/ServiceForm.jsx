@@ -14,6 +14,7 @@ export default class ServiceForm extends React.Component {
                 description: "",
                 price: "",
                 duration: "",
+                serviceType: "none",
 
                 nameRequired: null,
                 priceRequired: null,
@@ -49,7 +50,7 @@ export default class ServiceForm extends React.Component {
             state[name + "Required"] = null;
             this.setState(state);
         }
-       return true;
+        return true;
     }
 
     checkRequired() {
@@ -63,10 +64,13 @@ export default class ServiceForm extends React.Component {
         if (!this.checkRequired()) {
             return;
         }
-        let data = {available: true};
-        this.state.name != "" ? data['name'] = this.state.name : null;
+        let data = {
+            name: this.state.name,
+            actual_price: this.state.price,
+            isDaily: this.state.serviceType === "daily",
+            available: true
+        };
         this.state.description != "" ? data['description'] = this.state.description : null;
-        this.state.price != "" ? data['actual_price'] = this.state.price : null;
         data['duration'] = this.state.duration === "" ? 0 : this.state.duration;
 
         this.props.Submit(data);
@@ -78,6 +82,8 @@ export default class ServiceForm extends React.Component {
         };
 
         let required = "This field is required!";
+        let help = <small className="form-text text-muted">Daily if the service will be applied to everyday during
+            the service, otherwise set to None</small>;
 
         return (
             <div>
@@ -109,6 +115,19 @@ export default class ServiceForm extends React.Component {
                                     placeholder={this.state.duration}
                                     type="text"
                                     onChange={this.handlerOnChange.bind(this, "duration")}/>
+
+                    <div className="form-group row ">
+                        <label className="col-xs-2 col-form-label">Type:</label>
+                        <div className="col-xs-6">
+                            <select className="form-control"
+                                    value={this.state.serviceType}
+                                    onChange={this.handlerOnChange.bind(this, "serviceType")}>
+                                <option value="none">None</option>
+                                <option value="daily">Daily</option>
+                            </select>
+                            {help}
+                        </div>
+                    </div>
                 </form>
 
                 <FormButtons Submit={this.handlerSubmitBtn.bind(this)}
