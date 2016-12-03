@@ -67,7 +67,7 @@ export default class ServiceForm extends React.Component {
         this.state.name != "" ? data['name'] = this.state.name : null;
         this.state.description != "" ? data['description'] = this.state.description : null;
         this.state.price != "" ? data['actual_price'] = this.state.price : null;
-        data['duration'] = this.state.duration != "" ? 0 : this.state.duration;
+        data['duration'] = this.state.duration === "" ? 0 : this.state.duration;
 
         this.props.Submit(data);
     }

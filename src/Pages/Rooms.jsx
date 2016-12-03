@@ -27,12 +27,12 @@ export default class Rooms extends React.Component {
             isNotChild: typeof(this.props.isChild) === "undefined",
 
             tableHeaders: [{
-                id: "Room Number:", actual_price: "Price:", tv: "TV:", internet: "Internet:", bar: "Bar:",
-                bathtub: "Bathtub:", kitchen: "Kitchen:", balcony: "Balcony:"
+                id: "Room Number:", actual_price: "Price:", capacity: "Capacity", tv: "TV:", internet: "Internet:",
+                bar: "Bar:", bathtub: "Bathtub:", kitchen: "Kitchen:", balcony: "Balcony:"
             }],
             detailsHeaders: {
-                id: "Room Number:", actual_price: "Price:", tv: "TV:", internet: "Internet:", bar: "Bar:",
-                bathtub: "Bathtub:", kitchen: "Kitchen:", balcony: "Balcony:"
+                id: "Room Number:", actual_price: "Price:", capacity: "Capacity", tv: "TV:", internet: "Internet:",
+                bar: "Bar:", bathtub: "Bathtub:", kitchen: "Kitchen:", balcony: "Balcony:"
             },
 
             showTable: true,
