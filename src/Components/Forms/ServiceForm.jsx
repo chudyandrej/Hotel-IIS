@@ -42,23 +42,21 @@ export default class ServiceForm extends React.Component {
 
     checkValidity(name) {
         let state = {};
-        if (this.state[name] == ""){
-            state[name+"Required"] = "has-error";
+        if (this.state[name] == "") {
+            state[name + "Required"] = "has-error";
         }
-        if (this.state[name] != "" && this.state[name+"Required"] != null){
-            state[name+"Required"] = null;
+        if (this.state[name] != "" && this.state[name + "Required"] != null) {
+            state[name + "Required"] = null;
         }
         this.setState(state);
     }
 
     handlerSubmitBtn() {
-        let data = {
-            name: this.state.name,
-            description: this.state.description,
-            actual_price: this.state.price,
-            duration: this.state.duration,
-            available: true
-        };
+        let data = {available: true};
+        this.state.name != "" ? data['name'] = this.state.name : null;
+        this.state.description != "" ? data['description'] = this.state.description : null;
+        this.state.price != "" ? data['actual_price'] = this.state.price : null;
+        data['duration'] = this.state.duration != "" ? 0 : this.state.duration;
 
         this.props.Submit(data);
     }

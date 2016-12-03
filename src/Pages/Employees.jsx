@@ -55,7 +55,7 @@ export default class Employees extends React.Component {
             data = this.state.tableHeaders.concat(JSON.parse(data.text));
             this.setState({pending: false, data: data});
         }, (err) => {
-            this.setState({errorNotification: err, pending: false});
+            this.setState({errorNotification: err.popup, pending: false});
         });
     }
 
@@ -101,7 +101,7 @@ export default class Employees extends React.Component {
             .then((data) => {
                 console.log("data's deleted successfully");
             }, (err) => {
-                this.setState({errorNotification: err});
+                this.setState({errorNotification: err.popup});
             });
     }
 
@@ -112,7 +112,8 @@ export default class Employees extends React.Component {
             showDetails: false,
             showAddForm: false,
             addBtnClicked: false,
-            editData: null
+            editData: null,
+            errorMsg: null
         });
     }
 
@@ -154,17 +155,7 @@ export default class Employees extends React.Component {
                 this.setState({sending: false});
                 this.handlerCancelBtn();
             }, (err) => {
-                let errorMsg = null;
-                try {
-                    //it may be popUp component (token's expired)
-                    errorMsg = JSON.parse(err.text).errors[0].message
-                } catch(err) {
-                    //close form and show notification
-                    this.setState({errorNotification: err});
-                    this.handlerCancelBtn();
-                }
-                this.setState({sending: false, errorMsg: errorMsg
-                });
+                this.setState({sending: false, errorMsg: err.msg});
             });
     }
 

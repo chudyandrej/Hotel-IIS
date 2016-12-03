@@ -36,7 +36,7 @@ export default class BookOrderForm extends React.Component {
             showGuest: false,
             showRoomInfo: false,
             showFreeRooms: false,
-            type: "reservation",
+            status: "reservation",
             note: null,
             guest: this.props.guest,
             oneGuestChosen: false,
@@ -65,8 +65,8 @@ export default class BookOrderForm extends React.Component {
 
     handleChange(name, evt) {
         switch (name) {
-            case "type":
-                this.setState({type: evt.target.value});
+            case "status":
+                this.setState({status: evt.target.value});
                 break;
             case "note":
                 this.setState({note: evt.target.value});
@@ -138,11 +138,12 @@ export default class BookOrderForm extends React.Component {
         let data = {
             from: this.state.startDate.format('YYYY-MM-DD'),
             to: this.state.endDate.format('YYYY-MM-DD'),
-            status: this.state.type,
-            note: this.state.note,
+            status: this.state.status,
             guestId: this.state.guest.id,
             rooms: rooms
         };
+        this.state.note != "" ? data['note'] = this.state.note : null;
+
         console.log("sending these data");
         console.log(data);
         this.props.Submit(data);
@@ -230,8 +231,8 @@ export default class BookOrderForm extends React.Component {
                     </div>
                     <br/>
                     <div style={{clear: "both"}}>
-                        <StayType type={this.state.type}
-                                  onChange={this.handleChange.bind(this, "type")}
+                        <StayType status={this.state.status}
+                                  onChange={this.handleChange.bind(this, "status")}
                                   createStay={true}/>
                         <InputLabelForm label="Note"
                                         type="text"

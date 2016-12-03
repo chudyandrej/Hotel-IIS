@@ -90,7 +90,7 @@ export default class Stays extends React.Component {
                 this.setState({pending: false, data: data, tableData: tableData});
             });
         }, (err) => {
-            this.setState({errorNotification: err, pending: false});
+            this.setState({errorNotification: err.popup, pending: false});
         });
     }
 
@@ -223,7 +223,7 @@ export default class Stays extends React.Component {
             }, (err) => {
                 //close form and show notification
                 this.handlerCancelBtn();
-                this.setState({sending: false, errorNotification: err});
+                this.setState({sending: false, errorNotification: err.popup});
             });
     }
 

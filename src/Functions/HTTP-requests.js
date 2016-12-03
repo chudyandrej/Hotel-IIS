@@ -16,20 +16,24 @@ export const sendRequest = function(url, data) {
                 if (err != null || !res.ok) {
                     console.log("error in request");
                     console.log(res);  //debug
-                    try {
-                        if (res.status == 400) {
-                            if (JSON.parse(res.text).errors[0].message === "Access denied. Token expired") {
-                                let body = "Token has expired. You're going to be redirected to the login page.";
-                                reject(<PopupNotif title="Token has expired"
-                                                   body={body}
-                                                   logout={true}/>);
-                            }
+                        if (res.status == 401) {
+                            let body = "Token has expired. You're going to be redirected to the login page.";
+                            let response = {
+                                msg: body,
+                                popup:  <PopupNotif title="Token has expired"
+                                                    body={body}
+                                                    logout={true}/>
+                            };
+                            reject(response);
+                        } else {
+                            let msg = JSON.parse(res.text).message;
+                            let response = {
+                                msg: msg,
+                                popup:  <PopupNotif title="Something went wrong" body={msg}/>
+                            };
+                            console.log(response);
+                            reject(response);
                         }
-                    } catch(error) {
-                        console.log(error);
-                        reject(res);
-                        //reject(<PopupNotif title="Something went wrong"/>);
-                    }
 
                 } else {
                     console.log("success");

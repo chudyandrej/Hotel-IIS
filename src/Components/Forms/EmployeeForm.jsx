@@ -31,8 +31,6 @@ export default class EmployeeFormForm extends React.Component {
                 addressRequired: null,
                 cityRequired: null,
                 stateRequired: null,
-                phoneNumberRequired: null,
-                ibanRequired: null,
 
                 errorMsg: null
             };
@@ -60,8 +58,6 @@ export default class EmployeeFormForm extends React.Component {
                 addressRequired: null,
                 cityRequired: null,
                 stateRequired: null,
-                phoneNumberRequired: null,
-                ibanRequired: null,
 
                 errorMsg: null
             };
@@ -82,11 +78,11 @@ export default class EmployeeFormForm extends React.Component {
 
     checkValidity(name) {
         let state = {};
-        if (this.state[name] == ""){
-            state[name+"Required"] = "has-error";
+        if (this.state[name] == "") {
+            state[name + "Required"] = "has-error";
         }
-        if (this.state[name] != "" && this.state[name+"Required"] != null){
-            state[name+"Required"] = null;
+        if (this.state[name] != "" && this.state[name + "Required"] != null) {
+            state[name + "Required"] = null;
         }
         if (name == "password") {
             if (this.state.password == this.state.passwordCheck) {
@@ -100,19 +96,17 @@ export default class EmployeeFormForm extends React.Component {
     }
 
     handlerSubmitBtn() {
-        let data = {
-            first_name: this.state.firstName,
-            middle_name: this.state.middleName,
-            last_name: this.state.lastName,
-            email: this.state.email,
+        let data = {permissions: this.state.permissions};
+        this.state.firstName != "" ? data['first_name'] = this.state.firstName : null;
+        this.state.middleName != "" ? data['middle_name'] = this.state.middleName : null;
+        this.state.lastName != "" ? data['last_name'] = this.state.lastName : null;
+        this.state.email != "" ? data['email'] = this.state.email : null;
+        this.state.address != "" ? data['address'] = this.state.address : null;
+        this.state.city != "" ? data['city'] = this.state.city : null;
+        this.state.state != "" ? data['state'] = this.state.state : null;
+        this.state.phoneNumber != "" ? data['phone_number'] = this.state.phoneNumber : null;
+        this.state.iban != "" ? data['iban'] = this.state.iban : null;
 
-            address: this.state.address,
-            city: this.state.city,
-            state: this.state.state,
-            phone_number: this.state.phoneNumber,
-            iban: this.state.iban,
-            permissions: this.state.permissions
-        };
         if (this.props.editData != null) {
             // add id of editing employee
             if (this.state.password != "") {
@@ -121,7 +115,7 @@ export default class EmployeeFormForm extends React.Component {
             data['id'] = this.props.editData.id;
         }
         else {
-            if (this.state.permissions != "none"){
+            if (this.state.permissions != "none") {
                 data['password'] = this.state.password;
             }
         }
@@ -232,20 +226,12 @@ export default class EmployeeFormForm extends React.Component {
                     <InputLabelForm label="Phone Number"
                                     type="text"
                                     placeholder={this.state.phoneNumber}
-                                    required={true}
-                                    validity={this.state.phoneNumberRequired}
-                                    onBlur={this.checkValidity.bind(this, "phoneNumber")}
-                                    onChange={this.handlerOnChange.bind(this, "phoneNumber")}
-                                    errorMsg={this.state.phoneNumberRequired == null ? null : required}/>
+                                    onChange={this.handlerOnChange.bind(this, "phoneNumber")}/>
 
                     <InputLabelForm label="IBAN"
                                     type="text"
                                     placeholder={this.state.iban}
-                                    required={true}
-                                    validity={this.state.ibanRequired}
-                                    onBlur={this.checkValidity.bind(this, "iban")}
-                                    onChange={this.handlerOnChange.bind(this, "iban")}
-                                    errorMsg={this.state.ibanRequired == null ? null : required}/>
+                                    onChange={this.handlerOnChange.bind(this, "iban")}/>
 
                     <div className="form-group row ">
                         <label className="col-xs-2 col-form-label">Permissions:</label>

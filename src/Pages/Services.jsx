@@ -54,7 +54,8 @@ export default class Services extends React.Component {
             data = this.state.tableHeaders.concat(JSON.parse(data.text));
             this.setState({pending: false, data: data});
         }, (err)=> {
-            this.setState({errorNotification: err, pending: false});
+            console.log(err);
+            this.setState({errorNotification: err.popup, pending: false});
         });
     }
 
@@ -91,7 +92,8 @@ export default class Services extends React.Component {
                     showTable: true,
                     showAddForm: false,
                     showDetails: false,
-                    editData: null
+                    editData: null,
+                    errorMsg: null
                 });
                 break;
         }
@@ -122,7 +124,7 @@ export default class Services extends React.Component {
             .then(()=> {
                 console.log("data's deleted successfully");
             }, (err)=> {
-                this.setState({errorNotification: err});
+                this.setState({errorNotification: err.popup});
             });
     }
 
@@ -152,21 +154,7 @@ export default class Services extends React.Component {
                 this.setState({sending: false});
                 this.handlerBtn("cancel");
             }, (err)=> {
-                let errorMsg = null;
-                try {
-                    //it may be popUp component (token's expired)
-                    errorMsg = JSON.parse(err.text).errors[0].message
-                } catch(error) {
-                    //close form and show notification
-                    console.log(err);
-                    this.setState({errorNotification: err.text});
-                    console.log("aft");
-                    this.handlerBtn("cancel");
-                    console.log("ar");
-                }
-                console.log("skdjdfa");
-                this.setState({sending: false, errorMsg: errorMsg});
-                console.log("after");
+                this.setState({sending: false, errorMsg: err.msg});
             });
     }
 
@@ -179,7 +167,7 @@ export default class Services extends React.Component {
             }, (err) => {
                 //close form and show notification
                 this.handlerCancelBtn();
-                this.setState({sending: false, errorNotification: err});
+                this.setState({sending: false, errorNotification: err.popup});
             });
     }
 

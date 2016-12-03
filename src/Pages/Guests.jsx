@@ -71,7 +71,7 @@ export default class Guests extends React.Component {
             data = this.state.tableHeaders.concat(data);
             this.setState({pending: false, data: data});
         }, (err) => {
-            this.setState({errorNotification: err, pending: false});
+            this.setState({errorNotification: err.popup, pending: false});
         });
     }
 
@@ -86,7 +86,7 @@ export default class Guests extends React.Component {
             data = this.state.tableHeaders.concat(data);
             this.setState({pending: false, data: data});
         }, (err) => {
-            this.setState({errorNotification: err, pending: false});
+            this.setState({errorNotification: err.popup, pending: false});
         });
     }
 
@@ -141,7 +141,8 @@ export default class Guests extends React.Component {
                     showAddForm: false,
                     showDetails: false,
                     bookRoom: false,
-                    editData: null
+                    editData: null,
+                    errorMsg: null
                 });
                 break;
         }
@@ -173,7 +174,7 @@ export default class Guests extends React.Component {
             });
         }, (err) => {
             this.handlerBtn("cancel");
-            this.setState({errorNotification: err, pendingHistory: false});
+            this.setState({errorNotification: err.popup, pendingHistory: false});
         });
     }
 
@@ -196,17 +197,7 @@ export default class Guests extends React.Component {
                 this.setState({sending: false});
                 this.handlerBtn("cancel");
             }, (err) => {
-                let errorMsg = null;
-                try {
-                    //it may be popUp component (token's expired)
-                    errorMsg = JSON.parse(err.text).errors[0].message
-                } catch(err) {
-                    //close form and show notification
-                    this.setState({errorNotification: err});
-                    this.handlerCancelBtn();
-                }
-                this.setState({sending: false, errorMsg: errorMsg
-                });
+                this.setState({sending: false, errorMsg: err.msg});
             });
     }
 
@@ -230,7 +221,7 @@ export default class Guests extends React.Component {
                 this.handlerBtn("cancel");
             }, (err) => {
                 this.handlerBtn("cancel");
-                this.setState({errorNotification: err, sending: false});
+                this.setState({errorNotification: err.popup, sending: false});
             });
     }
 
