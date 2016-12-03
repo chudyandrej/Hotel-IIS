@@ -43,6 +43,25 @@ module.exports = function(sequelize, DataTypes) {
             },
 
 
+            getCounDays(id) {
+                return new Promise((resolve, reject) => {
+                    stays.findById(id).then((stay) => {
+                        if (!stay) {
+                            reject({
+                                message: "Template of service with the identifier does not exist"
+                            });
+                        }
+                        let a = moment(stay.get("to"));
+                        let b = moment(stay.get("from"));
+                        let days = a.diff(b, 'days');
+                        resolve(days);
+                    }, (error) => {
+                        reject(error);
+                    });
+                });
+            },
+
+
             getArrayValFromActualStays(key, fromTime, toTime){
                 return new Promise(function(resolve, reject) {
                     if (!_.isString(fromTime) || !_.isString(toTime) ){

@@ -41,7 +41,11 @@ module.exports = function(app, db, _) {
 
     app.post('/getStaySummary', function(req, res) {
         var roomInstances;
+        let countOfDays;
         db.tokens.findToken(req.body.token).then(() => {
+            return  db.stays.getCounDays(req.body.id);
+        }).then((count) => {
+            countOfDays = count;
             return db.rooms.findByStayId(req.body.id, db.templateRooms);
         }).then((instances) => {
             return new Promise((resolve, reject) => {
@@ -58,6 +62,7 @@ module.exports = function(app, db, _) {
                         sum += result.sum
                         i++;
                         if (instances.length == i){
+                            sum = sum * countOfDays;
                             resolve({
                                 rooms : instances,
                                 sum
@@ -66,11 +71,9 @@ module.exports = function(app, db, _) {
                     }, (error) => {
                         reject(error);
                     });
-
                 });
-
-
             });
+
         }).then((response) => {
             res.status(200).json(response);
         }).catch((error) => {
