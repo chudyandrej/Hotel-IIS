@@ -80,7 +80,7 @@ export default class BookOrderForm extends React.Component {
                 this.setState({endDate: evt.target.value});
                 break;
         }
-        this.setState({ordered: null});
+        this.setState({ordered: []});
     }
 
     handleDate(name, date) {
@@ -233,15 +233,17 @@ export default class BookOrderForm extends React.Component {
         if (typeof(this.props.roomInfo) === "undefined") {
             let priceInput = [];
 
-            this.state.ordered.forEach((room) => {
-                priceInput.push(
-                    <InputLabelForm label={"Room " + room.id}
-                                    placeholder={room.actual_price}
-                                    key={priceInput.length}
-                                    type="text"
-                                    onChange={this.handleChangeRoomPrice.bind(this, room.id)}/>
-                );
-            });
+            if (this.state.ordered.length > 0) {
+                this.state.ordered.forEach((room) => {
+                    priceInput.push(
+                        <InputLabelForm label={"Room " + room.id}
+                                        placeholder={room.actual_price}
+                                        key={priceInput.length}
+                                        type="text"
+                                        onChange={this.handleChangeRoomPrice.bind(this, room.id)}/>
+                    );
+                });
+            }
 
             room = (
                 <div>
@@ -264,6 +266,7 @@ export default class BookOrderForm extends React.Component {
                         <InputLabelForm label="Note"
                                         type="text"
                                         onChange={this.handleChange.bind(this, "note")}/>
+
                         {priceInput}
                     </div>
                 </div>
