@@ -19,11 +19,12 @@ module.exports = function(app, db, _) {
         db.employees.create(body).then((user) => {
             res.status(200).send();
         }, (error) => {
-            errorMsg = error.errors[0].message + " -> " + error.errors[0].path;
+            let errorMsg = error.errors[0].message + " -> " + error.errors[0].path;
             if (!error.errors[0].message || !error.errors[0].path) {
                 errorMsg = error;
             }
-            res.status(400).json({
+            let code = (!_.isUndefined(error.code)) ? error.code : 400;
+            res.status(code).json({
                 message : errorMsg
             });
         });
@@ -54,7 +55,8 @@ module.exports = function(app, db, _) {
         }).then((employeesInstances) => {
             res.status(200).json(employeesInstances);
         }).catch((error) => {
-            res.status(400).json(error);
+            let code = (!_.isUndefined(error.code)) ? error.code : 400;
+            res.status(code).json(error);
         });
     });
 
@@ -84,7 +86,8 @@ module.exports = function(app, db, _) {
         }).then(() => {
             res.status(200).json();
         }).catch((error) => {
-            res.status(400).json(error);
+            let code = (!_.isUndefined(error.code)) ? error.code : 400;
+            res.status(code).json(error);
         });
     });
 
@@ -112,12 +115,9 @@ module.exports = function(app, db, _) {
         }).then(() => {
             res.status(200).json();
         }).catch((error) => {
-            if (!_.isUndefined(error.errors[0].message)){
-                error =  {
-                    message : error.errors[0].message + " -> " + error.errors[0].path
-                };
-            }
-            res.status(400).json(error);
+            
+            let code = (!_.isUndefined(error.code)) ? error.code : 400;
+            res.status(code).json(error);
         });
     });
 };

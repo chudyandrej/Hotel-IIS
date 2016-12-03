@@ -39,6 +39,10 @@ module.exports = function(app, db, _) {
             if (stayInstanceGlobal){
                 stayInstanceGlobal.destroy();
             }
+            let code = 400;
+            if (!_.isUndefined(error.code)){
+                code = error.code
+            }
             res.status(400).json(error);
         });
 

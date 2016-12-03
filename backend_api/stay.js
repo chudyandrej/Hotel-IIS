@@ -7,8 +7,8 @@ module.exports = function(app, db, _) {
         }).then((stateInstance) => {
             res.status(200).send();
         }, (error) => {
-
-            res.status(400).json(error);
+            let code = (!_.isUndefined(error.code)) ? error.code : 400;
+            res.status(code).json(error);
         });
     });
 
@@ -21,7 +21,8 @@ module.exports = function(app, db, _) {
         }).then(() => {
             res.status(200).send();
         }).catch((error) => {
-            res.status(400).json(error);
+            let code = (!_.isUndefined(error.code)) ? error.code : 400;
+            res.status(code).json(error);
         });
     });
 
@@ -32,7 +33,8 @@ module.exports = function(app, db, _) {
         }).then((result)=>{
             res.status(200).json(result);
         }).catch((error) => {
-            res.status(400).json(error);
+            let code = (!_.isUndefined(error.code)) ? error.code : 400;
+            res.status(code).json(error);
         });
     });
 
@@ -72,14 +74,12 @@ module.exports = function(app, db, _) {
         }).then((response) => {
             res.status(200).json(response);
         }).catch((error) => {
-            res.status(400).json(error);
+            let code = (!_.isUndefined(error.code)) ? error.code : 400;
+            res.status(code).json(error);
         });
     });
 
-    app.post('/stayFilter', function(req, res) {
 
-
-    });
 
 
 

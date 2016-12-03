@@ -9,13 +9,13 @@ module.exports = function(app, db, _) {
         }).then((guest) => {
             res.status(200).send();
         }).catch((error) => {
-            if (!_.isUndefined(error.errors[0].message)){
+            if (!_.isUndefined(error.errors)){
                 error =  {
                     message : error.errors[0].message + " -> " + error.errors[0].path
                 };
             }
-
-            res.status(400).json(error);
+            let code = (!_.isUndefined(error.code)) ? error.code : 400;
+            res.status(code).json(error);
         });
     });
 
@@ -48,7 +48,8 @@ module.exports = function(app, db, _) {
         }).then((stayEmployeesInstances) => {
             res.status(200).json(stayEmployeesInstances);
         }).catch((error) => {
-            res.status(400).json(error);
+            let code = (!_.isUndefined(error.code)) ? error.code : 400;
+            res.status(code).json(error);
         });
     });
 
@@ -77,7 +78,8 @@ module.exports = function(app, db, _) {
             });
             res.status(200).json(result);
         }).catch((error) => {
-            res.status(400).json(error);
+            let code = (!_.isUndefined(error.code)) ? error.code : 400;
+            res.status(code).json(error);
         });
 
     });
@@ -93,18 +95,13 @@ module.exports = function(app, db, _) {
         }).then(() => {
             res.status(200).json();
         }).catch((error) => {
-            if (!_.isUndefined(error.errors[0].message)){
+            if (!_.isUndefined(error.errors)){
                 error =  {
                     message : error.errors[0].message + " -> " + error.errors[0].path
                 };
             }
-            if (!_.isUndefined(error.errors[0].message)){
-                error =  {
-                    message : error.errors[0].message + " -> " + error.errors[0].path
-                };
-            }
-
-            res.status(400).json(error);
+            let code = (!_.isUndefined(error.code)) ? error.code : 400;
+            res.status(code).json(error);
         });
     });
 
@@ -118,6 +115,7 @@ module.exports = function(app, db, _) {
         }).then((employeesInstances) => {
             res.status(200).json(employeesInstances);
         }).catch((error) => {
+            let code = (!_.isUndefined(error.code)) ? error.code : 400;
             res.status(400).json(error);
         });
     });

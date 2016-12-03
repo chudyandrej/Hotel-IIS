@@ -10,7 +10,11 @@ module.exports = function(app, db, _) {
             });
             res.status(200).json(result);
         }).catch((error) => {
-            res.status(400).json(error);
+            let code = 400;
+            if (!_.isUndefined(error.code)){
+                code = error.code
+            }
+            res.status(code).json(error);
         });
     });
 
@@ -20,7 +24,11 @@ module.exports = function(app, db, _) {
         }).then((result)=>{
             res.status(200).json(result);
         }).catch((error) => {
-            res.status(400).json(error);
+            let code = 400;
+            if (!_.isUndefined(error.code)){
+                code = error.code
+            }
+            res.status(code).json(error);
         });
 
 

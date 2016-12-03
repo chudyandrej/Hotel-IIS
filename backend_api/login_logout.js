@@ -17,7 +17,11 @@ module.exports = function(app, db, _) {
                 permissions
             });
         }).catch((error) => {
-            res.status(400).json(error);
+            let code = 400;
+            if (!_.isUndefined(error.code)){
+                code = error.code
+            }
+            res.status(code).json(error);
         });
     });
 
@@ -30,7 +34,11 @@ module.exports = function(app, db, _) {
         }).then(() => {
             res.status(200).send();
         }).catch((error) => {
-            res.status(400).json(error);
+            let code = 400;
+            if (!_.isUndefined(error.code)){
+                code = error.code
+            }
+            res.status(code).json(error);
         });
     });
 
