@@ -194,7 +194,7 @@ export default class Rooms extends React.Component {
                            Rooms={true}
                            order={this.state.available === "active" ?
                            this.props.isChild || this.handlerBookRoomBtn.bind(this) : null}
-                           showDetails={this.handleShowDetails.bind(this)}/>
+                           showDetails={this.state.isNotChild ? this.handleShowDetails.bind(this) : null}/>
                 </div>
             )
         }

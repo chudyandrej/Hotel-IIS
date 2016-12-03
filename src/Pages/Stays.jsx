@@ -247,8 +247,8 @@ export default class Stays extends React.Component {
                     <option value="all">all</option>
                     <option value="inProgress">inProgress</option>
                     <option value="reservation">reservation</option>
-                    <option value="ended">ended</option>
-                    <option value="canceled">canceled</option>
+                    {this.state.isNotChild ? <option value="ended">ended</option> : null}
+                    {this.state.isNotChild ? <option value="canceled">canceled</option> : null}
                 </select>
             </div>
         );

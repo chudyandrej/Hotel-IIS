@@ -149,8 +149,7 @@ class TableRow extends React.Component {
             </td>
         );
         let style = {backgroundColor: this.state.backgroundColor};
-        if (this.props.onEdit != null || this.props.order != null ||
-            this.props.onRemove != null || this.props.showDetails != null) {
+        if (this.props.onEdit != null  || this.props.onRemove != null || this.props.showDetails != null) {
             style['cursor'] = "pointer";
         }
 

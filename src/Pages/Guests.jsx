@@ -257,7 +257,7 @@ export default class Guests extends React.Component {
                            onEdit={this.state.isNotChild ? this.handlerEditBtn.bind(this) : null}
                            order={this.props.isChild || this.handlerBookRoomBtn.bind(this)}
                            orderBtnName={this.props.orderBtnName || "Book"}
-                           showDetails={this.handleShowDetails.bind(this)}/>
+                           showDetails={this.state.isNotChild ? this.handleShowDetails.bind(this) : null}/>
                 </div>
             )
         }

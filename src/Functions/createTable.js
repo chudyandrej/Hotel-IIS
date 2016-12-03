@@ -14,7 +14,7 @@ export const createServicesPerRoomsTable = function(rooms, services) {
 
         header.push(
             <th className="col-md-1 text-center" key={header.length}>
-                Service/Room
+                Service/Room number
             </th>
         );
         rooms.forEach((room) => {
@@ -93,7 +93,7 @@ export const createSummaryTables = function(data) {
         roomsTable.push(
             <div key={roomsTable.length} className={"form-group"}>
                 <label className="col-xs-2 col-form-label">
-                    Rooms:
+                    Room number:
                 </label>
                 <p>
                     <b>Price/day:</b>

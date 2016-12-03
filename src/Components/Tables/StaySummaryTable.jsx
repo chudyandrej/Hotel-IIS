@@ -70,7 +70,7 @@ export default class StaySummaryTable extends React.Component {
                 {this.state.servicesTable != null ? servicesTable : null}
                 {this.state.servicePerRoomTable != null ? servicePerRoomTable : null}
                 <br/>
-                <h3>Total Price: {this.state.totalPrice}</h3>
+                <h3>Total Price: {this.state.totalPrice} €</h3>
             </div>
         );
 
