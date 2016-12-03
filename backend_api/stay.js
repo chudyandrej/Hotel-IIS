@@ -46,7 +46,7 @@ module.exports = function(app, db, _) {
             return  db.stays.getCounDays(req.body.id);
         }).then((count) => {
             countOfDays = count;
-            return db.rooms.findByStayId(req.body.id, db.templateRooms, countOfDays);
+            return db.rooms.findByStayId(req.body.id, db.templateRooms);
         }).then((instances) => {
             return new Promise((resolve, reject) => {
                 var i = 0;
@@ -56,7 +56,7 @@ module.exports = function(app, db, _) {
                 }
                 instances.forEach((room) => {
                     sum += room.price_room * countOfDays;
-                    db.services.sumPriceForRoom(room.id, db.templateServices).then((result) => {
+                    db.services.sumPriceForRoom(room.id, db.templateServices, countOfDays).then((result) => {
                         room.services = result.services
                         sum += result.sum
                         i++;
