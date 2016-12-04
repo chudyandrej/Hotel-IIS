@@ -58,7 +58,8 @@ module.exports = function(app, db, _) {
         db.tokens.findToken(req.body.token).then(() => {
             return db.templateServices.findByID(req.body.id);
         }).then((serviceInstance) => {
-            var body = _.pick(req.body, 'name', 'actual_price', 'description', 'available', 'duration');
+            var body = _.pick(req.body, 'name', 'actual_price', 'description',
+            'available', 'duration', 'isDaily');
             return serviceInstance.update(body);
         }).then(() => {
             res.status(200).send();
