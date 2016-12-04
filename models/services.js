@@ -22,9 +22,9 @@ module.exports = function(sequelize, DataTypes) {
                         instances.forEach((item) => {
 
                             if (item.templateService.isDaily){
-                                sum += item.get('price_service');
-                            } else {
                                 sum += item.get('price_service') * days;
+                            } else {
+                                sum += item.get('price_service') ;
                             }
 
                             result.push(item.toPublicJSON());
