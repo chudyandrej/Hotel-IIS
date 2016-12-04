@@ -24,10 +24,10 @@ export default class Services extends React.Component {
             availableBefore: true,
             subHeader: "Services",
             isNotChild: typeof(this.props.isChild) === "undefined",
-            tableHeaders: [{name: "Name", actual_price: "Price (€)", duration: "Duration"}],
+            tableHeaders: [{name: "Name", actual_price: "Price (€)", duration: "Duration (h)"}],
             detailsHeaders: {
                 name: "Name:", actual_price: "Price (€):", description: "Description:",
-                duration: "Duration:"
+                duration: "Duration (h):", isDaily: "Billed per day:"
             },
 
             showTable: true,
@@ -52,6 +52,7 @@ export default class Services extends React.Component {
         this.setState({pending: true});
         sendRequest('https://hotel-iis.herokuapp.com/getServices', data).then((data) => {
             data = this.state.tableHeaders.concat(JSON.parse(data.text));
+            console.log(data);
             this.setState({pending: false, data: data});
         }, (err) => {
             this.setState({errorNotification: err.popup, pending: false});
@@ -133,6 +134,7 @@ export default class Services extends React.Component {
             showDetails: true,
             data: data
         });
+        console.log(data);
     }
 
     handlerSubmitBtn(data) {

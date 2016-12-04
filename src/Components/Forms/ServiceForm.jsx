@@ -14,7 +14,7 @@ export default class ServiceForm extends React.Component {
                 description: "",
                 price: "",
                 duration: "",
-                serviceType: "none",
+                billedDaily: "no",
 
                 nameRequired: null,
                 priceRequired: null,
@@ -26,6 +26,7 @@ export default class ServiceForm extends React.Component {
                 description: this.props.editData.description,
                 price: this.props.editData.actual_price,
                 duration: this.props.editData.duration,
+                billedDaily: this.props.editData.isDaily ? "yes" : "no",
 
                 nameRequired: null,
                 priceRequired: null
@@ -67,7 +68,7 @@ export default class ServiceForm extends React.Component {
         let data = {
             name: this.state.name,
             actual_price: this.state.price,
-            isDaily: this.state.serviceType === "daily",
+            isDaily: this.state.billedDaily === "yes",
             available: true
         };
         this.state.description != "" ? data['description'] = this.state.description : null;
@@ -82,8 +83,8 @@ export default class ServiceForm extends React.Component {
         };
 
         let required = "This field is required!";
-        let help = <small className="form-text text-muted">Daily if the service will be applied to everyday during
-            the service, otherwise set to None</small>;
+        let help = <small className="form-text text-muted">Set Yes if the service is billed per day,
+            otherwise set to No</small>;
 
         return (
             <div>
@@ -111,19 +112,19 @@ export default class ServiceForm extends React.Component {
                                     onChange={this.handlerOnChange.bind(this, "price")}
                                     errorMsg={this.state.priceRequired == null ? null : required}/>
 
-                    <InputLabelForm label="Duration (min)"
+                    <InputLabelForm label="Duration (h)"
                                     placeholder={this.state.duration}
                                     type="text"
                                     onChange={this.handlerOnChange.bind(this, "duration")}/>
 
                     <div className="form-group row ">
-                        <label className="col-xs-2 col-form-label">Type:</label>
+                        <label className="col-xs-2 col-form-label">Billed per day:</label>
                         <div className="col-xs-6">
                             <select className="form-control"
-                                    value={this.state.serviceType}
-                                    onChange={this.handlerOnChange.bind(this, "serviceType")}>
-                                <option value="none">None</option>
-                                <option value="daily">Daily</option>
+                                    value={this.state.billedDaily}
+                                    onChange={this.handlerOnChange.bind(this, "billedDaily")}>
+                                <option value="no">No</option>
+                                <option value="yes">Yes</option>
                             </select>
                             {help}
                         </div>

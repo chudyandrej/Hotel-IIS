@@ -149,6 +149,7 @@ export const createSummaryTables = function (data) {
                     </label>
                     <p>
                         {service.price_service} €
+                        {service.templateService.isDaily ? " * " + data.lengthStay + " days" : null}
                     </p>
                 </div>
             );
