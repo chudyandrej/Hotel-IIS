@@ -73,6 +73,7 @@ module.exports = function(app, db, _) {
             });
 
         }).then((response) => {
+            response.duringStay = countOfDays;
             res.status(200).json(response);
         }).catch((error) => {
             let code = (!_.isUndefined(error.code)) ? error.code : 400;
