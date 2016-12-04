@@ -3,6 +3,7 @@ var express = require('express');
 var _ = require('underscore');
 var bodyParser = require('body-parser');
 var cors = require('cors');
+var moment = require('moment');
 
 var PORT = process.env.PORT || 3000;
 var app = express();
@@ -25,6 +26,21 @@ require('./backend_api/chackInOut.js')(app, db, _);
 
 setInterval(function() {
     db.tokens.tokensTimeoutWatchdog();
+}, 1000 * 120);
+
+
+
+setInterval(function() {
+    db.stays.findAll().then((instances) =>{
+        instances.forEach((stay) => {
+            let time = moment(stay.get('from'), 'YYYY-MM-DDTHH:mm:ss.SSS');
+            if (time.isBefore(moment()) && stay.get('status') === 'reservation'){
+                stay.update({
+                    status: 'canceled'
+                });
+            }
+        });
+    });
 }, 1000 * 120);
 
 
