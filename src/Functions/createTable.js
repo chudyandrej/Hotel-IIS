@@ -150,6 +150,7 @@ export const createSummaryTables = function (data) {
                     <p>
                         {service.price_service} €
                         {service.templateService.isDaily ? " * " + data.lengthStay + " days" : null}
+                        {service.count > 1 ? " * " + service.count + " times" : null}
                     </p>
                 </div>
             );
