@@ -26,11 +26,11 @@ module.exports = function(sequelize, DataTypes) {
                                 sum += item.get('price_service') ;
                             }
                             let tmp = item.toPublicJSON();
-                            tmp.templateService.count = 1;
+                            tmp.count = 1;
                             let found = false;
                             for (let ser of result){
                                 if(tmp.templateService.id === ser.templateService.id){
-                                    ser.templateService.count += 1;
+                                    ser.count += 1;
                                     found = true;
                                     break;
                                 }
