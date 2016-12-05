@@ -115,7 +115,7 @@ module.exports = function(app, db, _) {
         }).then(() => {
             res.status(200).json();
         }).catch((error) => {
-            
+
             let code = (!_.isUndefined(error.code)) ? error.code : 400;
             res.status(code).json(error);
         });
