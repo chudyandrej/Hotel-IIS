@@ -8,8 +8,7 @@ module.exports = function(sequelize, DataTypes) {
     }, {
         classMethods: {
             sumPriceForRoom(roomId, objTemplateServices, days){
-                console.log("\nTOTOTOTOTOTOTOTOOTOT\n");
-                console.log(days);
+
                 return new Promise((resolve, reject) => {
                     services.findAll({
                         where: {
@@ -26,8 +25,20 @@ module.exports = function(sequelize, DataTypes) {
                             } else {
                                 sum += item.get('price_service') ;
                             }
+                            let tmp = item.toPublicJSON();
+                            tmp.templateService.count = 1;
+                            let found = false;
+                            for (let ser of result){
+                                if(tmp.templateService.id === ser.templateService.id){
+                                    ser.templateService.count += 1;
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if(!found){
+                                result.push(tmp);
+                            }
 
-                            result.push(item.toPublicJSON());
                         });
                         resolve({
                             services : result,
