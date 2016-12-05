@@ -104,7 +104,7 @@ export default class EmployeeFormForm extends React.Component {
         retCode = retCode === false ? false : this.checkValidity("firstName");
         retCode = retCode === false ? false : this.checkValidity("lastName");
         retCode = retCode === false ? false : this.checkValidity("email");
-        if (this.state.permissions != "none") {
+        if (this.props.editData == null && this.state.permissions != "none") {
             retCode = retCode === false ? false : this.checkValidity("password");
         }
         retCode = retCode === false ? false : this.checkValidity("address");
@@ -143,7 +143,6 @@ export default class EmployeeFormForm extends React.Component {
             }
         }
         this.props.Submit(data);
-        //this.props.editData = null;
     }
 
     render() {
