@@ -18,6 +18,7 @@ module.exports = {
         ])
     },
     output: {
+        // Public path refers to the location from the _browser's_ perspective
         publicPath: './public/',
         filename: 'public/index.js'
     },

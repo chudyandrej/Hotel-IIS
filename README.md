@@ -1,10 +1,10 @@
 # Hotel-IIS
 
 
-##About
+## About
 
 
-##Install
+## Install
 
 To install dependencies run following command:
 
@@ -15,7 +15,7 @@ To install all dependencies including devDependencies run:
     $ npm install
 
 
-##Start server
+## Start server
 
 [1.] JSX syntax and ES6, are not supported in all the browsers, so we need to translate them to .js:
 
@@ -26,10 +26,10 @@ To install all dependencies including devDependencies run:
     $ npm start
 
 
-##Developing front-end:
+## Developing front-end:
 
 Following command will run frontEnd code in watchmode - index.js is retranslated after changes were
-made. The command also creates a server on port 8080 (available in browser as localhost:8080) by running
+made. The command also creates a server on port 8080 (available in browser as localhost:8080/public/) by running
 webpack-dev-server package
 
     $ npm run dev
@@ -37,5 +37,5 @@ webpack-dev-server package
 Note: the server is not running, so there won't be any interaction with back-end
 
 
-##Sources
+## Sources
 [bootstrap theme](https://www.bootstrapzero.com/bootstrap-template/free-admin-theme)
