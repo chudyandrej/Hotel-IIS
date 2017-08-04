@@ -37,7 +37,6 @@ module.exports = function(app, db, _) {
 
 
 
-
     app.post('/logout', function(req, res) {
         db.tokens.findToken(req.body.token).then((tokenInstance) => {
             return tokenInstance.destroy();
@@ -52,6 +51,4 @@ module.exports = function(app, db, _) {
         });
     });
 
-
-
-}
+};

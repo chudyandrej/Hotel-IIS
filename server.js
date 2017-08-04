@@ -19,7 +19,7 @@ require('./backend_api/room.js')(app, db, _);
 require('./backend_api/service.js')(app, db, _);
 require('./backend_api/guest.js')(app, db, _);
 require('./backend_api/stay.js')(app, db, _);
-require('./backend_api/chackInOut.js')(app, db, _);
+require('./backend_api/checkInOut.js')(app, db, _);
 require('./backend_api/statistics.js')(app, db, _);
 
 

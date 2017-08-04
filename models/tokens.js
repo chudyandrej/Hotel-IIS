@@ -1,6 +1,5 @@
 var cryptojs = require('crypto-js');
 var moment = require('moment');
-var jwt = require('jsonwebtoken');
 var _ = require('underscore');
 
 module.exports = function(sequelize, DataTypes) {
@@ -35,7 +34,7 @@ module.exports = function(sequelize, DataTypes) {
                 return new Promise(function(resolve, reject) {
                     if (!_.isString(hashToken) || hashToken === '') {
                         reject({
-                            message: "Access denied. Token is not string or token is empty string",
+                            message: "Access denied. Token is not a string or it's an empty string",
                             code: 401
                         });
                     }
@@ -56,7 +55,7 @@ module.exports = function(sequelize, DataTypes) {
 
                         }else{
                             reject({
-                                message: "Access denied. Token expired",
+                                message: "Access denied. Token has expired",
                                 code: 401
                             });
                         }
@@ -68,7 +67,7 @@ module.exports = function(sequelize, DataTypes) {
 
 
             /**
-            * Filter all tokens whit expire time
+            * Filter all tokens with expired time
             */
             tokensTimeoutWatchdog() {
                 tokens.findAll({}).then((tokensInstances) => {

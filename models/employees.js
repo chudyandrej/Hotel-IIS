@@ -130,7 +130,7 @@ module.exports = function(sequelize, DataTypes) {
                     try {
                         if (!token){
                             reject({
-                                message: "Token not found"
+                                message: "Token not found!"
                             });
                         }
                         let decodeJwt = jwt.verify(token, 'qwery09856');
@@ -139,7 +139,7 @@ module.exports = function(sequelize, DataTypes) {
                         employees.findById(tokenData.id).then((employee) => {
                             if (!employee){
                                 reject({
-                                    message: "Emply with the identifier does not exist. Problem whit token"
+                                    message: "Employee with the identifier does not exist. Problem with token."
                                 });
                             } else {
                                 resolve(employee);
@@ -156,7 +156,7 @@ module.exports = function(sequelize, DataTypes) {
                 return new Promise(function(resolve, reject) {
                     if (!_.isString(emailPass.email) || !_.isString(emailPass.password)) {
                         reject({
-                            message: "Email or password are not valid"
+                            message: "Email or password are not valid."
                         });
                     }
                     employees.findOne({
@@ -168,7 +168,7 @@ module.exports = function(sequelize, DataTypes) {
                             resolve(employee);
                         } else {
                             reject({
-                                message: "Wrong password or unexisting email"
+                                message: "Wrong password or unexisting email."
                             });
                         }
                     }, (error) => {
